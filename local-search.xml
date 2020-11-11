@@ -4,6 +4,25 @@
   
   
   <entry>
+    <title>hexo博客如何插入图片</title>
+    <link href="/2020/11/11/hexo%E5%8D%9A%E5%AE%A2%E5%A6%82%E4%BD%95%E6%8F%92%E5%85%A5%E5%9B%BE%E7%89%87/"/>
+    <url>/2020/11/11/hexo%E5%8D%9A%E5%AE%A2%E5%A6%82%E4%BD%95%E6%8F%92%E5%85%A5%E5%9B%BE%E7%89%87/</url>
+    
+    <content type="html"><![CDATA[<h1 id="hexo博客如何插入图片"><a href="#hexo博客如何插入图片" class="headerlink" title="hexo博客如何插入图片"></a>hexo博客如何插入图片</h1><p>在直白的文章中，图片总是点睛之笔的</p><p>用markdow写的博客，想插入些图片，但是发现不管是直接拖进来也好，还是链接引用，在md文件显示正常，但是不管是本地端hexo s,还是远程域名，博客页面端都无法显示图片，因为照片没有地址/链接，markdown调用的是本地文件夹</p><img src="C:\Users\12456\Pictures\微信图片_20200826185343.jpg" alt="微信图片_20200826185343" style="zoom: 25%;" />   <img style="border-radius: 0.3125em;    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);"     src="https://s3.ax1x.com/2020/11/11/BvM5kR.jpg" height=120/>  <p>因此，查找万能的Google，选用如下办法</p><h2 id="1-获得图片链接"><a href="#1-获得图片链接" class="headerlink" title="1. 获得图片链接"></a>1. 获得图片链接</h2><p>进入网站<a href="https://imgchr.com/%EF%BC%88%E6%97%A0%E9%9C%80%E6%A2%AF%E5%AD%90%EF%BC%8C%E5%85%8D%E8%B4%B9">https://imgchr.com/（无需梯子，免费</a>), 上传照片，获得链接</p><blockquote><img src="https://s3.ax1x.com/2020/11/11/BvtdnP.png" border="0" /></blockquote><h2 id="2-在markdown文档中插入图片链接"><a href="#2-在markdown文档中插入图片链接" class="headerlink" title="2. 在markdown文档中插入图片链接"></a>2. 在markdown文档中插入图片链接</h2><ul><li>直接复制链接（第二行/第四行）粘贴到文档里时注意删掉    href的&lt;&gt; / 后面括号()里的链接    ，不然点图片是进入链接，不是放大</li></ul><ul><li><h4 id="简单点（顺便居中）（中间链接是URL）："><a href="#简单点（顺便居中）（中间链接是URL）：" class="headerlink" title="简单点（顺便居中）（中间链接是URL）："></a><strong>简单点（顺便居中）（中间链接是URL）</strong>：</h4></li></ul><pre><code class="hljs django"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">center</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://s3.ax1x.com/2020/11/11/BvtQ0K.jpg&quot;</span>  &lt;/<span class="hljs-attr">center</span>&gt;</span></span></code></pre><p>好像markdown插入的图片在网页上不能缩放，但是html插入的可以，后续再查查</p><h2 id="3-HTML格式小tips："><a href="#3-HTML格式小tips：" class="headerlink" title="3. HTML格式小tips："></a>3. HTML格式小tips：</h2><h4 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h4><ul><li><p>给图片添加注释，居中，一点小渲染</p><p>在markdown中插入如下html代码</p></li></ul><pre><code class="hljs yaml"><span class="hljs-string">&lt;center&gt;</span>    <span class="hljs-string">&lt;img</span> <span class="hljs-string">style=&quot;border-radius:</span> <span class="hljs-number">0.</span><span class="hljs-string">3125em;</span>    <span class="hljs-attr">box-shadow:</span> <span class="hljs-number">0</span> <span class="hljs-string">2px</span> <span class="hljs-string">4px</span> <span class="hljs-number">0</span> <span class="hljs-string">rgba(34,36,38,.12),0</span> <span class="hljs-string">2px</span> <span class="hljs-string">10px</span> <span class="hljs-number">0</span> <span class="hljs-string">rgba(34,36,38,.08);&quot;</span>     <span class="hljs-string">src=&quot;这里输入图片URL链接&quot;&gt;</span>    <span class="hljs-string">&lt;br&gt;</span>    <span class="hljs-string">&lt;div</span> <span class="hljs-string">style=&quot;color:orange;</span> <span class="hljs-attr">border-bottom:</span> <span class="hljs-string">1px</span> <span class="hljs-string">solid</span> <span class="hljs-comment">#d9d9d9;</span>    <span class="hljs-attr">display:</span> <span class="hljs-string">inline-block;</span>    <span class="hljs-attr">color:</span> <span class="hljs-comment">#999;</span>    <span class="hljs-attr">padding:</span> <span class="hljs-string">2px;&quot;&gt;这里输入注释&lt;/div&gt;</span><span class="hljs-string">&lt;/center&gt;</span></code></pre><h4 id="缩放"><a href="#缩放" class="headerlink" title="缩放"></a>缩放</h4><ul><li>html图片在markdown中无缩放选项，需利用html代码来实现，详情见<a href="https://www.w3school.com.cn/tags/att_img_height-width.asp">html教程</a></li><li><strong>简单点</strong>：<strong>在img标签里面只设置宽，不设置高，图片就会等比例缩放。</strong>)(好像改变height/width效果一样的)</li></ul><hr><p>完事</p><center>    <img style="border-radius: 0.3125em;    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);"     src="https://s3.ax1x.com/2020/11/11/BvtQ0K.jpg"> </center>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>博客</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>如何搭建个人博客</title>
     <link href="/2020/11/07/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/"/>
     <url>/2020/11/07/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</url>
