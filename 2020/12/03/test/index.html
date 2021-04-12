@@ -19,7 +19,7 @@
   <meta name="description" content="gulugulu">
   <meta name="author" content="luom">
   <meta name="keywords" content="">
-  <title>hexo博客如何插入图片 - BOO!</title>
+  <title>test - BOO!</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
 
@@ -164,7 +164,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="hexo博客如何插入图片">
+            <span class="h2" id="subtitle" title="test">
               
             </span>
 
@@ -174,8 +174,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2020-11-11 19:56" pubdate>
-        2020年11月11日 晚上
+      <time datetime="2020-12-03 15:46" pubdate>
+        2020年12月3日 下午
       </time>
     </span>
   
@@ -186,7 +186,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      700 字
+      6 字
     </span>
   
 
@@ -196,7 +196,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      8
+      1
        分钟
     </span>
   
@@ -234,125 +234,31 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">hexo博客如何插入图片</h1>
+            <h1 style="display: none">test</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2020年11月22日 下午
+                  本文最后更新于：2020年12月3日 晚上
                 
               </p>
             
             <div class="markdown-body">
-              <h1 id="hexo博客如何插入图片"><a href="#hexo博客如何插入图片" class="headerlink" title="hexo博客如何插入图片"></a>hexo博客如何插入图片</h1><p>在直白的文章中，图片总是点睛之笔的</p>
-<p>用markdow写的博客，想插入些图片，但是发现不管是直接拖进来也好，还是链接引用，在md文件显示正常，但是不管是本地端hexo s,还是远程域名，博客页面端都无法显示图片，因为照片没有地址/链接，markdown调用的是本地文件夹</p>
-<img src="C:\Users\12456\Pictures\微信图片_20200826185343.jpg" srcset="/img/loading.gif" alt="微信图片_20200826185343" style="zoom: 25%;" />
+              <img src="/.io//12/03/test/nw.jpg" srcset="/img/loading.gif" class title="本地图片">
 
+<img src="/.io//12/03/test/nw.jpg" srcset="/img/loading.gif" class> 
 
+<p>/.io//12/03/test/nw.jpg</p>
+ 
 
+<img src="/.io//12/03/test/nw.jpg" srcset="/img/loading.gif" class title="img test">
 
-
-
-
-   <img style="border-radius: 0.3125em;    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);"     src="https://s3.ax1x.com/2020/11/11/BvM5kR.jpg" srcset="/img/loading.gif" height=120/>  
-
-<p>因此，查找万能的Google，选用如下办法</p>
-<h2 id="1-获得图片链接"><a href="#1-获得图片链接" class="headerlink" title="1. 获得图片链接"></a>1. 获得图片链接</h2><p>进入网站<a target="_blank" rel="noopener" href="https://imgchr.com/%EF%BC%88%E6%97%A0%E9%9C%80%E6%A2%AF%E5%AD%90%EF%BC%8C%E5%85%8D%E8%B4%B9">https://imgchr.com/（无需梯子，免费</a>), 上传照片，获得链接</p>
-<blockquote>
-<img src="https://s3.ax1x.com/2020/11/11/BvtdnP.png" srcset="/img/loading.gif" border="0" />
-</blockquote>
-<h2 id="2-在markdown文档中插入图片链接"><a href="#2-在markdown文档中插入图片链接" class="headerlink" title="2. 在markdown文档中插入图片链接"></a>2. 在markdown文档中插入图片链接</h2><ul>
-<li>直接复制链接（第二行/第四行）粘贴到文档里时注意删掉    href的&lt;&gt; / 后面括号()里的链接    ，不然点图片是进入链接，不是放大</li>
-</ul>
-<ul>
-<li><h4 id="简单点（顺便居中）（中间链接是URL）："><a href="#简单点（顺便居中）（中间链接是URL）：" class="headerlink" title="简单点（顺便居中）（中间链接是URL）："></a><strong>简单点（顺便居中）（中间链接是URL）</strong>：</h4></li>
-</ul>
-<pre><code class="hljs django"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">center</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://s3.ax1x.com/2020/11/11/BvtQ0K.jpg&quot;</span>  &lt;/<span class="hljs-attr">center</span>&gt;</span></span></code></pre>
-
-<p>好像markdown插入的图片在网页上不能缩放，但是html插入的可以，后续再查查</p>
-<h2 id="3-HTML格式小tips："><a href="#3-HTML格式小tips：" class="headerlink" title="3. HTML格式小tips："></a>3. HTML格式小tips：</h2><h3 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h3><ul>
-<li><p>给图片添加注释，居中，一点小渲染</p>
-<p>在markdown中插入如下html代码</p>
-</li>
-</ul>
-<pre><code class="hljs yaml"><span class="hljs-string">&lt;center&gt;</span>
-    <span class="hljs-string">&lt;img</span> <span class="hljs-string">style=&quot;border-radius:</span> <span class="hljs-number">0.</span><span class="hljs-string">3125em;</span>
-    <span class="hljs-attr">box-shadow:</span> <span class="hljs-number">0</span> <span class="hljs-string">2px</span> <span class="hljs-string">4px</span> <span class="hljs-number">0</span> <span class="hljs-string">rgba(34,36,38,.12),0</span> <span class="hljs-string">2px</span> <span class="hljs-string">10px</span> <span class="hljs-number">0</span> <span class="hljs-string">rgba(34,36,38,.08);&quot;</span> 
-    <span class="hljs-string">src=&quot;这里输入图片URL链接&quot;&gt;</span>
-    <span class="hljs-string">&lt;br&gt;</span>
-    <span class="hljs-string">&lt;div</span> <span class="hljs-string">style=&quot;color:orange;</span> <span class="hljs-attr">border-bottom:</span> <span class="hljs-string">1px</span> <span class="hljs-string">solid</span> <span class="hljs-comment">#d9d9d9;</span>
-    <span class="hljs-attr">display:</span> <span class="hljs-string">inline-block;</span>
-    <span class="hljs-attr">color:</span> <span class="hljs-comment">#999;</span>
-    <span class="hljs-attr">padding:</span> <span class="hljs-string">2px;&quot;&gt;这里输入注释&lt;/div&gt;</span>
-<span class="hljs-string">&lt;/center&gt;</span>
-</code></pre>
-
-
-
-
-
-
-
-
-
-<h3 id="缩放"><a href="#缩放" class="headerlink" title="缩放"></a>缩放</h3><ul>
-<li>html图片在markdown中无缩放选项，需利用html代码来实现，详情见<a target="_blank" rel="noopener" href="https://www.w3school.com.cn/tags/att_img_height-width.asp">html教程</a></li>
-<li><strong>简单点</strong>：<strong>在img标签里面只设置宽，不设置高，图片就会等比例缩放。</strong>)(好像改变height/width效果一样的)</li>
-</ul>
-<h1 id="更新-转载他人的办法-不用图床法"><a href="#更新-转载他人的办法-不用图床法" class="headerlink" title="更新(转载他人的办法,不用图床法)"></a>更新(转载他人的办法,不用图床法)</h1><h3 id="方法一："><a href="#方法一：" class="headerlink" title="方法一："></a>方法一：</h3><p>(1)在hexo目录下，安装插件：</p>
-<pre><code class="hljs maxima">npm install hexo-asset-<span class="hljs-built_in">image</span> --<span class="hljs-built_in">save</span></code></pre>
-
-<p>(2)在hexo\source 目录下新建一个img文件夹，把图片放置在里面；<br>(3)在xxx.md文件中引用图片：</p>
-<pre><code class="hljs markdown">![<span class="hljs-string">header</span>](<span class="hljs-link"> img/header.jpg</span>)</code></pre>
-
-
-
-<h3 id="方法二："><a href="#方法二：" class="headerlink" title="方法二："></a>方法二：</h3><p>(1)在全局配置文件（<code>hexo/config.yml</code>)中:</p>
-<pre><code class="hljs yaml"><span class="hljs-attr">post_asset_folder:</span> <span class="hljs-literal">true</span></code></pre>
-
-<p>做了这个修改的效果是，<br>新建文章post时，会自动生成和文章名相同的文件夹。<br>这个文件夹存放当前文章所用图片的地方。</p>
-<p>以 <code>$ hexo new &quot;文章&quot;</code> 为例，结构如下：</p>
-<pre><code class="hljs css">文章
-├── <span class="hljs-selector-tag">picture1</span><span class="hljs-selector-class">.jpg</span>
-├── <span class="hljs-selector-tag">picture2</span><span class="hljs-selector-class">.jpg</span>
-└── <span class="hljs-selector-tag">picture3</span><span class="hljs-selector-class">.jpg</span>
-文章<span class="hljs-selector-class">.md</span></code></pre>
-
-
-
-<p>(2)创建文章（在创建的时候，会在hexo/source/_post目录下，生成一个XXX.md文件和一个XXX的文件夹）：</p>
-<pre><code class="hljs actionscript">hexo <span class="hljs-keyword">new</span> <span class="hljs-string">&quot;XXX&quot;</span></code></pre>
-
-<p>(3)把XXX这个博文需要展示的图片放在XXX文件夹目录下；<br>(4)在XXX.md文件中引入图片的方式：</p>
-<pre><code class="hljs maxima">&#123;<span class="hljs-symbol">%</span> asset_img <span class="hljs-built_in">example</span>.jpg This <span class="hljs-built_in">is</span> an <span class="hljs-built_in">example</span> <span class="hljs-built_in">image</span> <span class="hljs-symbol">%</span>&#125;</code></pre>
-
-<hr>
-<p>完事</p>
-<center>
-    <img style="border-radius: 0.3125em;
-    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
-    src="https://s3.ax1x.com/2020/11/11/BvtQ0K.jpg" srcset="/img/loading.gif"> 
-</center>
-
-
+<p><img src="/.io//img/1.png" srcset="/img/loading.gif" alt="direct"></p>
+<img src="/.io//12/03/test/nw.jpg" srcset="/img/loading.gif" class title="avatar">
             </div>
             <hr>
             <div>
               <div class="post-metas mb-3">
                 
-                  <div class="post-meta mr-3">
-                    <i class="iconfont icon-category"></i>
-                    
-                      <a class="hover-with-bg" href="/categories/%E5%8D%9A%E5%AE%A2/">博客</a>
-                    
-                  </div>
-                
-                
-                  <div class="post-meta">
-                    <i class="iconfont icon-tags"></i>
-                    
-                      <a class="hover-with-bg" href="/tags/%E5%8D%9A%E5%AE%A2/">博客</a>
-                    
-                  </div>
                 
               </div>
               
@@ -363,18 +269,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/11/22/win10%E8%BD%AF%E4%BB%B6%E8%AE%BE%E7%BD%AE%E5%BC%80%E6%9C%BA%E5%90%AF%E5%8A%A8/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">win10软件设置开机启动</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/11/07/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/">
-                        <span class="hidden-mobile">如何搭建个人博客</span>
+                      <a href="/2020/12/03/CTF%E5%B0%8F%E8%AE%B0/">
+                        <span class="hidden-mobile">CTF学习小记</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
