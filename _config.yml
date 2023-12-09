@@ -107,5 +107,5 @@ theme: fluid
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
-  repo: https://github.com/luoman666/luoman666.github.io.git
+  repo: https://github.com/romanc9/romanc9.github.io.git
   branch: master
