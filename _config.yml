@@ -3,9 +3,9 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: BOO!
+title: RC9's blog
 subtitle: dududu
-description: gulugulu
+description: keep something
 keywords:
 author: luom
 language: zh-CN
@@ -13,7 +13,7 @@ timezone: Asia/Chongqing
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://example.com/child' and root as '/child/'
-url: http://luoman666.github.io
+url: http://romanc9.github.io
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
