@@ -1,7 +1,11 @@
-# title: win10软件设置开机启动
+---
+title: win10软件设置开机启动
 date: 2020-11-22 13:29:34
 tags: win10
 categories: 电脑
+---
+
+# title: win10软件设置开机启动
 
 ## 方法一：
 
