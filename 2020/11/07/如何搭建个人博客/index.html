@@ -1,0 +1,565 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="keep something">
+  <meta name="author" content="luom">
+  <meta name="keywords" content="">
+  <title>如何搭建个人博客 - RC9&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"romanc9.github.io","root":"/","version":"1.8.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"nC7Rtx8EoAwWlShCEwdRsumO-gzGzoHsz","app_key":"sqlnn9nfpy9eU5bkSY3Rpkyb","server_url":"https://nc7rtx8e.lc-cn-n1-shared.com"}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>RomanCeblog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/post.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="如何搭建个人博客">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-11-07 22:17" pubdate>
+        2020年11月7日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      14
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- LeanCloud 统计文章PV -->
+      <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="leancloud-page-views"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">如何搭建个人博客</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2023年12月9日 晚上
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="如何搭建个人博客"><a href="#如何搭建个人博客" class="headerlink" title="如何搭建个人博客"></a>如何搭建个人博客</h1><p>2020-11-07 21:21:33</p>
+<center>    <img style="border-radius: 0.3125em;    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" src="https://s1.ax1x.com/2020/11/11/BvAsW4.png" srcset="/img/loading.gif">    <br>    <div style="color:orange; border-bottom: 1px solid #d9d9d9;    display: inline-block;    color: #999;    padding: 2px;">博客界面示例</div> </center>
+
+<h2 id="why博客？"><a href="#why博客？" class="headerlink" title="why博客？"></a>why博客？</h2><ul>
+<li>想先说一下这个古老的东西“博客”，有人说博客已经过时了，现在大多数人都用手机看朋友圈、微博等。是的，但是每当从google或者百度上找到一篇优质的资料我发现是出自个人博客的概率很大。</li>
+<li>曾经问过一个大佬在学习上又没有什么习惯或者技巧，他说“我每当解决一个问题之后都会总结并记录下来”。是的自己也深有体会，每次google半天解决的问题，不做记录的话过一段时间再遇到一样会去google半天去找，可能这就是平常人与大佬们的区别吧。</li>
+<li>最后用在一个个人博客上看到的一句话来开始这篇文章“对任何渴望进步的人来说，写博客/文章/回答对自己的成长帮助都是巨大的。频率和数量不必过分强求，有话要说就写写，没事就歇歇，随意点。<u><em>因为坚持写作的那一刻起，你就已经开始受益。</em></u></li>
+</ul>
+<h2 id="wordpress和hexo哪个更适合用来搭建个人博客？"><a href="#wordpress和hexo哪个更适合用来搭建个人博客？" class="headerlink" title="wordpress和hexo哪个更适合用来搭建个人博客？"></a>wordpress和hexo哪个更适合用来搭建个人博客？</h2><p>目前搭建独立的个人博客有很多种方式，你可以选择购买主机搭建动态博客 - <a target="_blank" rel="noopener" href="https://zh-cn.wordpress.com/">WordPress</a>等，也可以使用Github Pages来搭建一个静态的个人博客。</p>
+<h3 id="WordPress-获得个人网站域名来搭建个人博客"><a href="#WordPress-获得个人网站域名来搭建个人博客" class="headerlink" title="WordPress:获得个人网站域名来搭建个人博客"></a>WordPress:获得个人网站域名来搭建个人博客</h3><ul>
+<li>域名是网站的入口，也是网站的第一印象，比如饿了么的官网的域名是：<a target="_blank" rel="noopener" href="https://www.ele.me/">https://www.ele.me/</a> ，很是巧妙。常见的有com,cn,net,org等后缀，也有小众的xyz,me,io等后缀，域名是可以购买的，根据你自己的喜好，选择不同的后缀。很多小众奇特的后缀在大陆是没办法备案的，网站也就无法上线。然而使用GitHub托管我们的网站，完全不需要备案，因为托管我们的网站内容的服务器在美国，而且在国内备案流程也比较繁杂，时间需要一周左右。<br>申请域名的地方有很多，域名购买是要花钱的，热门网站：<a target="_blank" rel="noopener" href="https://cn.aliyun.com/">阿里云</a><br>如果你已经有了空闲域名就无需购买，直接使用即可。<br>ps:注册一个Github账号，申请学生包可以获得一个免费的顶级域名</li>
+</ul>
+<h3 id="使用-GitHub-Pages-服务搭建博客："><a href="#使用-GitHub-Pages-服务搭建博客：" class="headerlink" title="使用 GitHub Pages 服务搭建博客："></a><strong>使用 GitHub Pages 服务搭建博客：</strong></h3><ol>
+<li>全是静态文件，访问速度快；</li>
+<li>免费方便，不用花钱就可以搭建个人博客，不需要服务器不需要后台；</li>
+<li>可以随意绑定自己的域名；</li>
+<li>数据绝对安全，基于 GitHub 的版本管理，想恢复到哪个历史版本都行；</li>
+<li>博客内容可以轻松打包、转移、发布到其它平台；</li>
+<li>自己可以随性所欲的设计，美观大气上档次；</li>
+</ol>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h3><ul>
+<li><p>有服务器的选择 WP，写文章方便，适合搭好了之后给没有程序基础的人使用。<br>没服务器的，喜欢简洁的使用 Hexo。可以折腾，而且也优雅。</p>
+</li>
+<li><p>我选择了现在很热门的Github Pages + Hexo 的方式来搭建独立的个人博客。<br>wordpress如何搭建见 <a target="_blank" rel="noopener" href="https://www.zhihu.com/question/20463581">https://www.zhihu.com/question/20463581</a></p>
+</li>
+</ul>
+<hr>
+<h2 id="用hexo搭建博客大致流程"><a href="#用hexo搭建博客大致流程" class="headerlink" title="用hexo搭建博客大致流程"></a>用hexo搭建博客大致流程</h2><ol>
+<li>有一个 GitHub 账号，没有的话去注册一个；</li>
+<li>安装 node.js、npm，并了解相关基础知识；</li>
+<li>安装 git for windows（或者其它 git 客户端）；</li>
+</ol>
+<h3 id="一-注册GitHub账号"><a href="#一-注册GitHub账号" class="headerlink" title="一 . 注册GitHub账号"></a>一 . 注册GitHub账号</h3><ul>
+<li>进入GitHub官网<a href="github.com/">github.com</a>，新用户注册，<strong>记住</strong>注册的账号名和邮箱，后面会用到。</li>
+<li>ps: 如果是学生，还可以获得GitHub提供的丰厚学生包</li>
+</ul>
+<h4 id="GitHub学生包申请（最好申请）"><a href="#GitHub学生包申请（最好申请）" class="headerlink" title="GitHub学生包申请（最好申请）"></a>GitHub学生包申请（最好申请）</h4><center>    <img style="border-radius: 0.3125em;    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" src="https://s3.ax1x.com/2020/11/11/BvZuLR.png" srcset="/img/loading.gif">    <br>    <div style="color:orange; border-bottom: 1px solid #d9d9d9;    display: inline-block;    color: #999;    padding: 2px;">GitHub学生包</div> </center>
+
+
+
+<ul>
+<li><p>为什么要申请GitHub学生包</p>
+<p>Github 学生包包含很多开发者工具，比较吸引的是 DigitalOcean 的 50美元 代金券和 NameCheap 的免费 .me 域名和 Comodo 的 SSL 证书,免费薅羊毛不要白不要</p>
+</li>
+<li><p>申请条件</p>
+<p>年龄大于 13 岁并正在进行可能被授予学位或学历的课程，意味着你从初中开始就可以申请学生包了。你只需要一个学校提供的电子邮箱地址，或有效的学生证件或是任何官方入学证明。</p>
+</li>
+<li><p>申请教程</p>
+<p>这里不多阐述，可以在网上随意的找到，附上一个CSDN里的教程：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_36667170/article/details/79084166">Github学生包申请</a></p>
+</li>
+</ul>
+<h3 id="二-GitHub创建一个仓库"><a href="#二-GitHub创建一个仓库" class="headerlink" title="二 . GitHub创建一个仓库"></a>二 . GitHub创建一个仓库</h3><ul>
+<li>登录完成之后，在你的主页点击图标 Start a project 创建一个新的仓库，或者右上角的+ New repository来新建仓库</li>
+</ul>
+<blockquote>
+<center>    <img style="border-radius: 0.3125em;    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" src="https://s1.ax1x.com/2020/11/11/BjzgsO.png" srcset="/img/loading.gif">    <br>    <div style="color:orange; border-bottom: 1px solid #d9d9d9;    display: inline-block;    color: #999;    padding: 2px;">创建仓库</div> </center>
+</blockquote>
+<ul>
+<li>因为我们是使用 Github Pages 去搭建我们的静态博客，所以版本库的名称是 <strong>你的用户名+.github.io</strong>。<br>如：我的用户名是：luoman666，那么仓库的名字应该是： luoman666.github.io ，<strong>这个是一定不能出错的</strong>。因为之后你将要访问的你的博客地址就是： <a target="_blank" rel="noopener" href="https://luoman666.github.io/">https://luoman666.github.io</a> ,这个就是你博客的域名</li>
+</ul>
+<blockquote>
+<center>    <img style="border-radius: 0.3125em;    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" src="https://s1.ax1x.com/2020/11/11/BvC7NQ.jpg" srcset="/img/loading.gif">    <br>    <div style="color:orange; border-bottom: 1px solid #d9d9d9;    display: inline-block;    color: #999;    padding: 2px;">因为我创建过，所以这里是警告⚠</div> </center>
+</blockquote>
+<h2 id="未完待续……-（溜掉嘿嘿）"><a href="#未完待续……-（溜掉嘿嘿）" class="headerlink" title="未完待续……..（溜掉嘿嘿）"></a>未完待续……..（溜掉嘿嘿）</h2>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%8D%9A%E5%AE%A2/">博客</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%8D%9A%E5%AE%A2/">博客</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/11/11/hexo%E5%8D%9A%E5%AE%A2%E5%A6%82%E4%BD%95%E6%8F%92%E5%85%A5%E5%9B%BE%E7%89%87/hexo%E5%8D%9A%E5%AE%A2%E5%A6%82%E4%BD%95%E6%8F%92%E5%85%A5%E5%9B%BE%E7%89%87/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">hexo博客如何插入图片</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/11/05/%E6%B5%8B%E8%AF%95%E6%96%87%E7%AB%A0/">
+                        <span class="hidden-mobile">测试文章</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Luoman</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":200})
+    NProgress.start()
+    document.addEventListener('DOMContentLoaded', function() {
+      window.NProgress && window.NProgress.inc();
+    })
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.12.0/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>
