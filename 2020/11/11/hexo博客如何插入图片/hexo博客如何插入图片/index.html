@@ -186,7 +186,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      665 字
+      661 字
     </span>
   
 
@@ -243,39 +243,32 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="hexo博客如何插入图片"><a href="#hexo博客如何插入图片" class="headerlink" title="hexo博客如何插入图片"></a>hexo博客如何插入图片</h1><p>在直白的文章中，图片总是点睛之笔的</p>
-<p>用markdow写的博客，想插入些图片，但是发现不管是直接拖进来也好，还是链接引用，在md文件显示正常，但是不管是本地端hexo s,还是远程域名，博客页面端都无法显示图片，因为照片没有地址/链接，markdown调用的是本地文件夹</p>
-<img src="/.io//Users\12456\Pictures\微信图片_20200826185343.jpg" srcset="/img/loading.gif" alt="微信图片_20200826185343" style="zoom: 25%;">
-
-
-
-
-
-
-
-   <img style="border-radius: 0.3125em;    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" src="https://s3.ax1x.com/2020/11/11/BvM5kR.jpg" srcset="/img/loading.gif" height="120/">  
-
+              <h1 id="hexo博客如何插入图片">hexo博客如何插入图片</h1>
+<p>在直白的文章中，图片总是点睛之笔的</p>
+<p>用markdow写的博客，想插入些图片，但是发现不管是直接拖进来也好，还是链接引用，在md文件显示正常，但是不管是本地端hexo
+s,还是远程域名，博客页面端都无法显示图片，因为照片没有地址/链接，markdown调用的是本地文件夹</p>
+<p><img src="/.io//Users\12456\Pictures\微信图片_20200826185343.jpg" srcset="/img/loading.gif" alt="微信图片_20200826185343" style="zoom: 25%;"></p>
+<p><img style="border-radius: 0.3125em;    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" src="https://s3.ax1x.com/2020/11/11/BvM5kR.jpg" srcset="/img/loading.gif" height="120/"></p>
 <p>因此，查找万能的Google，选用如下办法</p>
-<h2 id="1-利用图床获得图片链接"><a href="#1-利用图床获得图片链接" class="headerlink" title="1. 利用图床获得图片链接"></a>1. 利用图床获得图片链接</h2><p>进入网站<a target="_blank" rel="noopener" href="https://imgchr.com/%EF%BC%88%E6%97%A0%E9%9C%80%E6%A2%AF%E5%AD%90%EF%BC%8C%E5%85%8D%E8%B4%B9">https://imgchr.com/（无需梯子，免费</a>), 上传照片，获得链接</p>
+<h2 id="利用图床获得图片链接">1. 利用图床获得图片链接</h2>
+<p>进入网站https://imgchr.com/（无需梯子，免费), 上传照片，获得链接</p>
 <blockquote>
-<img src="https://s3.ax1x.com/2020/11/11/BvtdnP.png" srcset="/img/loading.gif" border="0">
+<p><img src="https://s3.ax1x.com/2020/11/11/BvtdnP.png" srcset="/img/loading.gif" border="0"></p>
 </blockquote>
-<h2 id="2-在markdown文档中插入图片链接"><a href="#2-在markdown文档中插入图片链接" class="headerlink" title="2. 在markdown文档中插入图片链接"></a>2. 在markdown文档中插入图片链接</h2><ul>
-<li>直接复制链接（第二行/第四行）粘贴到文档里时注意删掉    href的&lt;&gt; / 后面括号()里的链接    ，不然点图片是进入链接，不是放大</li>
-</ul>
+<h2 id="在markdown文档中插入图片链接">2.
+在markdown文档中插入图片链接</h2>
 <ul>
-<li><h4 id="简单点（中间链接是图片URL"><a href="#简单点（中间链接是图片URL" class="headerlink" title="简单点（中间链接是图片URL)"></a>简单点（中间链接是图片URL)</h4></li>
+<li><p>直接复制链接（第二行/第四行）粘贴到文档里时注意删掉
+href的&lt;&gt; / 后面括号()里的链接
+，不然点图片是进入链接，不是放大</p></li>
+<li><h4 id="简单点中间链接是图片url">简单点（中间链接是图片URL)</h4></li>
 </ul>
 <pre><code class="hljs text">&lt;img src=&quot;https://s3.ax1x.com/2020/11/11/BvtQ0K.jpg&quot;&gt;</code></pre>
-
-
-
-
-
-<h2 id="3-HTML格式小tips："><a href="#3-HTML格式小tips：" class="headerlink" title="3. HTML格式小tips："></a>3. HTML格式小tips：</h2><h3 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h3><ul>
+<h2 id="html格式小tips">3. HTML格式小tips：</h2>
+<h3 id="注释">注释</h3>
+<ul>
 <li><p>给图片添加注释，居中，一点小渲染</p>
-<p>在markdown中插入如下html代码</p>
-</li>
+<p>在markdown中插入如下html代码</p></li>
 </ul>
 <pre><code class="hljs yaml"><span class="hljs-string">&lt;center&gt;</span>
     <span class="hljs-string">&lt;img</span> <span class="hljs-string">style=&quot;border-radius:</span> <span class="hljs-number">0.</span><span class="hljs-string">3125em;</span>
@@ -288,58 +281,43 @@
     <span class="hljs-attr">padding:</span> <span class="hljs-string">2px;&quot;&gt;这里输入注释&lt;/div&gt;</span>
 <span class="hljs-string">&lt;/center&gt;</span>
 </code></pre>
-
-
-
-
-
-
-
-<h3 id="缩放"><a href="#缩放" class="headerlink" title="缩放"></a>缩放</h3><ul>
+<h3 id="缩放">缩放</h3>
+<ul>
 <li>html图片在markdown中无缩放选项，需利用html代码来实现，详情见<a target="_blank" rel="noopener" href="https://www.w3school.com.cn/tags/att_img_height-width.asp">html教程</a></li>
 <li><strong>简单点</strong>：<strong>在img标签里面只设置宽，不设置高，图片就会等比例缩放。</strong>)(好像改变height/width效果一样的)</li>
 </ul>
-<h1 id="更新-转载他人的办法-不用图床法"><a href="#更新-转载他人的办法-不用图床法" class="headerlink" title="更新(转载他人的办法,不用图床法)"></a>更新(转载他人的办法,不用图床法)</h1><h3 id="方法一："><a href="#方法一：" class="headerlink" title="方法一："></a>方法一：</h3><p>(1)在hexo目录下，安装插件：</p>
+<h1 id="更新转载他人的办法不用图床法">更新(转载他人的办法,不用图床法)</h1>
+<h3 id="方法一">方法一：</h3>
+<p>(1)在hexo目录下，安装插件：</p>
 <pre><code class="hljs text">npm install hexo-asset-image --save</code></pre>
-
-<p>(2)在hexo\source 目录下新建一个img文件夹，把图片放置在里面；<br>(3)在xxx.md文件中引用图片：</p>
+<p>(2)在hexo目录下新建一个img文件夹，把图片放置在里面；
+(3)在xxx.md文件中引用图片：</p>
 <pre><code class="hljs markdown">![<span class="hljs-string">header</span>](<span class="hljs-link"> img/header.jpg</span>)</code></pre>
-
 <p><img src="/.io//nw.jpg" srcset="/img/loading.gif" alt="nw"></p>
-<h3 id="方法二："><a href="#方法二：" class="headerlink" title="方法二："></a>方法二：</h3><p>(1)在全局配置文件（<code>hexo/config.yml</code>)中:</p>
+<h3 id="方法二">方法二：</h3>
+<p>(1)在全局配置文件（<code>hexo/config.yml</code>)中:</p>
 <pre><code class="hljs yaml"><span class="hljs-attr">post_asset_folder:</span> <span class="hljs-literal">true</span></code></pre>
-
-<p>做了这个修改的效果是，<br>新建文章post时，会自动生成和文章名相同的文件夹。<br>这个文件夹存放当前文章所用图片的地方。</p>
-<p>以 <code>$ hexo new &quot;文章&quot;</code> 为例，结构如下：</p>
+<p>做了这个修改的效果是，
+新建文章post时，会自动生成和文章名相同的文件夹。
+这个文件夹存放当前文章所用图片的地方。</p>
+<p>以 <code>$ hexo new "文章"</code> 为例，结构如下：</p>
 <pre><code class="hljs css">文章
 ├── <span class="hljs-selector-tag">picture1</span><span class="hljs-selector-class">.jpg</span>
 ├── <span class="hljs-selector-tag">picture2</span><span class="hljs-selector-class">.jpg</span>
 └── <span class="hljs-selector-tag">picture3</span><span class="hljs-selector-class">.jpg</span>
 文章<span class="hljs-selector-class">.md</span></code></pre>
-
-
-
 <p>(2)创建文章（在创建的时候，会在hexo/source/_post目录下，生成一个XXX.md文件和一个XXX的文件夹）：</p>
 <pre><code class="hljs actionscript">hexo <span class="hljs-keyword">new</span> <span class="hljs-string">&quot;XXX&quot;</span></code></pre>
-
-<p>(3)把XXX这个博文需要展示的图片放在XXX文件夹目录下；<br>(4)在XXX.md文件中<em>相对路径</em>引入图片的方式：</p>
+<p>(3)把XXX这个博文需要展示的图片放在XXX文件夹目录下；
+(4)在XXX.md文件中<em>相对路径</em>引入图片的方式：</p>
 <pre><code class="hljs text">![alt](test.jpg)</code></pre>
-
-
-
-<img src="/.io//nw.jpg" srcset="/img/loading.gif" alt="nw" style="zoom: 25%;">
-
-
-
-
-
+<p><img src="/.io//nw.jpg" srcset="/img/loading.gif" alt="nw" style="zoom: 25%;"></p>
 <hr>
 <p>完事</p>
 <center>
-    <img style="border-radius: 0.3125em;
-    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" src="https://s3.ax1x.com/2020/11/11/BvtQ0K.jpg" srcset="/img/loading.gif"> 
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" src="https://s3.ax1x.com/2020/11/11/BvtQ0K.jpg" srcset="/img/loading.gif">
 </center>
-
 
             </div>
             <hr>

