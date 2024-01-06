@@ -1,0 +1,919 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="keep something">
+  <meta name="author" content="luom">
+  <meta name="keywords" content="">
+  <title>网站架构知识点 - RC9&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"romanc9.github.io","root":"/","version":"1.8.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"nC7Rtx8EoAwWlShCEwdRsumO-gzGzoHsz","app_key":"sqlnn9nfpy9eU5bkSY3Rpkyb","server_url":"https://nc7rtx8e.lc-cn-n1-shared.com"}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Romanc9's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/post.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="网站架构知识点">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-11-25 20:38" pubdate>
+        2021年11月25日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      51
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- LeanCloud 统计文章PV -->
+      <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="leancloud-page-views"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">网站架构知识点</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2023年12月14日 下午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h2 id="参考">参考</h2>
+<ul>
+<li><p>mvc</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/wsybky/p/8638876.html">🔗博客园</a>、详解：https://www.awaimai.com/128.html</li>
+</ul></li>
+<li><p>笔记，https://mp.weixin.qq.com/s?__biz=Mzg5MDY2MTUyMA==&amp;mid=2247484899&amp;idx=1&amp;sn=88695ccf7c57ea43f45ae6dc6464de6d&amp;chksm=cfd87a1cf8aff30a2fe6812b27f19e07e4cedcdd08cef51720a0431f08f22e5f4fd896c15579&amp;scene=178&amp;cur_album_id=2058889256642707457#rd</p></li>
+<li><p>mac cms https://www.cnblogs.com/ichunqiu/p/9548754.html</p></li>
+</ul>
+<h2 id="知识点">知识点📂</h2>
+<ul>
+<li><p>MVC</p>
+<ul>
+<li><p>关键字</p>
+<ul>
+<li><p>搜索漏洞关键字</p></li>
+<li><p>但是注意对方可能自己写函数封装</p></li>
+</ul></li>
+<li><p>定点挖掘功能点</p>
+<ul>
+<li>从功能点出发，找功能点对应代码段，进行代码分析</li>
+</ul></li>
+<li><p>断点测试</p>
+<ul>
+<li>对访问页面进行断点测试——》执行过程前后顺序，对应的文件列表。。</li>
+</ul></li>
+</ul></li>
+<li><p>攻击⚔</p>
+<ul>
+<li><p>seay代码审计</p></li>
+<li><p>sql注入，搜索SELECT，有变量才有漏洞！，无变量就是写死的</p></li>
+<li><p>魔术引号绕过</p>
+<ul>
+<li><p>宽字节注入，二次注入（存进的数据是加上，使用数据【修改资料update】的时候产生注入）</p></li>
+<li><p>二次注入，找功能点，注册用户一类的</p></li>
+</ul></li>
+<li><p>文件上传</p>
+<ul>
+<li><p>直接检查后缀比mime靠谱</p></li>
+<li><p>xdebug断点调试能细分到各个php，而burp抓不到，它只抓网页请求，不管内部调用</p></li>
+<li><p>对先上传后验证的--》有漏洞，抓包改后缀即可上传php</p></li>
+</ul></li>
+<li><p>mvc与thinkphp</p>
+<ul>
+<li>一个是思想，一个基于此</li>
+</ul></li>
+<li><p>文件删除</p>
+<ul>
+<li><p>install.lock或访问install.lock.txt会提示重新安装，重新安装=》初始化</p></li>
+<li><p>对应函数unlink</p></li>
+</ul></li>
+<li><p>RCE</p>
+<ul>
+<li>eval,</li>
+</ul></li>
+<li><p>Metinfo-无框架-变量覆盖-自动审计或搜索</p></li>
+<li><p>用seay工具审计，双$$可能存在变量覆盖漏洞</p></li>
+<li><p>重点看配置文件：inc</p></li>
+<li><p>前端显示界面可能并不是index.php而是在default【模块文件夹】以某个文件如index.html
+被index.php包含，修改这个index.html前端就有变化</p></li>
+<li><p>变量名=【get/post/cookie】参数名时，实现变量覆盖，$request==a
+$<span class="math inline">\(request==\)</span>a<img src="https://api2.mubu.com/v3/document_image/17bc0b1a-e51b-4f53-9a90-320efe4616c7-11812322.jpg" srcset="/img/loading.gif" alt="img"></p></li>
+<li><p>配合文件包含进行攻击，控制$file进行攻击
+，上传图片马，file指向图片马√<img src="https://api2.mubu.com/v3/document_image/77de218a-c646-4601-98b3-d34cb43f24e7-11812322.jpg" srcset="/img/loading.gif" alt="img"></p></li>
+<li><p>包含漏洞条件</p>
+<ul>
+<li><p>需要有包含函数+包含的是变量【可控】，而不是固定的字符串【不能更改】</p></li>
+<li><p>满足用到了（包含了）那个变量覆盖的配置文件</p>
+<ul>
+<li>1包含2，2包含3 可以说 1包含3</li>
+</ul></li>
+</ul></li>
+<li><p>变量覆盖还可以和sql注入搭配使用</p></li>
+<li><p>phpmydmin-无框架-反序列化-自动审计或搜索</p>
+<ul>
+<li><p>phpmyadmin插件==》管理自己的数据库</p></li>
+<li></li>
+</ul></li>
+<li><p>TP5知识点</p>
+<ul>
+<li><p>入口文件：即访问网站的文件（首页文件 ）：application.php</p>
+<ul>
+<li>但这是对应的功能文件，若是找美观/页面==》view下对应的html</li>
+</ul></li>
+<li><p>对应用的所有请求都定向到应用的入口文件<img src="https://api2.mubu.com/v3/document_image/f92d82e7-e191-458c-84c3-13f51e0dff50-11812322.jpg" srcset="/img/loading.gif" alt="img"></p></li>
+<li><p>模块：application目录下的，控制器：controller下的，操作==函数（controller下的文件里的函数）、<img src="https://api2.mubu.com/v3/document_image/ba9f2e3a-283f-4623-b7d6-0389278517f0-11812322.jpg" srcset="/img/loading.gif" alt="img"></p></li>
+<li><p>如何访问参数？</p>
+<ul>
+<li>xiaodi/i/1或者？i=1<img src="https://api2.mubu.com/v3/document_image/9d390437-e246-4169-8249-d19c66699f3a-11812322.jpg" srcset="/img/loading.gif" alt="img"></li>
+</ul></li>
+<li><p>TP5 自带的mysql写法有过滤，内置安全 ==》【TP 历史漏洞 绕过
+过滤】</p></li>
+<li><p>一般入口文件/index.php/可加可不加</p>
+<ul>
+<li>入口文件在public/index.php</li>
+</ul></li>
+<li><p>tp5手册</p></li>
+</ul></li>
+</ul></li>
+<li><p>包含：include==代码包含进去，把任意代码当成php执行，可以任意格式文件</p>
+<ul>
+<li>无需eval（include）,include就能执行包含文件的代码</li>
+</ul></li>
+</ul>
+<h3 id="mvc框架">MVC框架</h3>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/wsybky/p/8638876.html">博客园</a></p>
+</blockquote>
+<h4 id="mvc各部分的职能">MVC各部分的职能：</h4>
+<ul>
+<li>模型Model –
+管理大部分的业务逻辑和所有的数据库逻辑。模型提供了连接和操作数据库的抽象层。</li>
+<li>控制器Controller -
+负责响应用户请求、准备数据，以及决定如何展示数据。</li>
+<li>视图View – 负责渲染数据，通过HTML方式呈现给用户。</li>
+</ul>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/img/web_mvc.gif" srcset="/img/loading.gif" alt="MVC流程图"></p>
+<p>一个典型的Web MVC流程：</p>
+<ol type="1">
+<li>Controller截获用户发出的请求；</li>
+<li>Controller调用Model完成状态的读写操作；</li>
+<li>Controller把数据传递给View；</li>
+<li>View渲染最终结果并呈献给用户。</li>
+</ol>
+<p><strong>大致总结：controller根据请求调用model数据用view呈现出来</strong></p>
+<h4 id="mvc框架目录结构">MVC框架目录结构</h4>
+<pre><code class="hljs awk">project                 WEB部署根目录
+├─app                   应用目录
+│  ├─controllers        控制器目录
+│  ├─models             模块目录
+│  ├─views              视图目录   <span class="hljs-regexp">//</span>例如页头页脚文件+各种要显示功能的文件
+├─config                配置文件目录  <span class="hljs-regexp">//</span>数据库连接参数
+├─fastphp               框架核心目录
+│ ├─base                MVC基类/模板目录，数据库增删修改模板在此\db\sql.php
+│ ├─db                  数据库操作类目录
+│ ├─Fastphp.php         内核文件  <span class="hljs-regexp">//</span>规定了路由
+├─static                静态文件目录
+├─index.php             入口文件</code></pre>
+<h4 id="mvc核心文件">MVC核心文件</h4>
+<h5 id="入口文件index.php">入口文件index.php</h5>
+<pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+<span class="hljs-comment">// 应用目录为当前目录</span>
+define(<span class="hljs-string">&#x27;APP_PATH&#x27;</span>, <span class="hljs-keyword">__DIR__</span> . <span class="hljs-string">&#x27;/&#x27;</span>);
+
+<span class="hljs-comment">// 开启调试模式</span>
+define(<span class="hljs-string">&#x27;APP_DEBUG&#x27;</span>, <span class="hljs-literal">true</span>);
+
+<span class="hljs-comment">// 加载框架文件</span>
+<span class="hljs-keyword">require</span>(APP_PATH . <span class="hljs-string">&#x27;fastphp/Fastphp.php&#x27;</span>);
+
+<span class="hljs-comment">// 加载配置文件</span>
+$config = <span class="hljs-keyword">require</span>(APP_PATH . <span class="hljs-string">&#x27;config/config.php&#x27;</span>);
+
+<span class="hljs-comment">// 实例化框架类</span>
+(<span class="hljs-keyword">new</span> fastphp\Fastphp($config))-&gt;run();</code></pre>
+<p><code>DIR</code> 是PHP的魔术常量，表示当前目录的绝对路径</p>
+<h5 id="配置文件config.php">配置文件config.php</h5>
+<p><strong>作用是定义数据库连接参数参数，以及配置默认控制器名和操作名：</strong></p>
+<pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+
+<span class="hljs-comment">// 数据库配置</span>
+$config[<span class="hljs-string">&#x27;db&#x27;</span>][<span class="hljs-string">&#x27;host&#x27;</span>] = <span class="hljs-string">&#x27;localhost&#x27;</span>;
+$config[<span class="hljs-string">&#x27;db&#x27;</span>][<span class="hljs-string">&#x27;username&#x27;</span>] = <span class="hljs-string">&#x27;root&#x27;</span>;
+$config[<span class="hljs-string">&#x27;db&#x27;</span>][<span class="hljs-string">&#x27;password&#x27;</span>] = <span class="hljs-string">&#x27;123456&#x27;</span>;
+$config[<span class="hljs-string">&#x27;db&#x27;</span>][<span class="hljs-string">&#x27;dbname&#x27;</span>] = <span class="hljs-string">&#x27;project&#x27;</span>;
+
+<span class="hljs-comment">// 默认控制器和操作名</span>
+$config[<span class="hljs-string">&#x27;defaultController&#x27;</span>] = <span class="hljs-string">&#x27;Item&#x27;</span>;
+$config[<span class="hljs-string">&#x27;defaultAction&#x27;</span>] = <span class="hljs-string">&#x27;index&#x27;</span>;
+
+<span class="hljs-keyword">return</span> $config;</code></pre>
+<h5 id="核心框架文件fastphp.php">核心框架文件fastphp.php</h5>
+<p>核心代码：路由方法：</p>
+<pre><code class="hljs php"><span class="hljs-comment">// 路由处理</span>
+   <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">route</span>(<span class="hljs-params"></span>)</span>
+<span class="hljs-function">   </span>&#123;
+       $controllerName = <span class="hljs-keyword">$this</span>-&gt;config[<span class="hljs-string">&#x27;defaultController&#x27;</span>];
+       $actionName = <span class="hljs-keyword">$this</span>-&gt;config[<span class="hljs-string">&#x27;defaultAction&#x27;</span>];
+       $param = <span class="hljs-keyword">array</span>();
+
+       $url = $_SERVER[<span class="hljs-string">&#x27;REQUEST_URI&#x27;</span>];
+       <span class="hljs-comment">// 清除?之后的内容</span>
+       $position = strpos($url, <span class="hljs-string">&#x27;?&#x27;</span>);
+       $url = $position === <span class="hljs-literal">false</span> ? $url : substr($url, <span class="hljs-number">0</span>, $position);
+       <span class="hljs-comment">// 删除前后的“/”</span>
+       $url = trim($url, <span class="hljs-string">&#x27;/&#x27;</span>);
+
+       <span class="hljs-keyword">if</span> ($url) &#123;
+           <span class="hljs-comment">// 使用“/”分割字符串，并保存在数组中</span>
+           $urlArray = explode(<span class="hljs-string">&#x27;/&#x27;</span>, $url);
+           <span class="hljs-comment">// 删除空的数组元素</span>
+           $urlArray = array_filter($urlArray);
+           
+           <span class="hljs-comment">// 获取控制器名</span>
+           $controllerName = ucfirst($urlArray[<span class="hljs-number">0</span>]);
+           
+           <span class="hljs-comment">// 获取动作名</span>
+           array_shift($urlArray);
+           $actionName = $urlArray ? $urlArray[<span class="hljs-number">0</span>] : $actionName;
+           
+           <span class="hljs-comment">// 获取URL参数</span>
+           array_shift($urlArray);
+           $param = $urlArray ? $urlArray : <span class="hljs-keyword">array</span>();
+       &#125;
+
+       <span class="hljs-comment">// 判断控制器和操作是否存在</span>
+       $controller = <span class="hljs-string">&#x27;app\\controllers\\&#x27;</span>. $controllerName . <span class="hljs-string">&#x27;Controller&#x27;</span>;
+       <span class="hljs-keyword">if</span> (!class_exists($controller)) &#123;
+           <span class="hljs-keyword">exit</span>($controller . <span class="hljs-string">&#x27;控制器不存在&#x27;</span>);
+       &#125;
+       <span class="hljs-keyword">if</span> (!method_exists($controller, $actionName)) &#123;
+           <span class="hljs-keyword">exit</span>($actionName . <span class="hljs-string">&#x27;方法不存在&#x27;</span>);
+       &#125;
+
+       <span class="hljs-comment">// 如果控制器和操作名存在，则实例化控制器，因为控制器对象里面</span>
+       <span class="hljs-comment">// 还会用到控制器名和操作名，所以实例化的时候把他们俩的名称也</span>
+       <span class="hljs-comment">// 传进去。结合Controller基类一起看</span>
+       $dispatch = <span class="hljs-keyword">new</span> $controller($controllerName, $actionName);
+
+       <span class="hljs-comment">// $dispatch保存控制器实例化后的对象，我们就可以调用它的方法，</span>
+       <span class="hljs-comment">// 也可以像方法中传入参数，以下等同于：$dispatch-&gt;$actionName($param)</span>
+       call_user_func_array(<span class="hljs-keyword">array</span>($dispatch, $actionName), $param);
+   &#125;</code></pre>
+<h6 id="命名空间">命名空间</h6>
+<p>php文件开头的 <code>namespace AA;</code></p>
+<ul>
+<li>命名空间https://blog.csdn.net/zhanghuiqi205/article/details/84671608?utm_source=app&amp;app_version=4.17.0，其实就是对不同文件各种起名（函数名，对象名）的一块地方汇总，避免不知道哪个是哪个文件的</li>
+<li>命名空间也有根目录，没有命名空间的默认根目录下</li>
+<li>空间名我们可以任意的定义，但是如果命名更有意义呢？一般我们会以==类文件所在的文件夹为空间名==。其实主要的就是方便按照某种约定成俗的规则加载文件。==tp5规范命名空间其实对应了文件的所在目录==</li>
+</ul>
+<h6 id="路由方法">路由方法</h6>
+<p><strong>主要作用：截取URL，并解析出控制器名、方法名和URL参数。</strong></p>
+<p>假设我们的 URL 是这样：</p>
+<pre><code class="hljs awk">yoursite.com<span class="hljs-regexp">/controllerName/</span>actionName/queryString</code></pre>
+<p>当浏览器访问上面的URL，<code>route()</code>从全局变量
+<code>$_SERVER['REQUEST_URI']</code>中获取到字符串<code>/controllerName/actionName/queryString</code>。</p>
+<p>然后，会将这个字符串分割成三部分：<code>controllerName</code>、<code>actionName</code>
+和 <code>queryString</code>。</p>
+<p>例如，URL链接为：yoursite.com/item/detail/1/hello，那么<code>route()</code>分割之后，</p>
+<ul>
+<li>ControllerName名就是：item</li>
+<li>actionName名就是：detail</li>
+<li>URL参数就是：array(1, hello)</li>
+</ul>
+<p>分割完成后，路由方法再实例化控制器：<code>itemController</code>，并调用其中的<code>detail</code>方法
+。</p>
+<h3 id="tp5">TP5</h3>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.shouce.ren/api/view/a/15517">在线TP5完全手册</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.kancloud.cn/thinkphp/thinkphp5_quickstart/145249">快速入门</a></p>
+</blockquote>
+<p>==注意！
+默认情况下，URL地址中的控制器和操作名是不区分大小写的，因此下面的访问其实是等效的：/index/与/INDEX/==</p>
+<p>目录结构</p>
+<pre><code class="hljs ruby"><span class="hljs-params">|-application 应用目录（代码的主要编写区，几乎整个项目的内容都写在这里）</span>
+<span class="hljs-params">    |</span>-index（这里的文件夹tp5叫做模块-----一般是前台模块，也可以根据需要需求修改成其他（例如：home），需要修改配置文件，修改默认模块、控制器、操作）  【注】：TP5默认只有一个index文件（模块）和一个控制层（conrroller），我们在写代码的时候会自己新建一个model和view,这样就组成了这个Index模块儿的MVC(controller控制层，model模型层，view视图层),如需后台(一般来说都需要)，则需要新建一个后台模块(admin)
+        <span class="hljs-params">|-controller(控制层)</span>
+<span class="hljs-params">        |</span>-model(模型层)
+        <span class="hljs-params">|-view(视图层)</span>
+<span class="hljs-params">    |</span>-admin(后台模块)
+        <span class="hljs-params">|-controller(控制层)</span>
+<span class="hljs-params">        |</span>-model(模型层)
+        <span class="hljs-params">|-view(视图层)</span>
+<span class="hljs-params">    |</span>- command.php 是控制台的配置文件，当我们用命令行执行thinkphp的时候，它会读取command.php的配置
+    <span class="hljs-params">|- common.php 它是项目的公共文件，当我们编写一些通用函数的时候，比如我们写一个函数，想在所有的模块儿中都能调用，那么我们就可以把函数写在改文件中，它就可以注册到全局，在任何地方都可以调用</span>
+<span class="hljs-params">    |</span>- config.php 它是应用的配置文件，整个应用都读取这个配置，也就是admin模块儿和index模块儿会通用这个配置
+    <span class="hljs-params">|- database.php 它是数据库配置文件，如果我们需要连接数据库，那么我们只需要修改database.php的配置就可以了</span>
+<span class="hljs-params">    |</span>- route.php 它是路由文件，当我们想对URL进行美化，那么我们就可以修改此文件，对其增加一些路由配置，就可以达到美化的效果
+    <span class="hljs-params">|- tags.php 它是应用行为扩展文件，在thinkphp中，它为我们埋下了很多钩子，我们可以对框架进行扩展，而不需要修改框架本身的源码，我们需要在某一个钩子上注册某些函数，或者是注册某些行为，来通过行为来改变框架的执行流程     </span>
+<span class="hljs-params">|</span>-extend  扩展类库目录,这个目录是我们下载第三方库时候使用的，当然我们不是通过composer来下载的，比如说我们有一个第三方库，我们用着比较好用，但是它没有composer包，我们就可以将类库下载到extend目录，之后我们修改一下命名空间，就可以直接在我们的应用中使用
+<span class="hljs-params">|-publiic 我们网站（WEB）的根目录，也就是说我们网站根目录下所有的这些文件都是允许访问的</span>
+<span class="hljs-params">    |</span>-static 主要用来放静态文件，比如说css,js,图片等等
+    <span class="hljs-params">|-index.php 整个网站或整个应用的入口文件，所有的请求都会经过index.php之后再去转发</span>
+<span class="hljs-params">    |</span>-router.php 它是框架快速启动的测试文件，比如你本地没有安装Apache，只安装了PHP，那么我们可以同过，PHP内置的workserver来启动，通过这个文件，我们就可以启动这个框架
+<span class="hljs-params">|-runtime 它是网站运行中的缓存文件，它包括日志，缓存和编译文件等等。</span>
+<span class="hljs-params">|</span>-thinkphp 它是框架文件,也就是说thinkphp5的框架都在里边
+    <span class="hljs-params">|-lang 里边是语言包</span>
+<span class="hljs-params">    |</span>-library 目录是框架的核心，它里边有think(它是整个框架的核心文件)和traits(它是类库的扩展)两个目录
+        <span class="hljs-params">|-think Think 类库包目录</span>
+<span class="hljs-params">        |</span>-traits 系统 Traits 目录
+    <span class="hljs-params">|-tpl 是我们框架默认的一些模板（了解知识）</span>
+<span class="hljs-params">        |</span>-default_index.tpl 它是我们自动生成的控制器模板文件
+        <span class="hljs-params">|-dispatch_jump.tpl它是我们网站发出成功或失败的中间跳转文件</span>
+<span class="hljs-params">        |</span>-page_trace.tpl它是我们调试时显示的模板文件
+        <span class="hljs-params">|-think_exception.tpl它是我们抛出异常时页面展示的文件</span>
+<span class="hljs-params">    |</span>-base.php 定义一些常量
+    <span class="hljs-params">|-console.php 它是控制台的入口文件</span>
+<span class="hljs-params">    |</span>-convention.php 是框架惯例配置文件
+    <span class="hljs-params">|-help.php 助手函数</span>
+<span class="hljs-params">    |</span>-start.php是框架启动文件
+<span class="hljs-params">|-vendor 是composer安装过程中生成的目录，通过composer安装的所有类库都被安装在了这个目录中。</span></code></pre>
+<ul>
+<li>application</li>
+</ul>
+<p>application文件夹是TP5框架的应用层，是代码的主要编写区，你写的大部分工程代码都要在这里写，比如控制器层，服务层等</p>
+<ul>
+<li>public</li>
+</ul>
+<p>public就是TP5框架默认的最先读取文件夹，里面的index文件定义了应用目录路径和框架引导文件路径【<strong>public/index.php</strong>入口文件】，一些默认页面也在这里。</p>
+<blockquote>
+<p>入口文件位置的设计是为了让应用部署更安全，<code>public</code>目录为web可访问目录，其他的文件都可以放到非WEB访问目录下面。</p>
+</blockquote>
+<ul>
+<li>thinkphp</li>
+</ul>
+<p>thinkphp就是TP5的核心框架代码，里面就是TP5框架的第一方类库，支持整个TP5框架的运行规则。</p>
+<ul>
+<li>runtime</li>
+</ul>
+<p>runtime是用来存放一些写入文件的，比如说日志文件、缓存文件等等。</p>
+<ul>
+<li>extend</li>
+</ul>
+<p>extend是用来存放一些你自己下的第三方类库的，在此目录下的第三方类库的命名空间可以直接访问</p>
+<ul>
+<li>vendor</li>
+</ul>
+<p>vendor也是用来存放第三方类库的，和extend不一样的是，这个目录是存放通过composer命令来安装的第三方类库的默认路径</p>
+<h4 id="访问入口文件">访问入口文件</h4>
+<ol type="1">
+<li>入口文件：即访问网站的文件（首页文件
+）【但这是对应的功能文件，若是找美观/页面==》view下对应的html】</li>
+</ol>
+<p>​ 没有指定模块、控制器、操作的话，将会访问默认文件</p>
+<p>​
+如果我们直接访问入口文件的话，由于URL中没有模块、控制器和操作，因此系统会访问<strong>默认模块（index）下面的默认控制器（Index）的默认操作（index）</strong>，因此下面的访问是等效的：</p>
+<pre><code class="hljs awk">http:<span class="hljs-regexp">//</span>tp5.com/index.php
+http:<span class="hljs-regexp">//</span>tp5.com<span class="hljs-regexp">/index.php/i</span>ndex<span class="hljs-regexp">/index/i</span>ndex</code></pre>
+<ol start="2" type="1">
+<li><p>==对应用的所有请求都定向到应用的入口文件==</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/img/f92d82e7-e191-458c-84c3-13f51e0dff50-11812322.jpg" srcset="/img/loading.gif" alt="img"></p>
+<p>模块：application目录下的，控制器：controller下的，操作==函数（controller下的文件里的函数）function</p></li>
+</ol>
+<p>比如我们在 WWW.php下新建方法test</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/img/image-20211128151650319.png" srcset="/img/loading.gif" alt="image-20211128151650319"></p>
+<p>访问<code>http://localhost/tp5/public/index.php/index/index/test</code>【此时没有隐藏入口文件】</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/img/image-20211128151730333.png" srcset="/img/loading.gif" alt="image-20211128151730333"></p>
+<h4 id="隐藏入口文件">隐藏入口文件</h4>
+<p>原：http://localhost/tp5/public/index.php/index/index/hello</p>
+<p>修改/public/目录下.htaccess文件，phpstudy配置的话，修改倒数第二行为<code>RewriteRule ^(.*)$ index.php?s=$1 [QSA,PT,L]</code></p>
+<p>即可隐藏入口文件index.php，后直接访问http://localhost/tp5/public/index/index/hello即可</p>
+<h4 id="如何访问参数">如何访问参数？</h4>
+<p>​ 1. <code>方法/i/1</code>或者<code>方法？i=1</code></p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/img/9d390437-e246-4169-8249-d19c66699f3a-11812322.jpg" srcset="/img/loading.gif" alt="img"></p>
+<ol start="2" type="1">
+<li>多个参数？</li>
+</ol>
+<p>PATHINFO 模式是一种url访问方式：</p>
+<pre><code class="hljs awk">http:<span class="hljs-regexp">//</span>域名<span class="hljs-regexp">/项目名/</span>入口文件<span class="hljs-regexp">/模块名/</span>方法名<span class="hljs-regexp">/键1/</span>值<span class="hljs-number">1</span><span class="hljs-regexp">/键2/</span>值<span class="hljs-number">2</span></code></pre>
+<p>普通访问方式如下：</p>
+<pre><code class="hljs apache"><span class="hljs-attribute">http</span>://域名/项目名/入口文件?m=模块名&amp;a=方法名&amp;键<span class="hljs-number">1</span>=值<span class="hljs-number">1</span>&amp;键<span class="hljs-number">2</span>=值<span class="hljs-number">2</span></code></pre>
+<p>当开启了顺序绑定之后，不能使用普通方式访问。</p>
+<pre><code class="hljs awk"><span class="hljs-regexp">//</span> 按照参数顺序获取
+<span class="hljs-string">&#x27;url_param_type&#x27;</span> =&gt; <span class="hljs-number">1</span>,</code></pre>
+<p>eg：自动获取URL地址中的同名参数值作为方法的参数值，而且这个参数的传入顺序不受URL参数顺序的影响</p>
+<pre><code class="hljs awk">index.php<span class="hljs-regexp">/index/i</span>ndex<span class="hljs-regexp">/hello/</span>name<span class="hljs-regexp">/bob/</span>city/shanghai
+index.php<span class="hljs-regexp">/index/i</span>ndex<span class="hljs-regexp">/hello/</span>city<span class="hljs-regexp">/shanghai/</span>name/bob
+index.php<span class="hljs-regexp">/index/i</span>ndex/hello?city=shanghai&amp;name=bob</code></pre>
+<p>URL的参数传值方式就变成了严格按照操作方法的变量定义顺序来传值了，也就是说我们必须使用下面的URL地址访问才能正确传入<code>name</code>和<code>city</code>参数到<code>hello</code>方法</p>
+<pre><code class="hljs awk">http:<span class="hljs-regexp">//</span>tp5.com<span class="hljs-regexp">/index.php/i</span>ndex<span class="hljs-regexp">/index/</span>hello<span class="hljs-regexp">/bob/</span>shanghai
+此时hello<span class="hljs-regexp">/name/</span>thinkphp<span class="hljs-regexp">/city/</span>shanghai和？=都不行</code></pre>
+<h4 id="路由">路由</h4>
+<p>路由配置文件 <strong>application/route.php</strong></p>
+<p>路由配置的作用：URL地址里面的index模块怎么才能省略呢，默认的URL地址显得有点长，下面就来说说如何==通过路由简化URL访问==</p>
+<pre><code class="hljs awk">return [
+    <span class="hljs-regexp">//</span> 添加路由规则 路由到 index控制器的hello操作方法
+    <span class="hljs-string">&#x27;hello/:name&#x27;</span> =&gt; <span class="hljs-string">&#x27;index/index/hello&#x27;</span>,
+    <span class="hljs-regexp">//</span> 路由参数name为可选：
+    <span class="hljs-string">&#x27;hello/[:name]&#x27;</span> =&gt; <span class="hljs-string">&#x27;index/hello&#x27;</span>,
+    <span class="hljs-regexp">//</span>以$结尾的时候就表示当前路由规则需要完整匹配。<span class="hljs-regexp">/hello/</span>thinkphp <span class="hljs-regexp">//</span> 正确匹配，<span class="hljs-regexp">/hello/</span>thinkphp<span class="hljs-regexp">/val/</span>value <span class="hljs-regexp">//</span> 不会匹配
+    <span class="hljs-string">&#x27;hello/[:name]$&#x27;</span> =&gt; <span class="hljs-string">&#x27;index/hello&#x27;</span>,
+];</code></pre>
+<p>​
+该路由规则表示所有hello开头的并且带参数的访问都会路由到index控制器的hello操作方法。</p>
+<p>路由之前的URL访问地址为</p>
+<pre><code class="hljs awk">http:<span class="hljs-regexp">//</span>tp5.com<span class="hljs-regexp">/index/i</span>ndex<span class="hljs-regexp">/hello/</span>name/thinkphp</code></pre>
+<p>定义路由后就只能访问下面的URL地址，变量name值为thinkphp</p>
+<pre><code class="hljs awk">http:<span class="hljs-regexp">//</span>tp5.com<span class="hljs-regexp">/hello/</span>thinkphp</code></pre>
+<p>==⚠<strong>定义路由规则后，原来的URL地址将会失效，变成非法请求。</strong>==</p>
+<ul>
+<li>闭包定义</li>
+</ul>
+<p>还支持通过定义闭包为某些特殊的场景定义路由规则（大致意思就是路由匹配到这些就会执行函数），例如：</p>
+<pre><code class="hljs php"><span class="hljs-keyword">return</span> [
+    <span class="hljs-comment">// 定义闭包</span>
+    <span class="hljs-string">&#x27;hello/[:name]&#x27;</span> =&gt; <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">$name</span>) </span>&#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;Hello,&#x27;</span> . $name . <span class="hljs-string">&#x27;!&#x27;</span>;
+    &#125;,
+];
+或者：
+Route::rule(<span class="hljs-string">&#x27;hello/:name&#x27;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">$name</span>) </span>&#123;  <span class="hljs-comment">//参数$name就是url中定义的变量。</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;Hello,&#x27;</span> . $name . <span class="hljs-string">&#x27;!&#x27;</span>;
+&#125;);</code></pre>
+<p>因此，当访问http://tp5.com/hello/thinkphp 会输出 Hello,thinkphp!</p>
+<p>路由设置</p>
+<pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+
+<span class="hljs-keyword">namespace</span> <span class="hljs-title">app</span>\<span class="hljs-title">index</span>\<span class="hljs-title">controller</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Blog</span></span>
+<span class="hljs-class"></span>&#123;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">get</span>(<span class="hljs-params">$id</span>)</span>
+<span class="hljs-function">    </span>&#123;
+        <span class="hljs-keyword">return</span> ’查看id=‘ . $id . ’的内容‘;
+    &#125;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">read</span>(<span class="hljs-params">$name</span>)</span>
+<span class="hljs-function">    </span>&#123;
+        <span class="hljs-keyword">return</span> ’查看name=‘ . $name . ’的内容‘;
+    &#125;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">archive</span>(<span class="hljs-params">$year, $month</span>)</span>
+<span class="hljs-function">    </span>&#123;
+        <span class="hljs-keyword">return</span> ’查看‘ . $year . ’/‘ . $month . ’的归档内容‘;
+    &#125;
+&#125;</code></pre>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/CTF/">CTF</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">计算机基础</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/03/29/buu/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">BUUCTF web刷题记录 WP</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/10/09/python%E5%8F%91%E9%80%81request%E5%8C%85/">
+                        <span class="hidden-mobile">python发送request包&ctf</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/Romanc9" target="_blank" rel="nofollow noopener"><span>Luoman</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":200})
+    NProgress.start()
+    document.addEventListener('DOMContentLoaded', function() {
+      window.NProgress && window.NProgress.inc();
+    })
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.12.0/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

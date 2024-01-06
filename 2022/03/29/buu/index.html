@@ -238,7 +238,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2023年12月10日 晚上
+                  本文最后更新于：2024年1月4日 下午
                 
               </p>
             
@@ -1753,7 +1753,7 @@ image/jpeg、后缀也不行（估计有图片头检验）</p></li>
 <p>也就是说我们可以在.user.ini中设置php.ini中PHP_INI_PERDIR 和
 PHP_INI_USER 模式的 INI 设置，而且只要是在使用 CGI／FastCGI
 模式的服务器上都可以使用.user.ini</p>
-<p><strong>大致意思就是：我们指定一个文件（如a.jpg），那么该文件就会被包含在要执行的php文件中（如index.php）</strong>，类似于在index.php中插入一句：require(./a.jpg);【<strong>类似.htaccess，只不过针对不同服务器</strong>】</p>
+<p><strong>大致意思就是：我们指定一个文件（如a.jpg），那么该文件就会被包含在要执行的php文件中（如index.php）</strong>，类似于在index.php中插入一句：<code>require(./a.jpg)</code>;【<strong>类似.htaccess，只不过针对不同服务器</strong>】</p>
 <ul>
 <li><p>其中有两个配置，可以用来制造后门：
 auto_append_file、auto_prepend_file
@@ -1794,7 +1794,6 @@ auto_append_file=test.jpg（当文件调用的有<span class="hljs-keyword">exit
 <p>用sql关键词字典爆破，线程数调低点，发现过滤了=、union、by、！、&amp;、|、*、空格【()、%0a绕过】、and、、</p>
 <p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/img/image-20220308210613847.png" srcset="/img/loading.gif" alt="image-20220308210613847" style="zoom:67%;"></p>
 <p><strong>但是！</strong>没有过滤<code>updatexml</code>、extractvalue==》尝试报错注入</p>
-<p><img src="C:/Users/12456/AppData/Roaming/Typora/typora-user-images/image-20220308210814088.png" srcset="/img/loading.gif" alt="image-20220308210814088"></p>
 <pre><code class="hljs excel"><span class="hljs-built_in">and</span>、<span class="hljs-built_in">or</span>、&amp;&amp;、||被过滤——可用运算符! ^ ~以及<span class="hljs-built_in">not</span> <span class="hljs-built_in">xor</span>来代替
 空格被过滤——%<span class="hljs-number">09</span>, %<span class="hljs-number">0</span>a, %<span class="hljs-number">0</span>b, %<span class="hljs-number">0</span>c, %<span class="hljs-number">0</span>d, %<span class="hljs-symbol">a0</span>（等部分不可见字符可也代替空格）、<span class="hljs-built_in">and</span>/<span class="hljs-built_in">or</span>后面可以跟上偶数个!、~可以替代空格、改用+号、使用注释代替、多层括号嵌套
 = -&gt; like -&gt; regexp -&gt; &lt;&gt; -&gt; in</code></pre>
@@ -2483,12 +2482,18 @@ root@localhost	  ==》root权限，可以sql读文件</code></pre>
                   <article class="post-prev col-6">
                     
                     
+                      <a href="/2022/05/20/%E9%9D%B6%E6%9C%BA%E8%AE%B0%E5%BD%95/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">VulnHub-Raven: 2（udf webshell上传提权）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/12/09/%E9%99%87%E5%89%91%E6%9D%AF%E9%83%A8%E5%88%86WP/">
-                        <span class="hidden-mobile">陇剑杯部分WP</span>
+                      <a href="/2021/11/25/%E7%BD%91%E7%AB%99%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+                        <span class="hidden-mobile">网站架构知识点</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

