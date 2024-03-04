@@ -238,7 +238,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2024年2月16日 晚上
+                  本文最后更新于：2024年3月4日 下午
                 
               </p>
             
@@ -277,7 +277,7 @@ t3/iiop协议支持远程绑定对象bind到服务端，当远程对象继承自
 T3协议的RMI调用原理</h3>
 <p>​
 RMI允许在不同的Java虚拟机（JVM）之间进行通信，使得一个Java程序可以调用另一个Java程序中的方法</p>
-<p><img src="/Users/romanc9/Library/Application Support/typora-user-images/image-20240213173825846.png" srcset="/img/loading.gif" alt="RMI实现过程" style="zoom:50%;"></p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403041730528.png" srcset="/img/loading.gif" alt="RMI实现过程" style="zoom:50%;"></p>
 <p>​</p>
 <p>​ Weblogic RMI默认使用的传输协议是T3，无论是Java RMI还是Weblogic
 RMI，都需要使用JNDI调用远端的RMI服务。</p>
@@ -285,7 +285,7 @@ RMI，都需要使用JNDI调用远端的RMI服务。</p>
 JNDI的查找一般使用lookup()方法。常规Weblogic漏洞在反序列化时触发，流量中的序列化数据没有校验完全，恶意数据被反序列化出Class对象，并调用构造函数，若构造函数里有关于命令执行的指令，远程代码执行即可实现。而本次分析的新漏洞触发在反序列化后的lookup()调用中。</p>
 <p>​
 <strong><u>CVE-2023-21839漏洞原理</u></strong>：绑定远程对象到服务端JNDI服务后，在客户端执行lookup操作时，如果远程对象为ForeignOpaqueReference，客户端查找时会触发服务端调用ForeignOpaqueReference.getReferent方法，该方法会执行lookup查找，通过可控remoteJNDIName参数构造LDAP服务器可以实现远程命令执行，流程图如下👇🏻</p>
-<p><img src="/Users/romanc9/Library/Application Support/typora-user-images/image-20240213174320468.png" srcset="/img/loading.gif" alt="CVE-2023-21839漏洞原理流程图" style="zoom:50%;"></p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403041730529.png" srcset="/img/loading.gif" alt="CVE-2023-21839漏洞原理流程图" style="zoom:50%;"></p>
 <p>​</p>
 <h3 id="源码rce利用链">2.2 源码RCE利用链</h3>
 <p>​
@@ -293,7 +293,7 @@ weblogic.deployment.jms.ForeignOpaqueReference类：继承于OpaqueReference接�
 返回对象。</p>
 <p>​
 <strong>漏洞入口ForeignOpaqueReference.getReferent</strong>方法源码：</p>
-<p><img src="/Users/romanc9/Library/Application Support/typora-user-images/image-20240213174751066.png" srcset="/img/loading.gif" alt="漏洞入口getReferent方法部分源码" style="zoom:50%;"></p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403041730530.png" srcset="/img/loading.gif" alt="漏洞入口getReferent方法部分源码" style="zoom:50%;"></p>
 <p>​
 1）首先检查JNDI环境，如果没有设置JNDI环境变量，则使用默认的InitialContext对象创建context。否则，则使用指定的this.jndiEnvironment通过InitialContext对象创建context，并检查java.naming.factory.initial属性：该属性指定JNDI实现的工厂类。jndiEnvironment是private属性，可通过反射赋值。</p>
 <p>​ 2）retVal = context.lookup(evalMacros(this.remoteJNDIName));
@@ -321,7 +321,7 @@ remoteJNDIName.set(f, ldap); <span class="hljs-comment">//remoteJNDIName赋值</
 c.bind(bindName,f);</code></pre>
 <p>​
 4）最后调用InitialContext对象的lookup方法：c.lookup(bindName)。JNDI服务就会查询绑定对象，触发访问远程LDAP服务器，借此实现远程代码执行。漏洞RCE利用链如下</p>
-<p><img src="/Users/romanc9/Library/Application Support/typora-user-images/image-20240213175500871.png" srcset="/img/loading.gif" alt="漏洞利用链" style="zoom:50%;"></p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403041730531.png" srcset="/img/loading.gif" alt="漏洞利用链" style="zoom:50%;"></p>
 <p>​ 漏洞利用时，配合JNDIExploit
 工具：JNDI攻击通过引用远程类加载，那么配合工具启动LDAP服务器，将客户端连接到本地LDAP服务器，发送有效载荷。</p>
 <p>​ 该漏洞基于JNDI注入，<strong>由于JDK
