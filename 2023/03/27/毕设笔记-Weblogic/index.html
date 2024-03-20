@@ -186,7 +186,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      3k 字
+      3.2k 字
     </span>
   
 
@@ -196,7 +196,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      41
+      44
        分钟
     </span>
   
@@ -238,7 +238,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2024年3月4日 下午
+                  本文最后更新于：2024年3月20日 下午
                 
               </p>
             
@@ -490,13 +490,38 @@ docker-compose up -d</code></pre>
 <p>攻击机5003端口拿到靶机shell</p>
 <p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202402162012808.png" srcset="/img/loading.gif" alt="getshell" style="zoom:50%;"></p>
 <h2 id="注意事项思考">4.注意事项&amp;思考</h2>
-<p><strong>⚠️m1适配问题，docker weblogic环境搭建不起来</strong></p>
+<ol type="1">
+<li><strong>⚠️m1适配问题，docker weblogic环境搭建不起来</strong></li>
+</ol>
 <p>​
 本地测试的话里ldap服务设置的ip地址不要写0.0.0.0，要写公网服务器的IP/内网ip，不然无法获取到LDAP请求，弹shell弹不回来</p>
-<p>多目标检测：</p>
+<ol start="2" type="1">
+<li>poc的多目标检测：</li>
+</ol>
 <blockquote>
 <p>https://github.com/4ra1n/CVE-2023-21839/pull/1/commits/f62071a9b93f270f335fc83f8560b8e1f646dc23</p>
 </blockquote>
+<p>poc依赖问题：需导入配置文件wlfullclient.jar，否则无法检测漏洞，先从docker里的weblogic环境下载到本地，也可以直接从网上下载</p>
+<pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash">进入vps docker weblogic环境</span>
+cd /root/vulhub-master/weblogic/CVE-2023-21839
+docker-compose up -d
+
+<span class="hljs-meta">#</span><span class="bash">进入终端【-t 选项让Docker分配一个伪终端（pseudo-tty）并绑定到容器的标准输入上</span>
+-i 则让容器的标准输入保持打开】启动一个 bash 终端用来交互  	# eac020c1c6XX 你的容器名/编码
+docker exec -it eac020c1c6XX /bin/bash
+
+<span class="hljs-meta">#</span><span class="bash">根据官网指令打包https://docs.oracle.com/en/middleware/fusion-middleware/weblogic-server/12.2.1.4/saclt/jarbuilder.html<span class="hljs-comment">#GUID-54815E72-9837-4353-86BB-EA554C9A804D</span></span>
+
+java -jar wljarbuilder.jar
+
+<span class="hljs-meta">#</span><span class="bash">dockers cp 容器ID:目标路径 本地文件路径  .复制容器内文件到vps本地/root/<span class="hljs-built_in">test</span>下</span>
+docker cp eac020c1c6XX:/u01/oracle/wlserver/server/lib/wlfullclient.jar /root/test
+
+<span class="hljs-meta">#</span><span class="bash">vps下载到本地</span>
+sz ./wlfullclient.jar</code></pre>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202304211623290.png" srcset="/img/loading.gif" alt="依赖包的版本"></p>
+<p>idea导入jar包，点击应用，点击确认，此时，poc依赖配置完毕</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202304211644658.png" srcset="/img/loading.gif" alt="导入依赖包" style="zoom: 33%;"></p>
 <h2 id="修复方案">5.修复方案</h2>
 <p>1、安装Oracle WebLogic Server最新安全补丁：
 https://www.oracle.com/security-alerts/cpujan2023.html</p>

