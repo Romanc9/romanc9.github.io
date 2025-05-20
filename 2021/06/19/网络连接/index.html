@@ -19,7 +19,7 @@
   <meta name="description" content="keep something">
   <meta name="author" content="luom">
   <meta name="keywords" content="">
-  <title>win10软件设置开机启动 - RC9&#39;s blog</title>
+  <title>内网？公网？局域网？ - RC9&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
 
@@ -164,7 +164,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="win10软件设置开机启动">
+            <span class="h2" id="subtitle" title="内网？公网？局域网？">
               
             </span>
 
@@ -174,8 +174,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2020-11-22 13:29" pubdate>
-        2020年11月22日 下午
+      <time datetime="2021-06-20 08:33" pubdate>
+        2021年6月20日 早上
       </time>
     </span>
   
@@ -186,7 +186,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      76 字
+      550 字
     </span>
   
 
@@ -196,7 +196,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      1
+      5
        分钟
     </span>
   
@@ -234,32 +234,37 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">win10软件设置开机启动</h1>
+            <h1 style="display: none">内网？公网？局域网？</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2024年1月4日 下午
+                  本文最后更新于：2024年1月4日 晚上
                 
               </p>
             
             <div class="markdown-body">
-              <h1 id="title-win10软件设置开机启动">title: win10软件设置开机启动</h1>
-<h2 id="方法一">方法一：</h2>
-<p>我们打开文件夹：</p>
-<p>C:（用户）（当前用户名）Menu（「开始」菜单）（程序）（启动
-）即可找到启动文件夹</p>
-<center>
-<img src="https://s3.ax1x.com/2020/11/22/D83l80.png" srcset="/img/loading.gif">
-</center>
-<h2 id="方法二">方法二：</h2>
-<p>在运行中粘贴以下路径回车打开</p>
-<ol type="1">
-<li><p>按键win+r</p></li>
-<li><pre><code>   %USERPROFILE%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup</code></pre>
-<center>
-<p><img src="https://s3.ax1x.com/2020/11/22/D83oM8.png" srcset="/img/loading.gif"></p>
-</center></li>
-</ol>
+              <ul>
+<li><p>我们通常说的内网就是特定环境下的局域网，比如家庭几台电脑设备连接的局域网，外网也被称为互联网，连接地区、城市和国家的互联网络，NAT技术的出现了解决了公网IP地址枯竭的问题，可以使电脑等终端设备通过配置私网IP就可以正常连接互联网。</p></li>
+<li><p>知乎回答https://www.zhihu.com/question/27714563</p></li>
+<li><p>在==百度直接搜索IP会显示公网IP，在cmd中输入ipconfig，或者在Linux终端下输入ifconfig，会显示出私有ip==</p></li>
+<li><blockquote>
+<p>上网流程：</p>
+<p><strong>比如在一个小区内的电信用户的公网ip都是相同的，所以我们将数据发送给路由器，然后路由器通过公网ip访问互联网查询到数据，然后路由器再将查询到的数据传递到私有ip地址。这就算我们的上网过程</strong></p>
+</blockquote></li>
+<li><p><span style="background:#FF9999;">！！</span>简单来说呢，外网IP就是标示了您在整个互联网上的地址，就相当于小区的地址，而内网IP呢，就是标识着您在局域网里面的地址，也就是小区内的几栋几楼几号房子。</p>
+<p>之所以要这么做，因为可以解决IP资源不够用的难题。目前，全世界那么多网络设备，根本无法获得完全不重复的IP地址。</p>
+<p>因为，为了满足通讯需要，外网IP地址不允许重复分配，也就是说全世界的外网IP都是独一无二的。至于内网，那就无所谓了，可以允许重复。</p></li>
+<li><p><strong>怎么判断两个ip地址是否在同一局域网</strong></p>
+<p>要判断两个IP地址是不是在同一个网段，就将它们的IP地址分别与子网掩码做与运算，得到的结果一网络号，如果网络号相同，就在同一子网，否则，不在同一子网。</p>
+<p>ip地址计算器https://gongjuhao.com/netmask/</p></li>
+</ul>
+<blockquote>
+<p>参考🔗：</p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/1f6481355347">简书回答详细，IP地址，网关，公网内网都有***</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.hunbovps.com/News-listdateil-id-669.html">内网、公网，简洁易理解</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/ranyonsue/p/9713992.html">内网和外网之间的通信（端口映射原理）</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.hunbovps.com/ueditor/php/upload/image/20181210/1544424405837520.jpg">参考图</a></p>
+</blockquote>
 
             </div>
             <hr>
@@ -277,7 +282,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/win10/">win10</a>
+                      <a class="hover-with-bg" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">计算机基础</a>
                     
                   </div>
                 
@@ -290,9 +295,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/12/03/CTF%E5%B0%8F%E8%AE%B0/">
+                      <a href="/2021/09/06/SQL%E6%B3%A8%E5%85%A5/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">CTF学习小记</span>
+                        <span class="hidden-mobile">SQL注入&CTF例题</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -300,8 +305,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/11/07/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/">
-                        <span class="hidden-mobile">如何搭建个人博客</span>
+                      <a href="/2021/05/30/ciscn%202021%20web%20wp/">
+                        <span class="hidden-mobile">ciscn 2021 web WP</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
