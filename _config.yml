@@ -103,6 +103,10 @@ ignore:
 ## Themes: https://hexo.io/themes/
 theme: fluid
 
+pandoc:
+  extensions:
+    - '-implicit_figures'
+
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:

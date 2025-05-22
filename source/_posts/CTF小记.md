@@ -5,19 +5,7 @@ tags: CTF,计算机基础
 categories: CTF
 ---
 
-# 持续更新，业余思考，仅供参考，有时间再改格式
-
-# Q:
-
-client啥意思？
-网卡，虚拟网卡，
-
-
-
-
-
-
-
+ 持续更新，业余思考，仅供参考，有时间再改格式
 
 
 
@@ -33,8 +21,6 @@ client啥意思？
   **互联网 Internet 、广域网 WAN、局域网LAN可以算作一类**，**属于OSI参考类型的数据链路层**
 
 - **互联网是范围概念；以太网是技术概念**
-
-- ![image-20201202201154687](C:\Users\12456\AppData\Roaming\Typora\typora-user-images\image-20201202201154687.png)
 
 
 
@@ -753,8 +739,6 @@ eg：**在进行弱类型比较时，会将0e这类字符串识别为科学技�
 var_dump("0e123456"=="0e99999"); //true
 ```
 
-![image-20201124162604179](C:\Users\12456\AppData\Roaming\Typora\typora-user-images\image-20201124162604179.png)
-
 
 
 
@@ -764,20 +748,6 @@ var_dump("0e123456"=="0e99999"); //true
 ##### 3.get 改数据
 
 后的/ 有无都可以，但？后面都是参数，？表示与URL区分开
-
-![image-20201124163935858](C:\Users\12456\AppData\Roaming\Typora\typora-user-images\image-20201124163935858.png)
-
-![image-20201123215715570](C:\Users\12456\AppData\Roaming\Typora\typora-user-images\image-20201123215715570.png)
-
-![image-20201123215746483](C:\Users\12456\AppData\Roaming\Typora\typora-user-images\image-20201123215746483.png)
-
-![image-20201123215914938](C:\Users\12456\AppData\Roaming\Typora\typora-user-images\image-20201123215914938.png)
-
-
-
-![image-20201123220511840](C:\Users\12456\AppData\Roaming\Typora\typora-user-images\image-20201123220511840.png)
-
-![image-20201123222055181](C:\Users\12456\AppData\Roaming\Typora\typora-user-images\image-20201123222055181.png)
 
 
 
@@ -791,27 +761,11 @@ var_dump("0e123456"=="0e99999"); //true
 Content-Type:application/x-www-form-urlencoded(;charset=utf-8)
 ```
 
-![img](file:///D:\Relax\pc qq\1245614980\1245614980\Image\C2C\M_@V9DG~`J{E`7@T0II_YS4.png)
-
-
-
-
-
-hackbar:
-
-![image-20201124005036223](C:\Users\12456\AppData\Roaming\Typora\typora-user-images\image-20201124005036223.png)
-
-![image-20201124005116193](C:\Users\12456\AppData\Roaming\Typora\typora-user-images\image-20201124005116193.png)
-
-
-
 ##### 5.矛盾
 
 **is_numeric** **—** **检测变量是否为数字**
 
 **是数字和数字字符串则返回** TRUE，否则返回FALSE
-
-![image-20201124163747842](C:\Users\12456\AppData\Roaming\Typora\typora-user-images\image-20201124163747842.png)
 
 ###### 复习HTTP
 
@@ -829,20 +783,8 @@ http://www.aspxfans.com:8080/news/index.asp?boardID=5&ID=24618&page=1#name
 
 解码
 
-![image-20201124171828760](C:\Users\12456\AppData\Roaming\Typora\typora-user-images\image-20201124171828760.png)
-
-![image-20201124171805841](C:\Users\12456\AppData\Roaming\Typora\typora-user-images\image-20201124171805841.png)
-
 ##### 7.域名解析（可）
 
-![image-20201124172429240](C:\Users\12456\AppData\Roaming\Typora\typora-user-images\image-20201124172429240.png)
-
-<img src="C:\Users\12456\AppData\Roaming\Typora\typora-user-images\image-20201124172510561.png" alt="image-20201124172510561" style="zoom: 67%;" />
-
-
-
 ##### 8.停下来
-
-![image-20201124173221050](C:\Users\12456\AppData\Roaming\Typora\typora-user-images\image-20201124173221050.png)
 
 多按几次发送就好了
